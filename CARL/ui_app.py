@@ -341,6 +341,31 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                    font=[("selected", ("TkDefaultFont", _tab_sz, "bold")),
                          ("!selected", ("TkDefaultFont", _tab_sz))])
 
+        # Nav bar buttons: ttk (not tk.Button) so "clam" governs their colour —
+        # macOS Aqua's native tk.Button ignores explicit bg/fg configuration.
+        _style.configure(
+            "Nav.TButton",
+            background=self._NAV_BG, foreground=self._NAV_BTN_FG,
+            font=("TkDefaultFont", _tab_sz, "bold"),
+            borderwidth=0, relief="flat", padding=[16, 8],
+        )
+        _style.map(
+            "Nav.TButton",
+            background=[("active", self._NAV_ACTIVE_BG), ("!active", self._NAV_BG)],
+            foreground=[("active", self._NAV_ACTIVE_FG), ("!active", self._NAV_BTN_FG)],
+        )
+        _style.configure(
+            "NavActive.TButton",
+            background=self._NAV_ACTIVE_BG, foreground=self._NAV_ACTIVE_FG,
+            font=("TkDefaultFont", _tab_sz, "bold"),
+            borderwidth=0, relief="flat", padding=[16, 8],
+        )
+        _style.map(
+            "NavActive.TButton",
+            background=[("active", self._NAV_ACTIVE_BG)],
+            foreground=[("active", self._NAV_ACTIVE_FG)],
+        )
+
         # ── Application font objects ──────────────────────────────────────
         # Mutable Font objects — configure(size=n) on any one updates all widgets live.
         _base_family = tkFont.nametofont("TkDefaultFont").cget("family")
@@ -832,7 +857,7 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             "CARL — Classification (AI-accessible) Research Laboratory\n"
             "Version: Beta v1\n\n"
             "How to cite CARL:\n"
-            "Rodrigo, A. G., Huang, H., Wang, Z., Seldon, D., and Li, T. (2025). Classification\n"
+            "Rodrigo, A. G., Huang, H., Wang, Z., Seldon, D., and Li, T. (2026). Classification\n"
             "(AI-Accessible) Research Laboratory, CARL: An integrated environment\n"
             "for taxonomic research.\n\n"
             "─────────────────────────────────────────────────────\n\n"
@@ -2078,11 +2103,13 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         self.app_mono_font.configure(size=mono_sz)
         self.app_reading_font.configure(size=ui_sz + 2)
 
-        # Re-apply Notebook tab style with the new size (ttk styles are not live).
+        # Re-apply Notebook tab / nav bar styles with the new size (ttk styles are not live).
         _style = ttk.Style()
         _style.map("TNotebook.Tab",
                    font=[("selected", ("TkDefaultFont", ui_sz, "bold")),
                          ("!selected", ("TkDefaultFont", ui_sz))])
+        _style.configure("Nav.TButton", font=("TkDefaultFont", ui_sz, "bold"))
+        _style.configure("NavActive.TButton", font=("TkDefaultFont", ui_sz, "bold"))
 
         # Force-refresh Text widgets — on Windows, tk.Text can lag after a Font.configure().
         for _w, _f in (
@@ -2400,18 +2427,10 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
 
     def _build_nav_bar(self):
         for key, label in self._NAV_ITEMS:
-            btn = tk.Button(
+            btn = ttk.Button(
                 self._nav_frame,
                 text=label,
-                bg=self._NAV_BG,
-                fg=self._NAV_BTN_FG,
-                activebackground=self._NAV_ACTIVE_BG,
-                activeforeground=self._NAV_ACTIVE_FG,
-                relief="flat",
-                bd=0,
-                padx=16,
-                pady=8,
-                font=self.app_ui_bold,
+                style="Nav.TButton",
                 cursor="hand2",
                 command=lambda k=key: self._show_panel(k),
             )
@@ -2423,10 +2442,7 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             frame.grid_remove()
         self._panels[name].grid()
         for key, btn in self._nav_buttons.items():
-            if key == name:
-                btn.config(bg=self._NAV_ACTIVE_BG, fg=self._NAV_ACTIVE_FG)
-            else:
-                btn.config(bg=self._NAV_BG, fg=self._NAV_BTN_FG)
+            btn.configure(style="NavActive.TButton" if key == name else "Nav.TButton")
 
     def _bind_keyboard_shortcuts(self):
         modifier = "Command" if self.root.tk.call('tk', 'windowingsystem') == 'aqua' else "Control"
