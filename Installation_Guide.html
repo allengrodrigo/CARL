@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CARL — Installation Guide</title>
+<style>
+body { margin: 0; font-family: Segoe UI, Arial, sans-serif; background: #f5f7fa; color: #2c3e50; }
+.page { max-width: 860px; margin: 0 auto; padding: 32px 40px 60px; }
+
+h1 { font-size: 2em; margin-bottom: 4px; color: #2c3e50; }
+.subtitle { color: #7f8c8d; font-size: 1em; margin-bottom: 32px; }
+h2 { border-bottom: 2px solid #2c3e50; padding-bottom: 5px; margin-top: 40px; }
+h3 { margin-top: 20px; color: #34495e; }
+
+.card { background: white; padding: 18px 22px; margin: 12px 0;
+        border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+.tip     { background: #e8f6ff; border-left: 4px solid #3498db; padding: 10px 14px;
+           margin: 10px 0; border-radius: 0 4px 4px 0; }
+.warning { background: #fff3cd; border-left: 4px solid #e67e22; padding: 10px 14px;
+           margin: 10px 0; border-radius: 0 4px 4px 0; }
+.note    { background: #f4f6f7; border-left: 4px solid #95a5a6; padding: 10px 14px;
+           margin: 10px 0; border-radius: 0 4px 4px 0; }
+
+pre  { background: #1e1e1e; color: #eaeaea; padding: 12px 16px; border-radius: 4px;
+       font-size: 0.88em; overflow-x: auto; line-height: 1.6; margin: 8px 0; }
+code { background: #ecf0f1; color: #2c3e50; padding: 1px 5px; border-radius: 3px;
+       font-size: 0.88em; }
+
+ol, ul { padding-left: 1.4em; }
+li { margin-bottom: 6px; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.91em; margin: 10px 0; }
+table th { background: #f0f0f0; text-align: left; }
+table th, table td { border: 1px solid #ddd; padding: 8px 11px; vertical-align: top; }
+
+.step-num { display: inline-block; background: #2c3e50; color: white;
+            border-radius: 50%; width: 26px; height: 26px; line-height: 26px;
+            text-align: center; font-weight: bold; font-size: 0.9em;
+            margin-right: 8px; flex-shrink: 0; }
+.step { display: flex; align-items: flex-start; margin: 14px 0; }
+.step-body { flex: 1; }
+
+a { color: #2980b9; }
+a:hover { color: #1a5276; }
+
+.platform-badge { display: inline-block; font-size: 0.78em; font-weight: bold;
+    padding: 2px 7px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+.win  { background: #d6eaf8; color: #1a5276; }
+.mac  { background: #d5f5e3; color: #145a32; }
+.lnx  { background: #fdebd0; color: #784212; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>CARL Installation Guide</h1>
+<p class="subtitle">Classification AI-Accessible Research Laboratory &mdash; Beta v1</p>
+
+<!-- ===== OVERVIEW ===== -->
+<h2>Overview</h2>
+<div class="card">
+<p>CARL is a desktop application for taxonomists. This guide covers installing CARL from
+source using a Python virtual environment. No prior Python experience is required beyond
+running a single install script.</p>
+<p>Installation creates a self-contained <code>venv/</code> folder inside the CARL directory.
+It does not modify your system Python or install anything globally.</p>
+</div>
+
+<!-- ===== REQUIREMENTS ===== -->
+<h2>Requirements</h2>
+<div class="card">
+<table>
+  <tr><th>Requirement</th><th>Details</th></tr>
+  <tr><td><strong>Operating system</strong></td>
+      <td>Windows 10/11, macOS 12+, or Linux (Ubuntu 20.04+)</td></tr>
+  <tr><td><strong>Python</strong></td>
+      <td>3.11 recommended (3.10 or later required).
+          Download from <a href="https://www.python.org/downloads/">python.org</a>.</td></tr>
+  <tr><td><strong>Disk space</strong></td>
+      <td>~3 GB (dominated by PyTorch, needed for the nomenclatural-codes chatbot)</td></tr>
+  <tr><td><strong>Internet connection</strong></td>
+      <td>Required during installation (package downloads) and for API-hosted language
+          models and biodiversity database queries</td></tr>
+</table>
+<div class="tip"><strong>Windows users:</strong> when installing Python, tick
+<strong>"Add Python to PATH"</strong> on the first installer screen. Without this the
+install script cannot find Python.</div>
+<div class="tip"><strong>macOS users:</strong> install Python from
+<a href="https://www.python.org/downloads/">python.org</a> rather than Homebrew to
+ensure tkinter is included. If you use Homebrew Python, run
+<code>brew install python-tk</code> afterwards.</div>
+</div>
+
+<!-- ===== DOWNLOAD ===== -->
+<h2>Step 1 — Download CARL</h2>
+<div class="card">
+<p>Download the CARL source code from GitHub. Choose the method that suits you:</p>
+
+<h3>Option A — Download ZIP (no Git required)</h3>
+<ol>
+  <li>Go to <a href="https://github.com/allengrodrigo/CARL_beta_v1">https://github.com/allengrodrigo/CARL_beta_v1</a></li>
+  <li>Click <strong>Code → Download ZIP</strong></li>
+  <li>Extract the ZIP to a folder of your choice (e.g. <code>C:\CARL</code> on Windows or
+      <code>~/CARL</code> on macOS/Linux)</li>
+</ol>
+
+<h3>Option B — Clone with Git</h3>
+<pre>git clone https://github.com/allengrodrigo/CARL_beta_v1.git
+cd CARL_beta_v1</pre>
+</div>
+
+<!-- ===== INSTALL ===== -->
+<h2>Step 2 — Run the Install Script</h2>
+<div class="card">
+<p>Open a terminal (or File Explorer on Windows) in the CARL folder and run the
+appropriate script for your platform.</p>
+
+<h3><span class="platform-badge win">Windows</span> install.bat</h3>
+<p>Double-click <strong>install.bat</strong> in File Explorer, or from Command Prompt:</p>
+<pre>install.bat</pre>
+
+<h3><span class="platform-badge mac">macOS</span> <span class="platform-badge lnx">Linux</span> install.sh</h3>
+<pre>chmod +x install.sh
+./install.sh</pre>
+
+<p>The script will:</p>
+<ol>
+  <li>Verify your Python version</li>
+  <li>Create a virtual environment in <code>venv/</code></li>
+  <li>Install all required Python packages (see <code>requirements.txt</code>)</li>
+  <li>Create a launcher — <code>run_carl.bat</code> (Windows) or <code>run_carl.sh</code>
+      (macOS/Linux)</li>
+</ol>
+
+<div class="warning"><strong>Installation time.</strong> The first run downloads PyTorch
+(~200 MB) and sentence-transformers models. On a typical broadband connection this takes
+3–10 minutes. Subsequent installs are much faster as packages are cached.</div>
+</div>
+
+<!-- ===== RUN ===== -->
+<h2>Step 3 — Start CARL</h2>
+<div class="card">
+<p>After installation, start CARL using the launcher created by the install script:</p>
+<table>
+  <tr><th>Platform</th><th>Command / action</th></tr>
+  <tr><td><span class="platform-badge win">Windows</span></td>
+      <td>Double-click <code>run_carl.bat</code></td></tr>
+  <tr><td><span class="platform-badge mac">macOS</span> <span class="platform-badge lnx">Linux</span></td>
+      <td><code>./run_carl.sh</code></td></tr>
+</table>
+<p>CARL will open with the <strong>File panel → Nomenclature tab</strong>. Open the
+included example file <code>NEXUS_CARL.nex</code> via <strong>File → Open</strong> to
+explore a working dataset.</p>
+</div>
+
+<!-- ===== LLM SETUP ===== -->
+<h2>Step 4 — Set Up a Language Model</h2>
+<div class="card">
+<p>CARL's analyses (Descriptions, Comparisons, Keys) work without a language model. A
+language model is required only for the AI-assisted output modes and the Carl chatbot.
+Two options are supported:</p>
+
+<h3>Option A — API-hosted model (recommended for first-time users)</h3>
+<p>CARL supports Groq, OpenAI, Anthropic, Google, HuggingFace, and OpenRouter. Groq
+offers a generous free tier and is the recommended starting point.</p>
+<ol>
+  <li>Create a free account at <a href="https://console.groq.com">console.groq.com</a></li>
+  <li>Generate an API key in your account dashboard</li>
+  <li>In CARL: go to <strong>Settings → LM Settings</strong>, select
+      <strong>Groq</strong> as the provider, and paste your key into the
+      <strong>API Key</strong> field</li>
+  <li>Click a model name in the model list to populate the model fields, or type a
+      model name directly (e.g. <code>llama-3.3-70b-versatile</code>)</li>
+</ol>
+
+<h3>Option B — Local model via Ollama (no internet required after setup)</h3>
+<ol>
+  <li>Download and install Ollama from <a href="https://ollama.com">ollama.com</a></li>
+  <li>Pull a model, e.g.: <pre>ollama pull llama3.2:3b</pre></li>
+  <li>In CARL: go to <strong>Settings → LM Settings</strong>, select
+      <strong>Ollama (local)</strong> as the provider, and enter the model name
+      (e.g. <code>llama3.2:3b</code>)</li>
+</ol>
+
+<div class="note">API keys are stored locally in <code>taxongpt_settings.json</code>
+in the CARL folder and are never transmitted to any service other than the provider
+you configure.</div>
+</div>
+
+<!-- ===== DATABASES ===== -->
+<h2>Step 5 — Configure Databases (optional)</h2>
+<div class="card">
+<p>CARL can retrieve records from external biodiversity databases automatically. Default
+settings work for most users. To customise which databases are queried, go to
+<strong>Settings → Databases</strong>.</p>
+<p>Two databases require additional setup:</p>
+<table>
+  <tr><th>Database</th><th>What's needed</th></tr>
+  <tr><td><strong>WSC</strong> — World Spider Catalog</td>
+      <td>A free API key from
+          <a href="https://wsc.nmbe.ch">wsc.nmbe.ch</a>.
+          Enter it in Settings → Databases alongside the provider row.</td></tr>
+  <tr><td><strong>BHL</strong> — Biodiversity Heritage Library</td>
+      <td>A free API key from
+          <a href="https://www.biodiversitylibrary.org/getapikey.aspx">biodiversitylibrary.org</a>.
+          Enter it in Settings → LM Settings → BHL API Key.</td></tr>
+</table>
+<p>All other databases (GBIF, CoL, ITIS, WoRMS, ZooBank, CrossRef, NCBI, Plazi, Wikipedia,
+Wikidata, BacDive, POWO) are freely accessible without a key.</p>
+</div>
+
+<!-- ===== TROUBLESHOOTING ===== -->
+<h2>Troubleshooting</h2>
+<div class="card">
+<h3>Install script says "Python not found"</h3>
+<p>Python is not on your PATH. On Windows, re-run the Python installer and tick
+<strong>"Add Python to PATH"</strong>. On macOS/Linux, ensure <code>python3</code> is
+available: <code>which python3</code>.</p>
+
+<h3>faiss-cpu fails to install</h3>
+<p>Some platforms require a specific pre-built wheel. Try:</p>
+<pre>pip install faiss-cpu --no-build-isolation</pre>
+<p>If that fails, install Anaconda or Miniconda and use:
+<code>conda install -c conda-forge faiss-cpu</code></p>
+
+<h3>tkinter is not available (macOS)</h3>
+<p>Install Python from <a href="https://www.python.org/downloads/">python.org</a>
+(the official installer includes tkinter). Alternatively:
+<code>brew install python-tk@3.11</code></p>
+
+<h3>CARL opens but the window is blank or very small</h3>
+<p>On high-DPI displays (4K, Retina), Tkinter scaling may need adjustment. On Windows,
+right-click <code>run_carl.bat</code> → Properties → Compatibility → Change high DPI
+settings → Override scaling behaviour → Application.</p>
+
+<h3>The chatbot cannot find nomenclatural-code indices</h3>
+<p>The RAG indices for ICZN, ICN, ICNP, and ICVCN must be built separately. Contact the
+CARL authors to obtain pre-built index files, or ask about building them from source.</p>
+</div>
+
+<!-- ===== CONTACT ===== -->
+<h2>Contact and Feedback</h2>
+<div class="card">
+<p>CARL is under active development. To report a bug or request a feature, please open
+an issue at
+<a href="https://github.com/allengrodrigo/CARL_beta_v1/issues">github.com/allengrodrigo/CARL_beta_v1/issues</a>.</p>
+<p>For questions, contact Allen Rodrigo at
+<a href="mailto:allen.rodrigo@gmail.com">allen.rodrigo@gmail.com</a>.</p>
+</div>
+
+</div>
+</body>
+</html>

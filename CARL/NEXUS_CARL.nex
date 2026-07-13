@@ -1,0 +1,112 @@
+#NEXUS
+
+BEGIN DATA;
+DIMENSIONS NTAX=15 NCHAR=48;
+FORMAT DATATYPE=STANDARD MISSING=M GAP=-;
+CHARSTATELABELS
+	1 "Retreat strategy" / 0 "non-burrower or facultative burrower (taxa that always or sometimes inhabit existing spaces in embankments, under rocks, within logs, etc.)" 1 "obligate burrower (taxa that always burrow)" 2 "nester (taxa that construct short, silken tubes which are attached directly to the substrate)",
+	2 "Type of burrow entrance" / 0 "prey-capture web (extended sheets or curtains of silk)" 1 "open hole" 2 "turret (short, stiff extension of burrow lining projecting from substrate)" 3 "collar (collapsible extension of burrow lining)" 4 "trap-door (asymmetrical extension of burrow lining, allowing the demarcation of one side of the burrow as the 'hinge' side, and allowing the burrow to be opened and closed)" 5 "purse (extension of the burrow lining that lies along the substrate or is attached vertically to a surface, and is rough and camouflaged, through which the spider ambushes prey)",
+	3 "Position of spinning field relative to anal tubercle" / 0 "widely separated" 1 "close",
+	4 "Degree of separatin of spinnerets" / 0 "close, distance between PMS bases less than or roughly even with width of anal tubercle" 1 "separated, distance between PMS distinctly wider than width of anal tubercle",
+	5 "Anterior lateral spinnerets" / 0 "absent" 1 "present",
+	6 "Number of anterior lateral spinnerets" / 0 "two" 1 "one",
+	7 "Size of anterior lateral spinnerets" / 0 "smaller than posterior median spinnerets" 1 "subequal to posterior median spinnerets" 2 "larger than posterior median spinnerets",
+	8 "Posterior median spinnerets" / 0 "absent" 1 "present",
+	9 "Shape of posterior median spinnerets" / 0 "digitiform" 1 "broad, with obliquely truncated tips",
+	10 "Posterior median spinnerets' austrotheline crescent" / 0 "absent" 1 "present",
+	11 "Shape of apical segment of posterior lateral spinnerets" / 0 "domed/triangular (length <=1.5x width)" 1 "digitiform (length> 1.5x width)",
+	12 "Pseudosegmentation in apical segment of posterior lateral spinnerets" / 0 "absent" 1 "present",
+	13 "Size and elongation of posterior lateral spinnerets" / 0 "short, not extending far behind or around posterior abdomen" 1 "elongate, extending significantly behind or around abdomen",
+	14 "Spigot distribution of posterior lateral spinnerets" / 0 "spigots present on all three segments" 1 "spigots absent from basal segment" 2 "spigots present only on apical segment",
+	15 "Size of Leg III relative to Leg II" / 0 "subequal" 1 "leg III distinctly thicker and at least subequal in length with leg II",
+	16 "Tibia and metatarsus of leg III chaetotaxy" / 0 "with spines in ventral series on both segments" 1 "on tibia, ventral spines weak or absent (sometimes with one strong apical spine), metatarsus with many more dorsal spines than ventral",
+	17 "Thorn patch (>3 pro-dorsal spines) on patella of Leg III " / 0 "absent" 1 "present",
+	18 "Metatarsi of Legs I and II chaetotaxy" / 0 "if strong spines present, positioned ventrally" 1 "1 or more series of strong spines positioned laterally",
+	19 "Legs I and-or II scopulae" / 0 "absent" 1 "present",
+	20 "Legs I and-or II tarsal spines" / 0 "absent" 1 "present",
+	21 "Legs III and-or IV scopulae" / 0 "absent" 1 "present",
+	22 "Legs III and-or IV tarsal spines" / 0 "absent" 1 "present",
+	23 "Tarsi claw tufts" / 0 "absent" 1 "present",
+	24 "Dentition on superior tarsal claw of Leg I (correlated with claw tuft present)" / 0 "normal dentition" 1 "teeth reduced in size" 2 "claws edentate",
+	25 "Number of tooth rows on superior tarsal claws of Leg I" / 0 "one" 1 "two",
+	26 "Teeth on single row of superior tarsal claws on Leg I" / 0 "multiple teeth" 1 "one or few proximal teeth only",
+	27 "Inferior tarsal claw on Leg I" / 0 "absent" 1 "present",
+	28 "Dentition of inferior tarsal claw on Leg I" / 0 "always edentate" 1 "sometimes dentate",
+	29 "Shape of tarsal orgn on tarsus I" / 0 "flattened" 1 "protruding, distally-lobed",
+	30 "Leg cuticle pustules" / 0 "absent" 1 "present",
+	31 "Eye tubercle" / 0 "absent" 1 "present",
+	32 "Fovea" / 0 "closed, longitudinal" 1 "pit-like or narrowly transverse and open" 2 "closed, transverse",
+	33 "Sternum shape" / 0 "sternum edge in line with second coxa parallel" 1 "sternum edge in line with second coxa narrowing anteriorly",
+	34 "Sternum posterior sternal sigilla" / 0 "absent" 1 "present",
+	35 "Location of sternum posterior sternal sigilla" / 0 "innermost point closer to sternum edge than central sternum" 1 "innermost point intermediate between sternum edge and central sternum" 2 "innermost point closer to central sternum than to sternum edge",
+	36 "Sternum lateral sigilla" / 0 "absent" 1 "present",
+	37 "Maxillae serrula" / 0 "absent" 1 "present",
+	38 "Maxillae anterior lobe" / 0 "unmodified" 1 "anteriorly produced and acute",
+	39 "Maxillae cuspules" / 0 "absent" 1 "present",
+	40 "Posterior extent of maxillae cuspules" / 0 "not extending onto posterior heel" 1 "extending onto posterior heel",
+	41 "Lateral extent of maxillae cuspules" / 0 "confined to inner quarter of maxilla length" 1 "extending laterally beyond this",
+	42 "Labium cuspules" / 0 "absent" 1 "present",
+	43 "Number of labium cuspules" / 0 "few (<10)" 1 "many (>=10)",
+	44 "Chelicerae rastellum" / 0 "absent" 1 "present",
+	45 "Type of chelicerae rastellum" / 0 "sessile or on very low mound" 1 "on pronounced mound",
+	46 "Retrolateral row of teeth sub-equal in size to prolateral row of chelicerae" / 0 "absent" 1 "present",
+	47 "Chelicerae fang keel" / 0 "absent" 1 "present",
+	48 "Abdominal tergites" / 0 "absent" 1 "present"
+;
+MATRIX
+Hexurella	0 0 0 1 1 0 1 1 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 1 0 1 1 1 0 N N 0 N 0 N 0 0 1
+Mecicobothrium	0 0 0 1 1 0 1 1 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 1 0 1 1 1 0 N N 0 N 0 N 0 0 1
+Sphodros	1 5 0 0 1 1 0 1 1 0 1 0 0 1 1 1 1 1 0 1 0 1 0 0 0 0 1 1 0 0 1 (1,2) 0 1 2 1 0 1 1 1 1 0 N 0 N 0 0 1
+Atypus	1 5 0 0 1 1 0 1 1 0 1 0 0 1 1 1 1 1 0 1 0 1 0 0 0 0 1 1 0 0 1 (1,2) 0 1 2 1 0 1 1 1 1 0 N 0 N 0 0 1
+Megahexura	0 0 0 1 1 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 1 0 1 1 1 0 N N 0 N 0 N 0 0 1
+Aliatypus	1 4 0 0 1 0 0 1 0 0 1 0 0 1 1 1 1 1 0 1 0 0 0 0 0 1 1 0 0 0 0 (1,2) 1 1 2 1 0 0 0 N N 0 N 1 0 1 0 1
+Hexura	0 0 0 1 1 1 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 1 0 1 1 1 0 N N 0 N 0 N 0 0 1
+Antrodiaetus	1 3 0 0 0 N N 1 0 0 1 0 0 1 1 1 1 1 0 0 0 0 0 0 0 1 1 0 0 0 0 1 1 1 1 1 0 0 0 N N 0 N 1 0 0 0 1
+Atypoides	1 (2,3) 0 0 1 1 0 1 0 0 1 0 0 1 1 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 1 1 1 1 1 0 0 0 N N 0 N 1 0 0 0 1
+Ischnothele	0 0 1 1 0 N N 1 0 0 1 1 1 0 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 0 1 (1,2) 0 1 0 1 1 0 1 0 1 0 N 0 N 1 0 0
+Scotinoecus	1 1 1 1 1 1 1 1 0 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 0 0 1 2 0 1 0 1 1 0 1 0 1 1 1 0 N 0 0 0
+Hexathele	1 1 1 1 1 0 1 1 0 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 0 1 2 0 1 0 1 1 1 1 1 1 1 1 0 N 0 0 0
+Plesiothele	1 1 1 1 1 0 2 1 0 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 0 0 1 2 0 1 0 1 1 0 1 0 0 1 1 0 N 0 0 0
+Teranodes	0 0 1 1 1 0 1 1 0 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 0 1 2 0 1 0 1 1 1 1 0 0 1 1 0 N 0 0 0
+Test1	M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M
+;
+END;
+
+BEGIN SETS;
+CHARSET "Habitation" = 1 2;
+CHARSET "Mouthparts" = 37-47;
+CHARSET "Sternum" = 33-36;
+CHARSET "Legs" = 15 - 30;
+charset "Spinnerets" = 3 - 14;
+END;
+
+
+BEGIN ASSUMPTIONS; 
+WTSET descriptions = 0:1;
+WTSET compare = 0: 1 2;
+WTSET key = 10: 5 8 19 20, 5: 21 23, 0.5:1-4 29;
+END;
+
+BEGIN CARL;
+
+Hexurella is genus [&D Hexurella=Hexurella:]
+Mecicobothrium is genus [&D Mecicobothrium=Mecicobothrium:]
+Sphodros is genus [&D Sphodros=Sphodros:]
+Atypus is genus [&D Atypus=Atypus:]
+Megahexura is genus [&D Megahexura=Megahexura:]
+Aliatypus is genus [&D Aliatypus=Aliatypus:]
+Hexura is genus [&D Hexura=Hexura:]
+Antrodiaetus is genus [&D Antrodiaetus=Antrodiaetus:]
+Atypoides is genus [&D Atypoides=Atypoides:]
+Ischnothele is genus [&D Ischnothele=Ischnothele:]
+Scotinoecus is genus [&D Scotinoecus=Scotinoecus:]
+Hexathele is genus [&D Hexathele=Hexathele:]
+Plesiothele is genus [&D Plesiothele=Plesiothele:]
+Teranodes is genus [&D Teranodes=Teranodes:]
+Pronocephalidae is family [&D :]
+Pyelosomum is genus [&D :]
+Choanaphorus is genus [&D :]
+
+5(0) precludes 6, 7, 8
+END;
+

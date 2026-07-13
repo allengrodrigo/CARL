@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "alignment_converter",
+  "name": "Alignment Format Converter",
+  "executable": "alignment_convert.py",
+  "alt_executables": [
+    "alignment_convert.exe"
+  ],
+  "description": "Convert sequence alignments and character matrices between FASTA, NEXUS, PHYLIP, NeXML, Clustal, and Stockholm. Any supported format can be read or written. Morphology/standard data is fully represented in NEXUS/NeXML.",
+  "sections": [
+    {
+      "id": "io",
+      "name": "Conversion",
+      "fields": [
+        {
+          "flag": "",
+          "label": "Input file",
+          "type": "file",
+          "required": true,
+          "common": true,
+          "value_hint": "alignment.nex",
+          "help": "Input alignment (FASTA, NEXUS, PHYLIP, NeXML, Clustal, or Stockholm).",
+          "positional_order": 1
+        },
+        {
+          "flag": "",
+          "label": "Output file",
+          "type": "outfile",
+          "required": true,
+          "common": true,
+          "value_hint": "alignment.phy",
+          "help": "Destination path for the converted alignment.",
+          "positional_order": 2
+        },
+        {
+          "flag": "--to",
+          "label": "Output format",
+          "type": "choice",
+          "required": true,
+          "common": true,
+          "help": "Format to write.",
+          "options": [
+            "fasta",
+            "nexus",
+            "phylip",
+            "nexml",
+            "clustal",
+            "stockholm"
+          ]
+        },
+        {
+          "flag": "--from",
+          "label": "Input format",
+          "type": "choice",
+          "common": true,
+          "default": "auto",
+          "help": "Input format. Auto-detect by file extension is recommended; specify only when detection is ambiguous.",
+          "options": [
+            "auto",
+            "fasta",
+            "nexus",
+            "phylip",
+            "nexml",
+            "clustal",
+            "stockholm"
+          ]
+        },
+        {
+          "flag": "--data-type",
+          "label": "Data type",
+          "type": "choice",
+          "common": true,
+          "default": "standard",
+          "help": "Data type for schema-less inputs (FASTA/PHYLIP/Clustal/Stockholm) and for NEXUS/NeXML output. NEXUS/NeXML inputs are auto-detected. Use 'standard' for morphological matrices.",
+          "options": [
+            "standard",
+            "dna",
+            "rna",
+            "protein"
+          ]
+        },
+        {
+          "flag": "--relaxed",
+          "label": "Relaxed PHYLIP",
+          "type": "boolean",
+          "help": "Write relaxed PHYLIP with long taxon names (accepted by IQ-TREE). Applies to PHYLIP output only.",
+          "condition": {
+            "field": "--to",
+            "equals": "phylip"
+          }
+        }
+      ]
+    }
+  ],
+  "output": {
+    "display_mode": "terminal"
+  }
+}

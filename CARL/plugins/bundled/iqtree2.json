@@ -1,0 +1,1059 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "iqtree3",
+  "name": "IQ-TREE 3",
+  "executable": "iqtree3",
+  "alt_executables": [
+    "iqtree2",
+    "iqtree3",
+    "iqtree",
+    "iqtree3.exe",
+    "iqtree2.exe",
+    "iqtree.exe",
+    "C:/Users/arod004/OneDrive - The University of Auckland/Documents/IQTree/iqtree-3.1.2-Windows/bin/iqtree3.exe"
+  ],
+  "description": "Fast and effective stochastic algorithm for phylogenetic inference by maximum likelihood.",
+  "homepage": "https://iqtree.github.io",
+  "citation": "Minh et al. (2020) IQ-TREE 2: New Models and Methods for Phylogenetic Inference. Mol. Biol. Evol. 37:1530-1534.",
+  "license": "GPL-2.0",
+  "min_version": "2.0",
+  "sections": [
+    {
+      "id": "general",
+      "name": "General Options",
+      "fields": [
+        {
+          "flag": "-s",
+          "label": "Alignment file",
+          "type": "file",
+          "required": true,
+          "common": true,
+          "value_hint": "alignment.fasta",
+          "help": "Input alignment in PHYLIP, FASTA, NEXUS, CLUSTAL or MSF format."
+        },
+        {
+          "flag": "-pre",
+          "label": "Output prefix",
+          "type": "string",
+          "common": true,
+          "value_hint": "run1",
+          "help": "Prefix for all output files. Defaults to the alignment filename."
+        },
+        {
+          "flag": "-T",
+          "label": "CPU threads",
+          "type": "string",
+          "common": true,
+          "default": "AUTO",
+          "value_hint": "AUTO or integer",
+          "help": "Number of CPU cores. Use AUTO to let IQ-TREE detect the optimal number."
+        },
+        {
+          "flag": "-st",
+          "label": "Sequence type",
+          "type": "choice",
+          "common": true,
+          "help": "Sequence data type. IQ-TREE auto-detects if omitted; specify for codon analyses.",
+          "options": [
+            "DNA",
+            "AA",
+            "BIN",
+            "MORPH",
+            "CODON",
+            "NT2AA"
+          ]
+        },
+        {
+          "flag": "-t",
+          "label": "Starting tree",
+          "type": "string",
+          "value_hint": "path/to/tree.nwk or BIONJ or RANDOM",
+          "help": "Starting tree for search: path to a Newick file, BIONJ, or RANDOM."
+        },
+        {
+          "flag": "-te",
+          "label": "Fixed user tree",
+          "type": "file",
+          "value_hint": "tree.nwk",
+          "help": "Fix this user tree and only compute likelihood without optimising topology."
+        },
+        {
+          "flag": "-o",
+          "label": "Outgroup",
+          "type": "string",
+          "value_hint": "TaxonName",
+          "help": "Outgroup taxon name to root the tree."
+        },
+        {
+          "flag": "-seed",
+          "label": "Random seed",
+          "type": "integer",
+          "value_hint": "12345",
+          "help": "Random number seed for reproducibility."
+        },
+        {
+          "flag": "-ntmax",
+          "label": "Max AUTO threads",
+          "type": "integer",
+          "value_hint": "8",
+          "help": "Maximum cores that -T AUTO is allowed to allocate."
+        },
+        {
+          "flag": "-mem",
+          "label": "Max RAM",
+          "type": "string",
+          "value_hint": "4G",
+          "help": "Maximum RAM usage (e.g. 4G, 512M)."
+        },
+        {
+          "flag": "-keep-ident",
+          "label": "Keep identical sequences",
+          "type": "boolean",
+          "help": "Keep duplicate/identical sequences in the alignment (removed by default)."
+        },
+        {
+          "flag": "-safe",
+          "label": "Safe numerical mode",
+          "type": "boolean",
+          "help": "Avoid numerical underflow on large alignments at the cost of speed."
+        },
+        {
+          "flag": "-v",
+          "label": "Verbose",
+          "type": "boolean",
+          "help": "Print more messages to screen."
+        },
+        {
+          "flag": "-quiet",
+          "label": "Quiet mode",
+          "type": "boolean",
+          "help": "Suppress all screen output."
+        }
+      ]
+    },
+    {
+      "id": "checkpointing",
+      "name": "Checkpointing",
+      "fields": [
+        {
+          "flag": "-redo",
+          "label": "Redo analysis",
+          "type": "boolean",
+          "common": true,
+          "help": "Ignore any existing checkpoint and restart the analysis from scratch."
+        },
+        {
+          "flag": "-cptime",
+          "label": "Checkpoint interval (s)",
+          "type": "integer",
+          "default": 60,
+          "value_hint": "60",
+          "help": "Minimum interval in seconds between checkpoint writes."
+        }
+      ]
+    },
+    {
+      "id": "model_selection",
+      "name": "Model Selection",
+      "fields": [
+        {
+          "flag": "-m",
+          "label": "Model / selection strategy",
+          "type": "string",
+          "common": true,
+          "default": "TEST",
+          "value_hint": "GTR+G or TEST or MFP",
+          "help": "Substitution model name (e.g. GTR+G, WAG+I+G4) or selection keyword: TEST, TESTONLY, MF (=TESTNEWONLY), MFP (=TESTNEW), TESTMERGE, MF+MERGE, MFP+MERGE."
+        },
+        {
+          "flag": "-mset",
+          "label": "Restrict model set",
+          "type": "string",
+          "value_hint": "Phyml,RAxML or HKY,GTR",
+          "help": "Restrict model selection to those used by a program (Phyml, RAxML, etc.) or a comma-separated list of model names."
+        },
+        {
+          "flag": "-msub",
+          "label": "Amino acid substitution source",
+          "type": "choice",
+          "help": "Restrict amino acid model selection to models for the specified source.",
+          "options": [
+            "nuclear",
+            "mitochondrial",
+            "chloroplast",
+            "viral"
+          ]
+        },
+        {
+          "flag": "-mfreq",
+          "label": "Frequency types",
+          "type": "string",
+          "value_hint": "F,FO",
+          "help": "Comma-separated frequency types to include in model selection (e.g. F,FO,FQ)."
+        },
+        {
+          "flag": "-mrate",
+          "label": "Rate heterogeneity types",
+          "type": "string",
+          "value_hint": "G,I+G,R",
+          "help": "Comma-separated rate heterogeneity categories (e.g. G,I+G,R4)."
+        },
+        {
+          "flag": "-cmin",
+          "label": "Min FreeRate categories",
+          "type": "integer",
+          "default": 2,
+          "value_hint": "2",
+          "help": "Minimum number of categories for the FreeRate model."
+        },
+        {
+          "flag": "-cmax",
+          "label": "Max FreeRate categories",
+          "type": "integer",
+          "default": 10,
+          "value_hint": "10",
+          "help": "Maximum number of categories for the FreeRate model."
+        },
+        {
+          "flag": "-merit",
+          "label": "Selection criterion",
+          "type": "choice",
+          "default": "BIC",
+          "help": "Optimality criterion for model selection.",
+          "options": [
+            "BIC",
+            "AIC",
+            "AICc"
+          ]
+        },
+        {
+          "flag": "-mtree",
+          "label": "Full tree search per model",
+          "type": "boolean",
+          "help": "Perform a full tree search for each model. Slower but more accurate."
+        },
+        {
+          "flag": "-mredo",
+          "label": "Redo model selection",
+          "type": "boolean",
+          "help": "Ignore model checkpoint and redo model testing."
+        },
+        {
+          "flag": "-madd",
+          "label": "Additional mixture models",
+          "type": "string",
+          "value_hint": "C20,C60",
+          "help": "Comma-separated mixture models to additionally consider."
+        },
+        {
+          "flag": "-mdef",
+          "label": "User model file",
+          "type": "file",
+          "value_hint": "mymodels.nex",
+          "help": "NEXUS model file defining new or custom substitution models."
+        },
+        {
+          "flag": "-rcluster",
+          "label": "Relaxed clustering (%)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Percentage for the relaxed clustering algorithm (partition merging). Smaller = faster."
+        },
+        {
+          "flag": "-rclusterf",
+          "label": "Fast relaxed clustering (%)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Like -rcluster but uses the faster relaxed clustering algorithm."
+        },
+        {
+          "flag": "-rcluster-max",
+          "label": "Max partition pairs",
+          "type": "integer",
+          "value_hint": "1000",
+          "help": "Absolute maximum number of partition pairs to evaluate."
+        }
+      ]
+    },
+    {
+      "id": "rate_heterogeneity",
+      "name": "Rate Heterogeneity",
+      "fields": [
+        {
+          "flag": "-a",
+          "label": "Gamma shape (α)",
+          "type": "float",
+          "value_hint": "0.5",
+          "help": "Fix the Gamma shape parameter α. Overrides ML estimation."
+        },
+        {
+          "flag": "-i",
+          "label": "Invariable sites proportion",
+          "type": "float",
+          "value_hint": "0.1",
+          "help": "Fix the proportion of invariable sites. Overrides ML estimation."
+        },
+        {
+          "flag": "-gmedian",
+          "label": "Gamma median approximation",
+          "type": "boolean",
+          "help": "Use median instead of mean for Gamma rate heterogeneity (Yang 1994)."
+        },
+        {
+          "flag": "--opt-gamma-inv",
+          "label": "Thorough +I+G estimation",
+          "type": "boolean",
+          "help": "More thorough estimation of +I+G model parameters (slower)."
+        },
+        {
+          "flag": "-wsr",
+          "label": "Write site rates",
+          "type": "boolean",
+          "help": "Write per-site rates to a .rate file."
+        }
+      ]
+    },
+    {
+      "id": "partition",
+      "name": "Partition Model",
+      "fields": [
+        {
+          "flag": "-q",
+          "label": "Partition file (equal rates)",
+          "type": "file",
+          "value_hint": "partitions.txt",
+          "help": "Partition file with equal rates across partitions (-q model).",
+          "mutex_group": "partition_mode"
+        },
+        {
+          "flag": "-spp",
+          "label": "Partition file (proportional rates)",
+          "type": "file",
+          "value_hint": "partitions.txt",
+          "help": "Partition file with proportional (edge-linked) branch lengths. Equivalent to -p.",
+          "mutex_group": "partition_mode"
+        },
+        {
+          "flag": "-sp",
+          "label": "Partition file (unlinked rates)",
+          "type": "file",
+          "value_hint": "partitions.txt",
+          "help": "Partition file with completely unlinked branch lengths per partition. Equivalent to -Q.",
+          "mutex_group": "partition_mode"
+        }
+      ]
+    },
+    {
+      "id": "site_freq",
+      "name": "Site-Specific Frequency",
+      "fields": [
+        {
+          "flag": "-ft",
+          "label": "Guide tree",
+          "type": "file",
+          "value_hint": "guide.nwk",
+          "help": "Guide tree for inferring site-specific frequency profiles (e.g. for C60 model)."
+        },
+        {
+          "flag": "-fs",
+          "label": "Site frequency file",
+          "type": "file",
+          "value_hint": "site_freq.txt",
+          "help": "Pre-computed site frequency file."
+        },
+        {
+          "flag": "-fmax",
+          "label": "Posterior maximum mode",
+          "type": "boolean",
+          "help": "Use posterior maximum (instead of average) for site-specific profiles."
+        }
+      ]
+    },
+    {
+      "id": "tree_search",
+      "name": "Tree Search",
+      "fields": [
+        {
+          "flag": "-ninit",
+          "label": "Initial parsimony trees",
+          "type": "integer",
+          "default": 100,
+          "value_hint": "100",
+          "help": "Number of initial parsimony trees to generate."
+        },
+        {
+          "flag": "-ntop",
+          "label": "Top trees to optimise",
+          "type": "integer",
+          "default": 20,
+          "value_hint": "20",
+          "help": "Number of top parsimony trees passed to full ML optimisation."
+        },
+        {
+          "flag": "-nbest",
+          "label": "Candidate set size",
+          "type": "integer",
+          "default": 5,
+          "value_hint": "5",
+          "help": "Number of trees retained in the candidate set."
+        },
+        {
+          "flag": "-n",
+          "label": "Iterations",
+          "type": "integer",
+          "value_hint": "1000",
+          "help": "Number of iterations to run. Set to 0 to skip tree search (compute model only)."
+        },
+        {
+          "flag": "-nstop",
+          "label": "Stop after N unsuccessful",
+          "type": "integer",
+          "default": 100,
+          "value_hint": "100",
+          "help": "Stop after this many iterations without improving the best tree."
+        },
+        {
+          "flag": "-pers",
+          "label": "Perturbation strength",
+          "type": "float",
+          "default": 0.5,
+          "value_hint": "0.5",
+          "help": "Perturbation strength for randomised NNI (0.0–1.0)."
+        },
+        {
+          "flag": "-g",
+          "label": "Constraint tree",
+          "type": "file",
+          "value_hint": "constraint.nwk",
+          "help": "Topological constraint tree in Newick format."
+        },
+        {
+          "flag": "-allnni",
+          "label": "Thorough NNI",
+          "type": "boolean",
+          "help": "More thorough but slower NNI search."
+        },
+        {
+          "flag": "-fast",
+          "label": "Fast mode",
+          "type": "boolean",
+          "help": "Fast tree search (less thorough; comparable to FastTree)."
+        },
+        {
+          "flag": "-djc",
+          "label": "Skip ML distances",
+          "type": "boolean",
+          "help": "Skip ML pairwise distance computation and BIONJ starting tree."
+        }
+      ]
+    },
+    {
+      "id": "pathogen",
+      "name": "Pathogen / CMAPLE",
+      "fields": [
+        {
+          "flag": "--pathogen",
+          "label": "CMAPLE algorithm",
+          "type": "boolean",
+          "help": "Use the CMAPLE algorithm when sequence divergence is low (e.g. viral data)."
+        },
+        {
+          "flag": "--pathogen-force",
+          "label": "Force CMAPLE",
+          "type": "boolean",
+          "help": "Force CMAPLE regardless of divergence.",
+          "condition": {
+            "field": "--pathogen",
+            "present": true
+          }
+        },
+        {
+          "flag": "--tree-search",
+          "label": "CMAPLE search type",
+          "type": "choice",
+          "default": "NORMAL",
+          "help": "Tree search intensity for the CMAPLE algorithm.",
+          "options": [
+            "FAST",
+            "NORMAL",
+            "EXHAUSTIVE"
+          ],
+          "condition": {
+            "field": "--pathogen",
+            "present": true
+          }
+        },
+        {
+          "flag": "--disable-local-ref",
+          "label": "Disable local reference",
+          "type": "boolean",
+          "help": "Disable use of multiple local references in CMAPLE.",
+          "condition": {
+            "field": "--pathogen",
+            "present": true
+          }
+        },
+        {
+          "flag": "--estimate-MAT",
+          "label": "Mutation-annotated tree",
+          "type": "boolean",
+          "help": "Infer mutations along each branch and output a mutation-annotated tree.",
+          "condition": {
+            "field": "--pathogen",
+            "present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "ultrafast_bootstrap",
+      "name": "Ultrafast Bootstrap (UFBoot)",
+      "fields": [
+        {
+          "flag": "-bb",
+          "label": "UFBoot replicates",
+          "type": "integer",
+          "common": true,
+          "value_hint": "1000",
+          "help": "Number of ultrafast bootstrap replicates. Minimum 1000."
+        },
+        {
+          "flag": "-bnni",
+          "label": "Optimise UFBoot trees",
+          "type": "boolean",
+          "help": "Additional NNI step to optimise UFBoot trees, reducing over-support.",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-bsam",
+          "label": "Bootstrap resampling",
+          "type": "choice",
+          "help": "Resampling strategy for PARTITIONED data only: GENE (by gene) or GENESITE (by site within gene). Leave blank for standard site resampling.",
+          "options": [
+            "",
+            "GENE",
+            "GENESITE"
+          ],
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-nm",
+          "label": "Max UFBoot iterations",
+          "type": "integer",
+          "default": 1000,
+          "value_hint": "1000",
+          "help": "Maximum number of iterations to stop (UFBoot convergence).",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-nstep",
+          "label": "Convergence check interval",
+          "type": "integer",
+          "default": 100,
+          "value_hint": "100",
+          "help": "Iteration interval for checking UFBoot convergence.",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-bcor",
+          "label": "Min correlation coefficient",
+          "type": "float",
+          "default": 0.99,
+          "value_hint": "0.99",
+          "help": "Minimum correlation coefficient for UFBoot convergence criterion.",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-beps",
+          "label": "RELL epsilon",
+          "type": "float",
+          "default": 0.5,
+          "value_hint": "0.5",
+          "help": "Small epsilon to break ties in RELL evaluation.",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-wbt",
+          "label": "Write bootstrap trees",
+          "type": "boolean",
+          "help": "Write UFBoot trees to .ufboot file (without branch lengths).",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        },
+        {
+          "flag": "-wbtl",
+          "label": "Write bootstrap trees (with BL)",
+          "type": "boolean",
+          "help": "Write UFBoot trees with branch lengths to .ufboot file.",
+          "condition": {
+            "field": "-bb",
+            "present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "nonparametric_bootstrap",
+      "name": "Nonparametric Bootstrap",
+      "fields": [
+        {
+          "flag": "-b",
+          "label": "Bootstrap replicates",
+          "type": "integer",
+          "value_hint": "100",
+          "help": "Standard nonparametric bootstrap: analyse original alignment + N bootstrap replicates. Minimum 100."
+        },
+        {
+          "flag": "-bc",
+          "label": "Bootstrap only (no original)",
+          "type": "integer",
+          "value_hint": "100",
+          "help": "Like -b but omits analysis on the original alignment."
+        },
+        {
+          "flag": "-bo",
+          "label": "Bootstrap trees only",
+          "type": "integer",
+          "value_hint": "100",
+          "help": "Only perform bootstrap analysis; skip ML on original alignment."
+        }
+      ]
+    },
+    {
+      "id": "branch_tests",
+      "name": "Single Branch Tests",
+      "fields": [
+        {
+          "flag": "-alrt",
+          "label": "SH-aLRT replicates",
+          "type": "integer",
+          "common": true,
+          "value_hint": "1000",
+          "help": "SH-like approximate likelihood ratio test. Use ≥1000 replicates; 0 = parametric aLRT."
+        },
+        {
+          "flag": "-abayes",
+          "label": "aBayes test",
+          "type": "boolean",
+          "help": "Approximate Bayes branch support."
+        },
+        {
+          "flag": "-lbp",
+          "label": "Local bootstrap probability",
+          "type": "integer",
+          "value_hint": "1000",
+          "help": "Fast local bootstrap probability. Minimum 1000 replicates."
+        }
+      ]
+    },
+    {
+      "id": "ancestral",
+      "name": "Ancestral Reconstruction",
+      "fields": [
+        {
+          "flag": "-asr",
+          "label": "Reconstruct ancestral sequences",
+          "type": "boolean",
+          "help": "Write marginal ancestral sequences for all nodes to a .state file."
+        },
+        {
+          "flag": "-asr-min",
+          "label": "Min posterior probability",
+          "type": "float",
+          "default": 0.0,
+          "value_hint": "0.5",
+          "help": "Minimum posterior probability threshold for best ancestral state output.",
+          "condition": {
+            "field": "-asr",
+            "present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "topology_tests",
+      "name": "Tree Topology Tests",
+      "fields": [
+        {
+          "flag": "-z",
+          "label": "Tree set file",
+          "type": "file",
+          "value_hint": "trees.nwk",
+          "help": "File containing trees to compare with topology tests."
+        },
+        {
+          "flag": "-zb",
+          "label": "RELL replicates",
+          "type": "integer",
+          "default": 10000,
+          "value_hint": "10000",
+          "help": "Number of RELL bootstrap replicates for topology tests (KH, SH, WKH, WSH, ELW).",
+          "condition": {
+            "field": "-z",
+            "present": true
+          }
+        },
+        {
+          "flag": "-zw",
+          "label": "Weighted KH/SH tests",
+          "type": "boolean",
+          "help": "Additionally perform weighted KH and weighted SH tests.",
+          "condition": {
+            "field": "-z",
+            "present": true
+          }
+        },
+        {
+          "flag": "-au",
+          "label": "AU test",
+          "type": "boolean",
+          "help": "Additionally perform the approximately unbiased (AU) test.",
+          "condition": {
+            "field": "-z",
+            "present": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "consensus",
+      "name": "Consensus Tree",
+      "fields": [
+        {
+          "flag": "-con",
+          "label": "Compute consensus",
+          "type": "boolean",
+          "help": "Compute a majority-rule consensus tree from the tree set passed via -t."
+        },
+        {
+          "flag": "-net",
+          "label": "Consensus network",
+          "type": "boolean",
+          "help": "Compute a consensus network from the tree set."
+        },
+        {
+          "flag": "-minsup",
+          "label": "Min support threshold",
+          "type": "float",
+          "default": 0.0,
+          "value_hint": "0.5",
+          "help": "Minimum support fraction to retain branches in the consensus (0.0–1.0)."
+        },
+        {
+          "flag": "-bi",
+          "label": "Burn-in",
+          "type": "integer",
+          "default": 0,
+          "value_hint": "0",
+          "help": "Number of initial trees to discard as burn-in."
+        },
+        {
+          "flag": "-sup",
+          "label": "Support mapping target tree",
+          "type": "file",
+          "value_hint": "target.nwk",
+          "help": "Map bootstrap support from the tree set onto this target tree."
+        },
+        {
+          "flag": "-suptag",
+          "label": "Node tag for tree IDs",
+          "type": "string",
+          "value_hint": "NodeName or ALL",
+          "help": "Assign IDs of trees where this node appears to the node label."
+        },
+        {
+          "flag": "-scale",
+          "label": "Support scale factor",
+          "type": "integer",
+          "default": 100,
+          "value_hint": "100",
+          "help": "Scaling factor for support values (default 100 = percentages)."
+        },
+        {
+          "flag": "-prec",
+          "label": "Support precision",
+          "type": "integer",
+          "default": 0,
+          "value_hint": "0",
+          "help": "Decimal precision for support values."
+        }
+      ]
+    },
+    {
+      "id": "rf_distance",
+      "name": "Robinson-Foulds Distance",
+      "fields": [
+        {
+          "flag": "-rf",
+          "label": "Reference tree set",
+          "type": "file",
+          "value_hint": "ref_trees.nwk",
+          "help": "Compute pairwise RF distances between -t tree set and this reference set."
+        },
+        {
+          "flag": "-rf_all",
+          "label": "All-to-all RF distances",
+          "type": "boolean",
+          "help": "Compute all pairwise RF distances within the tree set passed via -t."
+        },
+        {
+          "flag": "-rf_adj",
+          "label": "Adjacent RF distances",
+          "type": "boolean",
+          "help": "Compute RF distances between consecutive (adjacent) trees."
+        }
+      ]
+    },
+    {
+      "id": "random_trees",
+      "name": "Random Tree Generation",
+      "fields": [
+        {
+          "flag": "-r",
+          "label": "Random Yule-Harding tree (N taxa)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Generate a random tree for N taxa under the Yule-Harding model."
+        },
+        {
+          "flag": "-ru",
+          "label": "Random uniform tree (N taxa)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Generate a random tree under the uniform model."
+        },
+        {
+          "flag": "-rcat",
+          "label": "Random caterpillar tree (N taxa)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Generate a random caterpillar tree."
+        },
+        {
+          "flag": "-rbal",
+          "label": "Random balanced tree (N taxa)",
+          "type": "integer",
+          "value_hint": "8",
+          "help": "Generate a random balanced tree (N must be a power of 2)."
+        },
+        {
+          "flag": "-rcsg",
+          "label": "Random circular split network (N taxa)",
+          "type": "integer",
+          "value_hint": "10",
+          "help": "Generate a random circular split network."
+        },
+        {
+          "flag": "-rlen",
+          "label": "Branch length spec",
+          "type": "string",
+          "value_hint": "0.001 0.1 0.3",
+          "help": "Three space-separated floats: min, mean, and max branch lengths for the random tree."
+        }
+      ]
+    },
+    {
+      "id": "likelihood_mapping",
+      "name": "Likelihood Mapping",
+      "fields": [
+        {
+          "flag": "-lmap",
+          "label": "Quartet sample size",
+          "type": "string",
+          "value_hint": "2000 or ALL",
+          "help": "Number of random quartets to draw for likelihood mapping, or ALL."
+        },
+        {
+          "flag": "-lmclust",
+          "label": "Cluster file",
+          "type": "file",
+          "value_hint": "clusters.nex",
+          "help": "NEXUS file with taxon cluster assignments for likelihood mapping."
+        },
+        {
+          "flag": "-wql",
+          "label": "Write quartet likelihoods",
+          "type": "boolean",
+          "help": "Write quartet log-likelihoods to .lmap.quartetlh file."
+        }
+      ]
+    },
+    {
+      "id": "miscellaneous",
+      "name": "Miscellaneous Output",
+      "fields": [
+        {
+          "flag": "-blmin",
+          "label": "Min branch length",
+          "type": "float",
+          "value_hint": "1e-6",
+          "help": "Minimum allowed branch length."
+        },
+        {
+          "flag": "-blmax",
+          "label": "Max branch length",
+          "type": "float",
+          "value_hint": "100.0",
+          "help": "Maximum allowed branch length."
+        },
+        {
+          "flag": "-blfix",
+          "label": "Fix branch lengths",
+          "type": "boolean",
+          "help": "Fix branch lengths from the tree passed via -t or -te."
+        },
+        {
+          "flag": "-czb",
+          "label": "Collapse near-zero branches",
+          "type": "boolean",
+          "help": "Collapse branches near zero length to produce a multifurcating tree."
+        },
+        {
+          "flag": "-me",
+          "label": "Log-likelihood epsilon",
+          "type": "float",
+          "default": 0.01,
+          "value_hint": "0.01",
+          "help": "Convergence epsilon for final model parameter estimation."
+        },
+        {
+          "flag": "-alninfo",
+          "label": "Write alignment info",
+          "type": "boolean",
+          "help": "Print alignment site statistics to .alninfo file."
+        },
+        {
+          "flag": "-wsl",
+          "label": "Write site log-likelihoods",
+          "type": "boolean",
+          "help": "Write site log-likelihoods to .sitelh file."
+        },
+        {
+          "flag": "-wslr",
+          "label": "Write site LL per rate category",
+          "type": "boolean",
+          "help": "Write site log-likelihoods per rate category."
+        },
+        {
+          "flag": "-wslm",
+          "label": "Write site LL per mixture class",
+          "type": "boolean",
+          "help": "Write site log-likelihoods per mixture class."
+        },
+        {
+          "flag": "-wslmr",
+          "label": "Write site LL per mixture+rate",
+          "type": "boolean",
+          "help": "Write site log-likelihoods per mixture class and rate category."
+        },
+        {
+          "flag": "-wspr",
+          "label": "Write site posteriors per rate",
+          "type": "boolean",
+          "help": "Write site posterior probabilities per rate category."
+        },
+        {
+          "flag": "-wspm",
+          "label": "Write site posteriors per mixture",
+          "type": "boolean",
+          "help": "Write site posterior probabilities per mixture class."
+        },
+        {
+          "flag": "-wspmr",
+          "label": "Write site posteriors per mixture+rate",
+          "type": "boolean",
+          "help": "Write site posterior probabilities per mixture class and rate category."
+        },
+        {
+          "flag": "-wt",
+          "label": "Write locally optimal trees",
+          "type": "boolean",
+          "help": "Write all locally optimal trees encountered during search to .treels."
+        },
+        {
+          "flag": "-wpl",
+          "label": "Write partition log-likelihoods",
+          "type": "boolean",
+          "help": "Write per-partition log-likelihoods to .partlh file."
+        },
+        {
+          "flag": "-fconst",
+          "label": "Constant site counts",
+          "type": "string",
+          "value_hint": "10,20,30,40",
+          "help": "Comma-separated list of constant site counts to add to alignment (e.g. for morphological data)."
+        }
+      ]
+    }
+  ],
+  "output": {
+    "display_mode": "file",
+    "files": [
+      {
+        "pattern": "{pre}.treefile",
+        "output_type": "tree",
+        "description": "Best-fit tree in Newick format"
+      },
+      {
+        "pattern": "{pre}.contree",
+        "output_type": "tree",
+        "description": "Consensus tree with support values (if -bb)"
+      },
+      {
+        "pattern": "{pre}.splits.nex",
+        "output_type": "tree",
+        "description": "Bootstrap splits in NEXUS (if -bb)"
+      },
+      {
+        "pattern": "{pre}.iqtree",
+        "output_type": "text",
+        "description": "Main analysis report"
+      },
+      {
+        "pattern": "{pre}.log",
+        "output_type": "text",
+        "description": "Full run log"
+      },
+      {
+        "pattern": "{pre}.rate",
+        "output_type": "text",
+        "description": "Per-site rates (if -wsr)"
+      },
+      {
+        "pattern": "{pre}.sitelh",
+        "output_type": "text",
+        "description": "Per-site log-likelihoods (if -wsl)"
+      },
+      {
+        "pattern": "{pre}.state",
+        "output_type": "text",
+        "description": "Ancestral sequences (if -asr)"
+      },
+      {
+        "pattern": "{pre}.lmap.svg",
+        "output_type": "image",
+        "description": "Likelihood mapping figure (if -lmap)"
+      }
+    ]
+  }
+}

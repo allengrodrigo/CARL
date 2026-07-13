@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "treeannotator",
+  "name": "TreeAnnotator",
+  "executable": "treeannotator",
+  "description": "Summarises a BEAST posterior tree sample into a single Maximum Clade Credibility tree with annotated node statistics.",
+  "homepage": "https://beast.community/treeannotator",
+  "citation": "Rambaut A. and Drummond A.J. TreeAnnotator v1.10, 2002-2017.",
+  "license": "LGPL-2.1",
+  "sections": [
+    {
+      "id": "burnin",
+      "name": "Burn-in",
+      "fields": [
+        {
+          "flag": "-burnin",
+          "label": "Burn-in (states)",
+          "type": "integer",
+          "common": true,
+          "mutex_group": "burnin_method",
+          "value_hint": "10000000",
+          "help": "Number of MCMC states to discard as burn-in. Mutually exclusive with -burninTrees."
+        },
+        {
+          "flag": "-burninTrees",
+          "label": "Burn-in (trees)",
+          "type": "integer",
+          "mutex_group": "burnin_method",
+          "value_hint": "1000",
+          "help": "Number of trees to discard as burn-in. Mutually exclusive with -burnin."
+        }
+      ]
+    },
+    {
+      "id": "summary",
+      "name": "Summary Tree",
+      "fields": [
+        {
+          "flag": "-heights",
+          "label": "Node heights",
+          "type": "choice",
+          "common": true,
+          "default": "keep",
+          "options": ["keep", "median", "mean", "ca"],
+          "help": "How to set node heights on the summary tree: keep (from MCC topology), median, mean, or common ancestor (ca)."
+        },
+        {
+          "flag": "-target",
+          "label": "Target tree file",
+          "type": "file",
+          "help": "User-supplied target tree to annotate instead of the MCC tree."
+        },
+        {
+          "flag": "-limit",
+          "label": "Posterior probability limit",
+          "type": "float",
+          "value_hint": "0.5",
+          "help": "Minimum posterior probability for a node to be annotated."
+        }
+      ]
+    },
+    {
+      "id": "options",
+      "name": "Options",
+      "fields": [
+        {
+          "flag": "-forceDiscrete",
+          "label": "Force discrete traits",
+          "type": "boolean",
+          "help": "Treat integer-valued traits as discrete rather than continuous when summarising."
+        },
+        {
+          "flag": "-hpd2D",
+          "label": "2D HPD proportion(s)",
+          "type": "string",
+          "value_hint": "0.80,0.95",
+          "help": "Comma-separated HPD proportions for 2D spatial trait summaries."
+        }
+      ]
+    },
+    {
+      "id": "files",
+      "name": "Files",
+      "fields": [
+        {
+          "flag": "",
+          "label": "Input trees file",
+          "type": "file",
+          "required": true,
+          "common": true,
+          "positional_order": 1,
+          "value_hint": "posterior.trees",
+          "help": "BEAST posterior tree sample (.trees file) to summarise."
+        },
+        {
+          "flag": "",
+          "label": "Output file",
+          "type": "file",
+          "required": true,
+          "common": true,
+          "positional_order": 2,
+          "value_hint": "mcc.tree",
+          "help": "Path for the annotated MCC tree output file."
+        }
+      ]
+    }
+  ],
+  "output": {
+    "display_mode": "terminal"
+  }
+}

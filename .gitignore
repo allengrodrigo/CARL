@@ -1,0 +1,41 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# ---- Secrets / user config — NEVER publish ----
+CARL/config.py
+taxongpt_settings.json
+API Keys.txt
+API_Keys.txt
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- CARL run outputs & caches ----
+*.nex.log
+*_literature_cache.json
+*_resources_cache.json
+groq-logs*.csv
+*.msg
+# IQ-TREE / phylo run artifacts
+*.iqtree
+*.treefile
+*.bionj
+*.mldist
+*.ckp.gz
+*.model.gz
+*.parstree
+*.log
+
+# ---- Installer-generated ----
+run_carl.sh
+run_carl.bat

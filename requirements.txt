@@ -1,0 +1,34 @@
+# CARL requirements — Python 3.11 recommended (3.10+ supported)
+
+# Core
+numpy>=1.24.0
+requests>=2.28.0
+
+# UI components
+Pillow>=9.0.0
+tkinterweb>=3.9.0
+matplotlib>=3.7.0
+
+# Phylogenetics & sequence data (tree viewer, alignment-converter plugin)
+biopython>=1.80
+dendropy>=4.6.0
+
+# NLG — programmatic (non-LLM) natural-language generation for Descriptions/Keys.
+# The spaCy model is pinned as a direct URL so `pip install -r requirements.txt`
+# installs it too (no separate `python -m spacy download` step needed).
+spacy>=3.8,<4
+inflect>=7.0
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+
+# Machine learning (RAG / nomenclatural-code chatbot)
+# torch is a large download (~200 MB CPU build); install may take several minutes
+torch>=2.0.0
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+
+# Local LLM support — only needed if using Ollama models
+# The Ollama application itself must be installed separately (see Installation Guide)
+ollama>=0.1.0
+
+# Security
+defusedxml>=0.7.1

@@ -1,0 +1,26 @@
+{
+  "_comment": "Curated scientific-Latin/Greek number lexicon. Overrides the suffix rules in latin_number.py. Add words here (lower-case) whenever the --report sidecar shows a head noun resolved by 'inflect' or 'default' that got is/are wrong. The critical cases are ambiguous endings the suffix rules deliberately DON'T guess: -a (feminine singular vs neuter plural), -ia, -ina, -es, -en.",
+  "singular": [
+    "fovea", "tibia", "fascia", "serrula", "seta", "scopula", "costa", "area",
+    "lamina", "lamella", "macula", "antenna", "carina", "spina", "squama",
+    "valva", "theca", "bursa", "gena", "ligula", "lingula", "gula", "hamula",
+    "patella", "corona", "sclera", "retina", "cornea", "vulva", "labella",
+    "trichobothrium", "sensillum", "ommatidium", "flagellum", "sigillum",
+    "tergum", "sternum", "rostrum", "scutum", "septum", "labium", "ostium",
+    "segmentum", "ganglion", "elytron", "cornu", "genus", "corpus", "caput", "apex",
+    "cortex", "matrix", "index", "vertex", "thorax", "foramen", "abdomen",
+    "lumen", "specimen", "stigma", "stoma", "axis", "basis", "unguis",
+    "apophysis", "cuticula", "cuspule", "vagina", "angina", "stamen"
+  ],
+  "plural": [
+    "sigilla", "flagella", "terga", "sterna", "rostra", "scuta", "septa",
+    "cilia", "ostia", "sensilla", "ommatidia", "elytra", "labia", "segmenta",
+    "trichobothria", "ganglia", "cornua", "genera", "corpora", "capita",
+    "apices", "cortices", "matrices", "indices", "vertices", "thoraces",
+    "foramina", "stamina", "stigmata", "stomata", "tarsi", "metatarsi",
+    "rami", "palpi", "cirri", "villi", "bacilli", "papillae", "antennae",
+    "maxillae", "setae", "scopulae", "lamellae", "laminae", "carinae",
+    "spinae", "squamae", "thecae", "genae", "ligulae", "hamulae", "patellae",
+    "coronae", "sclerae", "vaginae", "trabeculae", "serrulae", "costae"
+  ]
+}

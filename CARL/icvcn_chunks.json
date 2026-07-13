@@ -1,0 +1,134 @@
+[
+  {
+    "heading": "Rule 1.1",
+    "text": "The International Committee on Taxonomy of Viruses (ICTV) is a committee of the Virology Division of the International Union of Microbiological Societies (IUMS). ICTV activities are governed by statutes agreed upon with the Virology Division of the IUMS."
+  },
+  {
+    "heading": "Rule 1.2",
+    "text": "The Statutes of the ICTV define its objectives, which are:\n\n(i) to develop an internationally agreed-upon taxonomy for certain mobile genetic elements (MGEs), hereafter collectively termed \"viruses\" if not otherwise specified); (ii) to develop internationally agreed-upon names for virus taxa; (iii) to communicate taxonomic decisions to the international community of virologists; (iv) to maintain an index of approved names of virus taxa.\n\nComment: The index is currently maintained online as the Master Species List (MSL), accessible at [https://ictv.global/msl/](https://ictv.global/msl/)."
+  },
+  {
+    "heading": "Rule 1.3",
+    "text": "The Statutes also state that classification and nomenclature shall be subject to rules set out in the ICTV Code.\n\nComment: Ratified taxonomic changes will be published in a journal designated by the ICTV Executive Committee (EC) and on the ICTV website."
+  },
+  {
+    "heading": "Rule 2.1",
+    "text": "The essential principles of virus nomenclature are:\n\n(i) to aim for stability; (ii) to avoid or reject names that might cause error or confusion; (iii) to avoid the unnecessary creation of names."
+  },
+  {
+    "heading": "Rule 2.2",
+    "text": "Nomenclature of virus taxa is independent of other biological nomenclatures."
+  },
+  {
+    "heading": "Rule 2.3",
+    "text": "The primary purpose of naming a taxon is to supply a means of referring to it, rather than describing the characters or history of the taxon or its members.\n\nComment: Taxon names are labels and do not need to be changed if new data seem to contradict an established name."
+  },
+  {
+    "heading": "Rule 2.4",
+    "text": "The name of a taxon does not have official status until it has been approved by the ICTV.\n\nComment: See section 3.7"
+  },
+  {
+    "heading": "Rule 3.1",
+    "text": "Virus classification and taxon nomenclature shall be international and universally applied to all classifiable members of the virosphere."
+  },
+  {
+    "heading": "Rule 3.2",
+    "text": "The virus classification system shall employ the hierarchical ranks of realm, subrealm, kingdom, subkingdom, phylum, subphylum, class, subclass, order, suborder, family, subfamily, genus, subgenus, and species.\n\nComment: It is not mandatory to use all ranks of the taxonomic hierarchy. The primary classification is of viruses into species that are assigned to genera. When justified, it is customary to assign lower-rank taxa within the applicable higher-rank taxa.\n\nAs indicated in Rule 3.23, the classification of a virus at the species and genus ranks is mandatory. The assignment of ranks above genus is optional.\n\nFor example, the classification of the positive-sense RNA virus gill-associated virus (GAV) is: species _Okavirus branchiae_; subgenus _Tipravirus_; genus _Okavirus_; subfamily _Okanivirinae_; family _Roniviridae_; suborder _Ronidovirineae_; order _Nidovirales_; class _Pisoniviricetes_; phylum _Pisuviricota_; kingdom _Orthornavirae_; realm _Riboviria_."
+  },
+  {
+    "heading": "Rule 3.3",
+    "text": "The ICTV is responsible for the classification of members of the virosphere, including selfish genetic elements, i.e., replicons that are subject to selective pressures mostly independent of other replicons and hence have distinct evolutionary histories but depend on cellular hosts for energy and chemical building blocks. The relationship of selfish genetic elements and their hosts spans the spectrum from mutualism to aggressive parasitism. Typically, MGEs are selfish genetic elements that move among hosts and/or change their integration sites in host genomes. MGEs include viruses _sensu stricto_ and the remaining replicator space of the virosphere (which includes virus-like entities such as viroids and satellite nucleic acids, and virus-derived elements such as viriforms).\n\nComment: The virosphere and its potential subdivisions reflect conceptual spaces with fuzzy boundaries that are not necessarily evolutionarily defined.\n\n1. Viruses _sensu stricto_ are defined operationally by the ICTV as an MGE that encodes at least one protein that is a major component of the virion encasing the nucleic acid of the respective MGE and therefore the gene encoding the major virion protein itself; or MGEs that are clearly demonstrable to be members of a line of evolutionary descent of such major virion protein-encoding entities. Any monophyletic group of MGEs that originates from a virion protein-encoding ancestor should be classified as a group of viruses.\n\n\nComment: Long terminal repeat retrotransposons, phages, polintons, satellite viruses, and virophages, as well as capsid-less descendants of RNA viruses, such as agents currently classified in the families _Botourmiaviridae_, _Mitoviridae_, or _Narnaviridae_, are considered to be viruses _sensu stricto_ in classification and nomenclature.\n\n2. Viroids are defined operationally by the ICTV as an MGE with uncoated, small, circular, single-stranded RNAs that does not encode proteins, does not depend on viruses for transmission, and replicates autonomously through an RNA–RNA rolling-circle mechanism mediated by host enzymes and, in some cases, by _cis_-acting ribozymes; or MGEs that are derived from a viroid in the course of evolution. Any monophyletic group of MGEs that originates from a viroid ancestor should be classified as a group of viroids.\n\n3. Satellite nucleic acids are defined operationally by the ICTV as a non-viroid MGE that is dependent on viruses for replication and transmission; or MGEs that are derived from such entities in the course of evolution. Any monophyletic group of MGEs that originates from a satellite nucleic acid ancestor should be classified as a group of satellite nucleic acids.\n\n4. Viriforms are defined operationally by the ICTV as a virus-derived MGE that has been exapted by their organismal (cellular) hosts to fulfill functions important for the host life cycle; or MGEs that are derived from such entities in the course of evolution. Any monophyletic group of MGEs that originates from a viriform ancestor should be classified as a group of viriforms.\n\n\nComment: Gene transfer agents (GTAs) and the MGEs previously classified in the family _Polydnaviridae_ are considered to be viriforms in classification and nomenclature."
+  },
+  {
+    "heading": "Rule 3.4",
+    "text": "The ICTV is not responsible for grouping and nomenclature of viruses below the rank of species. The establishment and naming of serotypes, genotypes, strains, variants, and isolates of viruses is the responsibility of acknowledged international specialist groups.\n\nComment: A variety of subspecific groupings may be identified among the members of a single virus species. These may be described as viruses with alternative names (e.g., blackeye cowpea mosaic virus and peanut stripe virus, which are both classified in the species _Potyvirus phaseovulgaris_, genus _Potyvirus_, family _Potyviridae_) or as serotypes, genotypes, clades, strains, variants, isolates, etc. Naming of such subspecific agents or groups of agents is not the responsibility of the ICTV but that of international specialty groups. It is the responsibility of ICTV Study Groups to consider if these agents or groups of agents may best be classified into species."
+  },
+  {
+    "heading": "Rule 3.5",
+    "text": "Artificially created and laboratory hybrid viruses will not be given taxonomic consideration. Their classification will be the responsibility of acknowledged international specialist groups."
+  },
+  {
+    "heading": "Rule 3.6",
+    "text": "Taxa will be established only when representative member viruses are sufficiently well-characterized and described in the published literature so as to allow them to be identified unambiguously and the taxon to be distinguished from similar taxa.\n\n1\\. The genome sequence of a representative member virus (usually an \"exemplar virus\") must be made available as an annotated sequence record through one of the International Nucleotide Sequence Database Collaboration (INSDC) member databases.\n\nComment: Practically, this means that the annotated virus genome sequence should be submitted to GenBank (National Center for Biotechnology Information \\[NCBI\\]), the European Nucleotide Archive (ENA), or the DNA Data Bank of Japan (DDBJ). Because the INSDC databases are all mirrored, making it available through one of them means that the sequence will automatically become available in all of them. One exemplar virus should be selected for each species. Thus, each species taxon always has one representative genome sequence available, and higher-ranking taxa have as many representative genome sequences as their numbers of species.\n\n2\\. To be considered valid for taxonomic classification, the genome sequences of exemplar viruses should be properly assembled and, as a minimum, be protein coding-complete.\n\nComment: Practically, this means that all major open reading frames (ORFs) of protein-coding genes should be fully represented in the genome sequence. If available, the sequences of non-protein-coding genes, non-coding and terminal regions should also be included. Genes should be identified with an appropriate method. Computational methods used for sequence assembly and annotation may be detailed in the taxonomic proposal.\n\n3\\. Before a taxonomic proposal is submitted to the ICTV EC, the annotated representative genome sequence should be submitted and accepted by the INSDC database and the sequence record be publicly available. The taxonomic proposal must include an INSDC nucleotide record accession number.\n\nComment: RefSeq projects are NCBI sequence annotation projects and are not part of DDBJ/EMBL/GenBank\n\n4\\. If a representative virus genome sequence was assembled from a public dataset by a third party, INSDC regulations require that the sequence is submitted as a Third-Party Annotation (TPA). This will ensure that the original data source is acknowledged.\n\nComment: For more information on TPAs, see [https://www.insdc.org/tpa](https://www.insdc.org/tpa)."
+  },
+  {
+    "heading": "Rule 3.7",
+    "text": "Names proposed for taxa are \"valid names\" if they conform to the rules set out in the Code and they pertain to established taxa. Valid names become \"accepted names\" if they are approved by a vote of the ICTV and recorded in the most recent MSL.\n\nComment: A valid name is one that has been published, is associated with descriptive material, and conforms to the rules in the Code. Accepted names will be kept in an \"Index\" by the ICTV, the MSL."
+  },
+  {
+    "heading": "Rule 3.8",
+    "text": "Existing names of taxa shall be retained whenever feasible.\n\nComment: A stable nomenclature is one of the principal aims of taxonomy, therefore a change to a name that has been accepted will only be considered if the accepted name conflicts with the rules or if a change is necessary to remove ambiguities or confusion."
+  },
+  {
+    "heading": "Rule 3.9",
+    "text": "The “rule of priority” in naming taxa shall not be observed.\n\nComment: The earlier of candidate names for a taxon may be chosen as a convenience, but the Code ensures that it is not possible to invalidate a name in current use by claiming priority for an older name that has been superseded."
+  },
+  {
+    "heading": "Rule 3.10",
+    "text": "A person's name may be used when devising a name for a new taxon. If the person is alive at the time of the proposal, the person’s written consent for use of their name must be provided with the taxonomic proposal. Whether the use of a person’s name for taxon naming is appropriate will be judged by the responsible ICTV Study Group, the respective subcommittee, and the EC and approved or disapproved in accordance with established taxonomic proposal procedures. Furthermore, (i) an individual may not propose their own name as the basis for any new taxon name; and (ii) a taxon may not be named wholly or in part after any current member of the EC, a Study Group, or subcommittee."
+  },
+  {
+    "heading": "Rule 3.11",
+    "text": "Names for taxa shall be easy to use and easy to remember. Euphonious names are preferred.\n\nComment: In general, names should be short."
+  },
+  {
+    "heading": "Rule 3.12",
+    "text": "New names shall not duplicate approved names, either current or historical. New names shall be chosen such that they are not closely similar to names that are in use currently or have been in use in the recent past.\n\nComment: The name for a new taxon should not sound indistinguishable from the name of another taxon at any rank. For example, the valid status of the genus _Iridovirus_ means that forms of a new name such as \"irodovirus\" or \"iridivirus\" are discouraged as they may be too easily confused with the approved name."
+  },
+  {
+    "heading": "Rule 3.13",
+    "text": "Sigla may be accepted as names of taxa, provided that they are meaningful to virologists in the field, as represented by study groups.\n\nComment: Sigla are names comprising letters and/or letter combinations taken from words in a compound term. The name of the genus _Comovirus_ has the siglum stem \"Co-\" from cowpea and \"-mo-\" from mosaic; the name of the family _Reoviridae_ has the siglum stem \"R\" from \"Respiratory, \"e\" from \"enteric\" and \"o\" from \"orphan\"."
+  },
+  {
+    "heading": "Rule 3.14",
+    "text": "Ligatures, diacritical marks, punctuation marks (excluding hyphens), subscripts, superscripts, oblique bars, and non-Latin letters (i.e., those not included in the ISO basic Latin alphabet) must not be used in taxon names. Numbers and hyphens are allowed, but hyphens should not be used when attaching numbers or letters to the end of a series of species names and should never be used in names of any taxa above the rank of species.\n\nComment: This rule is intended to make text unambiguous and easy to sort electronically; its application should make names more pronounceable, in agreement with Rule 3.11."
+  },
+  {
+    "heading": "Rule 3.15",
+    "text": "In the event of more than one candidate name being proposed, the relevant subcommittee will make a recommendation to the EC, which will then make a recommendation to the full ICTV membership for acceptance.\n\nComment: When there is more than one candidate name for the same taxon, the choice of name to be approved will usually be based on the recommendations of a particular ICTV Study Group. The Study Group will be expected to consult widely to ensure the acceptability of names, subject to the rules in the Code. As much as is possible, decisions on taxonomy and nomenclature should reflect the majority view of the appropriate virologic constituency."
+  },
+  {
+    "heading": "Rule 3.16",
+    "text": "New names shall be selected such that they, or parts of them, do not convey a meaning for the taxon that would either (i) seem to exclude viruses that lack the character described by the name but which are members of the taxon being named, or (ii) seem to exclude viruses that are as yet undescribed but which might belong to the taxon being named, or (iii) appear to include within the taxon viruses that are members of different taxa."
+  },
+  {
+    "heading": "Rule 3.17",
+    "text": "New names shall be chosen with due regard to national and/or local sensitivities. When names are universally used by virologists in published work, these or derivatives shall be the preferred basis for creating names, irrespective of national origin."
+  },
+  {
+    "heading": "Rule 3.18",
+    "text": "All relevant ICTV subcommittees and Study Groups will be consulted prior to a decision being taken on any taxonomic proposal submitted to the EC.\n\nComment: Proposals concerning a family containing genera whose member viruses infect diverse types of hosts (e.g., plants and vertebrates, fungi and plants) must be considered by the subcommittees responsible for viruses of each host type (e.g., plant viruses, vertebrate viruses). For example, taxonomic proposals concerned with the family _Partitiviridae_ would be considered by the Fungal Virus Subcommittee and one of its Study Groups. But, because some genera in the family have been established for viruses of plants, proposals affecting the family would also be considered by the Plant Virus Subcommittee."
+  },
+  {
+    "heading": "Rule 3.19",
+    "text": "Species shall be created in accordance with the following definition:\n\n\"A species taxon is a category at the lowest taxonomic level in the hierarchy approved by the ICTV. A biological species is a monophyletic group of viruses whose properties can be distinguished from the properties of other species by multiple criteria.\"\n\nComment: The criteria by which different species taxa within a genus are distinguished shall be established by the appropriate ICTV Study Group. These criteria may include, but are not limited to, natural and experimental host range, cell and tissue tropism, pathogenicity, vector specificity, antigenicity, and the degree of relatedness of the genomes or genes of the viruses that are members of a species taxon. The criteria used should be published in the relevant section of the ICTV Report and reviewed periodically by the appropriate Study Group. Taxonomy proposals to create new species greatly benefit from phylogenetic evidence, usually in the form of distance-based phylogenetic trees. However, this is not an absolute requirement, and if a phylogenetic tree is included in a proposal, it should make a point directly relevant to the proposal."
+  },
+  {
+    "heading": "Rule 3.20",
+    "text": "A species name shall consist of only two distinct word components separated by a space. The first component shall begin with a capital letter and be identical to the name of the genus to which the species belongs. The second component (the species epithet) shall not contain any suffixes specific for taxa of higher ranks.\n\nComment: The species epithet may be in the \"traditional\" binomial format, as used in other taxonomies (a Latinized single lowercase word, e.g., _Orthobunyavirus encephalitidis_), or the epithet may include a combination of uppercase and lowercase letters and numbers (e.g., _Triavirus phi2958PVL_). Non-Latinized binomial species names following the style of Linnaean species names are permitted ( [https://ictv.global/ictv/proposals/2018.001G.R.binomial\\_species.pdf](https://ictv.global/ictv/proposals/2018.001G.R.binomial_species.pdf))."
+  },
+  {
+    "heading": "Rule 3.21",
+    "text": "Every individual virus is a physical entity and treated as belonging to a number of taxa of hierarchical ranks, some of which may remain undefined."
+  },
+  {
+    "heading": "Rule 3.22",
+    "text": "Other than species, the ranks currently in use in virus taxonomy, from most to least diverse, are realm, subrealm, kingdom, subkingdom, phylum, subphylum, class, subclass, order, suborder, family, subfamily, genus, and subgenus. The names for these ranks shall be single words ending with the suffixes “- _viria_”, “- _vira_”, “- _virae_”, “- _virites_”, “- _viricota_”, “- _viricotina_”, “ _viricetes_”, “- _viricetidae_”, “- _virales_”, “- _virineae_”, “- _viridae_”, “- _virinae_”, “- _virus_\", and “- _virus_”, respectively.\n\nComment: No ranks other than those specified in Rule 3.22 are currently approved by ICTV."
+  },
+  {
+    "heading": "Rule 3.23",
+    "text": "The classification of a virus at the species and genus ranks is mandatory. Classification may also encompass any further number of taxa at higher hierarchical ranks."
+  },
+  {
+    "heading": "Rule 3.24",
+    "text": "Rules concerned with the classification of viruses shall also apply to the classification of virus-like MGEs.\n\n1. Viroids\n\nThe formal endings for taxon names of viroids are the suffixes \"- _viroidia_\" for realms, \"- _viroida_\" for subrealms, \"- _viroidae_\" for kingdoms, \"- _viroidites_\" for subkingdoms, \"- _viroidicota_\" for phyla, \" _viroidicotina_\" for subphyla, \"- _viroidicetes_\" for classes, \"- _viroidicetidae_\" for subclasses, \" _viroidales_\" for orders, \"- _viroidineae_\" for suborders, \"- _viroidae_\" for families, \"- _viroidinae_\" for subfamilies, and \"- _viroid_\" for genera and subgenera.\n\n\nComment: For example, the species _Pospiviroid fusituberis_ is included in the genus _Pospiviroid_ of the family _Pospiviroidae_.\n\n2. Satellite Nucleic Acids\n\nThe formal endings for taxon names of satellite nucleic acids are the suffixes \"- _satellitia_\" for realms, \"- _satellita_\" for subrealms, \"- _satellitae_\" for kingdoms, \"- _satellitites_\" for subkingdoms, \"- _satelliticota_\" for phyla, \"- _satelliticotina_\" for subphyla, \"- _satelliticetes_\" for classes, \"- _satelliticetidae_\" for subclasses, \"- _satellitales_\" for orders, \"- _satellitineae_\" for suborders, \"- _satellitidae_\" for families, \"- _satellitinae_\" for subfamilies, and \"- _satellite_\" for genera and subgenera.\n\n\nComment: For example, the species _Betasatellite ageraflavi_ is included in the genus _Betasatellite_ of the family _Tolecusatellitidae_.\n\n3. Viriforms\n\nThe formal endings for taxon names of viriforms are the suffixes \"- _viriformia_\" for realms, \" _viriforma_\" for subrealms, \"- _viriformae_\" for kingdoms, \"- _viriformites_\" for subkingdoms, \" _viriformicota_\" for phyla, \"- _viriformicotina_\" for subphyla, \"- _viriformicetes_\" for classes, \" _viriformicetidea_\" for subclasses, \"- _viriformales_\" for orders, \"- _viriformineae_\" for suborders, \" _viriformidae_\" for families, \"- _viriforminae_\" for subfamilies, and \"- _viriform_\" for genera and subgenera.\n\n\nComment: For example, the species _Bartonegtaviriform andersoni_ is included in the genus _Bartonegtaviriform_ of the family _Bartogtaviriformidae_."
+  },
+  {
+    "heading": "Rule 3.25",
+    "text": "In formal taxonomic usage, the accepted names of realms, subrealms, kingdoms, subkingdoms, phyla, subphyla, classes, subclasses, orders, suborders, families, subfamilies, genera, and subgenera are printed in italics and the first letters of the names are capitalized.\n\nComment: See Rule 3.7 for the definition of an \"accepted\" name."
+  },
+  {
+    "heading": "Rule 3.26",
+    "text": "A species name is always written in italics, with the first component (the genus name) beginning with an uppercase letter. The second component (the species epithet)may be capitalized or not.\n\nComment: Taxon names shall never be abbreviated and should never be translated or transliterated.\n\n\nSearch\n\n\n[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)\n\n\nU.S. National Institutes of Health, Award U24AI162625"
+  }
+]
