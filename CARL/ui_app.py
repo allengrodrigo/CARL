@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, filedialog, messagebox, simpledialog
 from PIL import Image, ImageTk
+from app_icon import set_application_icon
 import threading
 from parser import (
     parse_nexus, update_charstatelabels_in_nexus,
@@ -307,6 +308,8 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         _status = on_status_callback or (lambda _: None)
 
         self.root.title("CARL")
+        if not getattr(self.root, "_carl_icon_images", None):
+            set_application_icon(self.root, _bundle_path("CARL_Logo.png"))
         self.root.geometry("1100x750")   # fallback before maximise
         self.root.update_idletasks()
         if self.root.tk.call('tk', 'windowingsystem') == 'aqua':

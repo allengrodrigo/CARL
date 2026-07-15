@@ -17,6 +17,7 @@ import threading
 import time
 import tkinter as tk
 from PIL import Image, ImageTk
+from app_icon import set_application_icon
 
 
 def _app_dir() -> str:
@@ -78,6 +79,9 @@ def create_splash(root):
 
 def main():
     root = tk.Tk()
+    # Set the application icon before withdrawing the root so Aqua never
+    # presents Python/Tk's default icon while the splash is visible.
+    set_application_icon(root, os.path.join(_app_dir(), "CARL_Logo.png"))
     root.withdraw()  # hide main window until app is ready
 
     splash, update_splash_status = create_splash(root)
