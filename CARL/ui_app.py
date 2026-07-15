@@ -309,10 +309,22 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         self.root.title("CARL")
         self.root.geometry("1100x750")   # fallback before maximise
         self.root.update_idletasks()
-        try:
-            self.root.state("zoomed")    # Windows / Linux
-        except tk.TclError:
-            self.root.attributes("-zoomed", True)  # fallback for some Linux WMs
+        if self.root.tk.call('tk', 'windowingsystem') == 'aqua':
+            # macOS: wm state "zoomed" and the "-zoomed" attribute are both
+            # Windows/X11 concepts; support for either on Aqua is inconsistent
+            # across Tcl/Tk versions, so the window can silently stay at the
+            # small fallback geometry above. Size it to the screen directly
+            # instead, offset for the global menu bar so the title bar isn't
+            # hidden under it.
+            _sw = self.root.winfo_screenwidth()
+            _sh = self.root.winfo_screenheight()
+            _menu_bar_h = 28
+            self.root.geometry(f"{_sw}x{_sh - _menu_bar_h}+0+{_menu_bar_h}")
+        else:
+            try:
+                self.root.state("zoomed")    # Windows / Linux
+            except tk.TclError:
+                self.root.attributes("-zoomed", True)  # fallback for some Linux WMs
 
         # Increase all default font sizes by 2pt
         for _fname in ("TkDefaultFont", "TkTextFont", "TkMenuFont", "TkHeadingFont"):
@@ -365,6 +377,18 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             background=[("active", self._NAV_ACTIVE_BG)],
             foreground=[("active", self._NAV_ACTIVE_FG)],
         )
+
+        # Match ttk container backgrounds to the platform's native window
+        # background. "clam" gives ttk.Frame/ttk.LabelFrame their own default
+        # panel colour, which clashes with the plain tk.Frame panels used
+        # throughout the app — a LabelFrame's title text is drawn straight
+        # from its parent's real background, so only the box body mismatched.
+        _native_bg = self.root.cget("bg")
+        _style.configure("TFrame", background=_native_bg)
+        _style.configure("TLabelframe", background=_native_bg)
+        _style.configure("TLabelframe.Label", background=_native_bg)
+        _style.configure("TCheckbutton", background=_native_bg)
+        _style.map("TCheckbutton", background=[("active", _native_bg)])
 
         # ── Application font objects ──────────────────────────────────────
         # Mutable Font objects — configure(size=n) on any one updates all widgets live.

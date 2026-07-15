@@ -69,6 +69,24 @@ class HelpTab:
             "<Configure>",
             lambda e: _sb_canvas.itemconfig(_sb_win, width=e.width))
 
+        # Sidebar section-link buttons: ttk (not tk.Button) so "clam" governs
+        # their colour — macOS Aqua's native tk.Button ignores explicit bg/fg
+        # configuration, same issue fixed for the main nav bar. Two styles
+        # for the two indent levels (top-level vs nested links).
+        _style = ttk.Style()
+        for _sname, _pad in (("HelpNav.TButton", (8, 2)),
+                              ("HelpNavIndent.TButton", (20, 2))):
+            _style.configure(
+                _sname, background="#2c3e50", foreground="#ecf0f1",
+                borderwidth=0, relief="flat", anchor="w",
+                wraplength=190, justify="left", padding=_pad,
+            )
+            _style.map(
+                _sname,
+                background=[("active", "#3d566e"), ("!active", "#2c3e50")],
+                foreground=[("active", "white"), ("!active", "#ecf0f1")],
+            )
+
         # ── State ───────────────────────────────────────────────────
         self.frame          = None   # HtmlFrame — created lazily on first visit
         self._parent        = parent
@@ -151,13 +169,10 @@ class HelpTab:
                     label = _html.unescape(
                         re.sub(r"<[^>]+>", "", link_text).strip())
                     anchor = href.lstrip("#")
-                    indent = 20 if "padding-left" in (attrs or "") else 8
-                    tk.Button(
+                    indented = "padding-left" in (attrs or "")
+                    ttk.Button(
                         self.nav_frame, text=label,
-                        bg="#2c3e50", fg="#ecf0f1",
-                        activebackground="#3d566e", activeforeground="white",
-                        relief="flat", anchor="w", padx=indent, pady=2,
-                        wraplength=190, justify="left",
+                        style="HelpNavIndent.TButton" if indented else "HelpNav.TButton",
                         command=lambda a=anchor: self.nav_to_anchor(a),
                     ).pack(fill="x")
 
