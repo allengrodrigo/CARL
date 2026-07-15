@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CARL User Manual</title>
+<style>
+body { margin:0; font-family:Segoe UI, Arial; background:#f5f7fa; }
+.wrapper { display:flex; }
+
+.sidebar {
+    width:260px; background:#2c3e50; color:white;
+    height:100vh; position:sticky; top:0; padding:15px;
+    overflow-y:auto;
+}
+.sidebar a { display:block; color:#ecf0f1; padding:5px 6px; text-decoration:none; font-size:0.88em; }
+.sidebar a:hover { background:#34495e; border-radius:3px; }
+.sidebar .sec-head { color:#7f8c8d; font-size:0.72em; text-transform:uppercase;
+    letter-spacing:0.08em; margin:12px 0 3px 6px; }
+.sidebar .part-lbl { color:#f39c12; font-size:0.82em; font-weight:bold;
+    margin:14px 0 4px 6px; padding-top:6px; border-top:1px solid #34495e; }
+
+.content { flex:1; padding:28px 32px; max-width:980px; }
+
+.card { background:white; padding:16px 18px; margin:10px 0;
+    border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+
+.tip   { background:#e8f6ff; border-left:4px solid #3498db; padding:10px 12px; margin:10px 0; border-radius:0 4px 4px 0; }
+.warning { background:#fff3cd; border-left:4px solid #e67e22; padding:10px 12px; margin:10px 0; border-radius:0 4px 4px 0; }
+.note  { background:#f4f6f7; border-left:4px solid #95a5a6; padding:10px 12px; margin:10px 0; border-radius:0 4px 4px 0; }
+
+pre { background:#1e1e1e; color:#eaeaea; padding:12px 14px;
+    overflow-x:auto; border-radius:4px; font-size:0.87em; line-height:1.55; margin:8px 0; }
+code { background:#ecf0f1; color:#2c3e50; padding:1px 5px; border-radius:3px; font-size:0.88em; }
+
+h2 { border-bottom:2px solid #2c3e50; padding-bottom:5px; margin-top:28px; }
+h3 { margin-top:18px; }
+h4 { margin-top:14px; margin-bottom:4px; }
+
+.part-banner { background:#2c3e50; color:white; padding:14px 18px;
+    border-radius:6px; margin:32px 0 18px; }
+.part-banner h2 { color:white; border-bottom:1px solid rgba(255,255,255,0.2);
+    margin:0 0 6px; padding-bottom:6px; font-size:1.25em; }
+.part-banner p  { margin:0; font-size:0.91em; color:#bdc3c7; }
+
+table { border-collapse:collapse; width:100%; font-size:0.91em; margin:8px 0; }
+table th { background:#f0f0f0; text-align:left; }
+table th, table td { border:1px solid #ddd; padding:7px 10px; vertical-align:top; }
+
+kbd { background:#eee; border:1px solid #bbb; border-radius:3px;
+    padding:1px 5px; font-size:0.87em; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<img src="CARL_Logo.png" alt="CARL"
+     style="width:100%; max-width:210px; display:block; margin:0 auto 12px auto;">
+<strong style="font-size:0.95em;">CARL Help</strong>
+
+<div class="sec-head">Introduction</div>
+<a href="#overview">Overview</a>
+
+<div class="part-lbl">Part A — Without AI</div>
+<div class="sec-head">Your data</div>
+<a href="#nexus-file">NEXUS files and CARL</a>
+<a href="#minimum-file" style="padding-left:20px; font-size:0.83em;">↳ The minimum file</a>
+<a href="#carl-block-syntax" style="padding-left:20px; font-size:0.83em;">↳ CARL block syntax</a>
+<a href="#five-types" style="padding-left:20px; font-size:0.83em;">↳ The five statement types</a>
+<a href="#data-pointers" style="padding-left:20px; font-size:0.83em;">↳ Data pointers</a>
+<a href="#precludes" style="padding-left:20px; font-size:0.83em;">↳ Preclusion statements</a>
+<div class="sec-head">File panel</div>
+<a href="#nomenclature-tab">Nomenclature tab</a>
+<a href="#nom-areas" style="padding-left:20px; font-size:0.83em;">↳ Three areas</a>
+<a href="#nom-loading" style="padding-left:20px; font-size:0.83em;">↳ Loading states</a>
+<a href="#nom-add" style="padding-left:20px; font-size:0.83em;">↳ Adding declarations</a>
+<a href="#nom-rightclick" style="padding-left:20px; font-size:0.83em;">↳ Right-click actions</a>
+<a href="#editor-tab">Editor tab</a>
+<a href="#editor-states" style="padding-left:20px; font-size:0.83em;">↳ Entering states</a>
+<a href="#editor-upgrade" style="padding-left:20px; font-size:0.83em;">↳ Upgrading CARL-only taxa</a>
+<div class="sec-head">Information panel</div>
+<a href="#information-tab">Information tab</a>
+<a href="#dwc-fields" style="padding-left:20px; font-size:0.83em;">↳ Darwin Core fields</a>
+<a href="#information-export" style="padding-left:20px; font-size:0.83em;">↳ Exporting records</a>
+<div class="sec-head">Analyses</div>
+<a href="#descriptions-raw">Descriptions tab</a>
+<a href="#comparisons-raw">Comparisons tab</a>
+<a href="#keys-tab">Keys tab</a>
+<a href="#mak-tab">Multi-Access Key tab</a>
+<a href="#special-states" style="padding-left:20px; font-size:0.83em;">↳ Special states</a>
+<div class="sec-head">Settings panel</div>
+<a href="#lm-settings-tab">LM Settings tab</a>
+<a href="#databases-tab">Databases tab</a>
+<a href="#preferences-tab">Preferences tab</a>
+<div class="sec-head">Plugins panel</div>
+<a href="#plugins-tab">Plugins panel</a>
+<a href="#run-plugin" style="padding-left:20px; font-size:0.83em;">↳ Run Plugin tab</a>
+<a href="#generate-descriptor" style="padding-left:20px; font-size:0.83em;">↳ Generate Descriptor tab</a>
+<a href="#descriptor-reference" style="padding-left:20px; font-size:0.83em;">↳ Descriptor reference</a>
+<a href="#plugins-bundled" style="padding-left:20px; font-size:0.83em;">↳ Script &amp; bundled plugins</a>
+
+<div class="part-lbl">Part B — With AI</div>
+<a href="#llm-overview">AI in CARL</a>
+<a href="#llm-setup">Setting up language models</a>
+<a href="#local-vs-api" style="padding-left:20px; font-size:0.83em;">↳ Local vs API models</a>
+<a href="#analyses-llm">Analyses with AI</a>
+<a href="#llm-modes" style="padding-left:20px; font-size:0.83em;">↳ Fast and Full modes</a>
+<a href="#style-guide" style="padding-left:20px; font-size:0.83em;">↳ Style guides</a>
+<a href="#chatbot">Carl the chatbot</a>
+<a href="#nomenclatural-codes" style="padding-left:20px; font-size:0.83em;">↳ Nomenclatural codes</a>
+<a href="#hallucinations">Hallucinations &amp; best practice</a>
+
+<div class="sec-head">About</div>
+<a href="#acknowledgements">Acknowledgements</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ===== OVERVIEW ===== -->
+<h2 id="overview">Overview</h2>
+
+<div class="card">
+<p>CARL (Classification AI-Accessible Research Laboratory) is a desktop application for taxonomists.
+CARL's central concern is the <strong>taxon as a nomenclatural entity</strong>. Every taxon in CARL has a name,
+a rank, a status (existing in the literature or new to science), and optionally a set of formal
+relationships to other taxa — synonymy, hierarchical membership, renaming, or division. These
+declarations are stored in a <code>BEGIN CARL;</code> block inside a standard <code>#NEXUS</code> file and
+constitute the foundation of all CARL work.</p>
+
+<p>Character-state data — the morphological matrix used to generate descriptions, keys, and
+comparisons — is <strong>optional</strong>. A taxonomist may associate any taxon with a row in the NEXUS
+<code>DATA</code> block, but is not obliged to do so. With properly declared taxa, CARL can retrieve published
+records from external biodiversity databases, manage synonymy, and build a formal nomenclatural
+hierarchy regardless of whether any character data is present. The simplest valid file CARL will
+load is:</p>
+
+<pre>#NEXUS
+
+BEGIN CARL;
+END;</pre>
+
+<p>This file declares no taxa and contains no data. It is a complete and valid starting point.
+From here, a user can declare taxa in the Nomenclature tab, enter character data in the Editor,
+link taxa to data rows, and save — CARL writes the complete <code>#NEXUS</code> file, including the
+<code>DATA</code> block and all blocks it manages.</p>
+</div>
+
+<div class="card">
+<h3>What CARL can do</h3>
+<p>CARL's capabilities fall into two layers. <strong>Part A</strong> of this manual covers everything that
+requires no language model:</p>
+<ul>
+  <li><strong>Manage nomenclatural declarations</strong> — define, rename, synonymise, group, and divide
+      taxa via the Nomenclature tab</li>
+  <li><strong>Enter and edit character-state data</strong> — via the spreadsheet Editor tab</li>
+  <li><strong>Generate raw descriptions</strong> — programmatic, matrix-derived descriptions of taxa or groups</li>
+  <li><strong>Compare and distinguish taxa</strong> — character-by-character comparisons; lists of
+      distinguishing characters</li>
+  <li><strong>Diagnose taxa</strong> — find the minimal character set that uniquely identifies a taxon</li>
+  <li><strong>Generate identification keys</strong> — dichotomous keys (binary or multi-arm, using IG — Information Gain (Shannon) — or DG — Diversity Gain (Simpson's Index) — scoring) for any selection of taxa or groups, plus a <strong>Multi-Access Key</strong> (polyclave) for interactive elimination-based identification in any character order</li>
+  <li><strong>Retrieve external records</strong> — fetch Darwin Core data from GBIF, Catalogue of Life,
+      ZooBank, and ITIS; review, resolve, and export</li>
+</ul>
+<p><strong>Part B</strong> covers the additional functionality that language models provide:</p>
+<ul>
+  <li><strong>Narrate analyses</strong> — convert raw programmatic output into fluent natural-language
+      descriptions, comparisons, and keys</li>
+  <li><strong>Verify output</strong> — a second model reviews the first model's output against the raw
+      data, flagging errors and omissions</li>
+  <li><strong>Carl the chatbot</strong> — a conversational assistant for taxonomy and biology questions,
+      with optional grounding in the official nomenclatural codes</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Navigation</h3>
+<p>CARL's interface is organised around a navigation bar at the top of the window with six panels:
+<strong>File</strong>, <strong>Information</strong>, <strong>Analyses</strong>, <strong>Chatbot</strong>,
+<strong>Settings</strong>, and <strong>About</strong>. Each panel hosts one or more tabs. The active panel
+button is highlighted; click any button to switch panels. CARL launches maximised and opens the
+<strong>File panel → Nomenclature tab</strong> by default.</p>
+<p>The tabs available across the panels:</p>
+<table>
+  <tr><th>Tab</th><th>Description</th></tr>
+  <tr><td><strong>Nomenclature</strong></td>
+      <td>Load a NEXUS file and create, edit, rank, and preview the taxonomic statements in its CARL block.</td></tr>
+  <tr><td><strong>Editor</strong></td>
+      <td>Enter and edit DataIDs, characters, and character states in the NEXUS matrix.</td></tr>
+  <tr><td><strong>Information</strong></td>
+      <td>Retrieve, review, resolve, and export external biodiversity records for your taxa.</td></tr>
+  <tr><td><strong>Descriptions</strong></td>
+      <td>Generate one ordered, matrix-derived description per selected taxon or group, with an optional natural-language rewrite.</td></tr>
+  <tr><td><strong>Comparisons</strong></td>
+      <td>Compare shared and differing states, distinguish taxa, or diagnose one taxon against others.</td></tr>
+  <tr><td><strong>Keys</strong></td>
+      <td>Build a dichotomous identification key using Information Gain or Diversity Gain scoring, in binary or multi-arm form.</td></tr>
+  <tr><td><strong>Multi-Access Key</strong></td>
+      <td>Build an interactive polyclave — add character-state criteria in any order and see which taxa remain compatible.</td></tr>
+  <tr><td><strong>Chat</strong></td>
+      <td>Ask Carl questions about your data and the nomenclatural codes.</td></tr>
+  <tr><td><strong>Run Plugin</strong></td>
+      <td>Configure and run an external command-line program from a plugin descriptor.</td></tr>
+  <tr><td><strong>Generate Descriptor</strong></td>
+      <td>Create or edit a plugin descriptor and preview its JSON.</td></tr>
+  <tr><td><strong>LM Settings</strong></td>
+      <td>Configure language-model providers, API keys, generation and verification models, temperatures, and style guides.</td></tr>
+  <tr><td><strong>Databases</strong></td>
+      <td>Choose biodiversity data providers, priorities, retrieval limits, API keys, and Darwin Core fields.</td></tr>
+  <tr><td><strong>Preferences</strong></td>
+      <td>Adjust interface and output font sizes and the default working directory.</td></tr>
+  <tr><td><strong>Help</strong></td>
+      <td>Search and browse this user manual.</td></tr>
+  <tr><td><strong>Citation</strong></td>
+      <td>View the recommended CARL citation, acknowledgements, and licence.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== PART A ===== -->
+<div class="part-banner">
+  <h2>Part A — CARL without AI</h2>
+  <p>All features described in this section require no language model and no API key.
+     Biodiversity database retrieval requires an internet connection; all other analyses run
+     entirely offline.</p>
+</div>
+
+
+<!-- ===== NEXUS FILES AND CARL ===== -->
+<h2 id="nexus-file">NEXUS Files and CARL</h2>
+
+<div class="card">
+<p>CARL works with standard <code>#NEXUS</code> files. A CARL-enabled NEXUS file may contain any
+combination of three blocks:</p>
+<ul>
+  <li><strong><code>BEGIN DATA;</code></strong> — the character-state matrix (taxa × characters). Optional.</li>
+  <li><strong><code>BEGIN CARL;</code></strong> — nomenclatural declarations. Required for CARL's full
+      functionality; auto-generated if absent when the user saves from the Nomenclature tab.</li>
+  <li><strong><code>BEGIN SETS;</code></strong> — optional; may contain <code>CHARSET</code>
+      declarations that group characters into named sets. In Descriptions, each set becomes a
+      separate labelled paragraph, in declaration order; characters not listed in any set are
+      collected under a final <em>Other Features</em> paragraph. Character numbers are 1-based and
+      ranges use a hyphen (e.g. <code>37-47</code>).
+<pre>BEGIN SETS;
+  CHARSET "Habitation" = 1 2;
+  CHARSET "Mouthparts" = 37-47;
+  CHARSET "Sternum" = 33-36;
+  CHARSET "Legs" = 15-30;
+  CHARSET "Spinnerets" = 3-14;
+END;</pre></li>
+  <li><strong><code>BEGIN ASSUMPTIONS;</code></strong> — optional; may contain <code>WTSET</code>
+      statements that control character weighting for CARL analyses. Only three labels are
+      recognised: <code>WTSET descriptions</code> (characters with weight 0 are excluded from
+      description generation), <code>WTSET compare</code> (characters with weight 0 are excluded
+      from taxon comparison and diagnosis), and <code>WTSET key</code> (arbitrary weights; 0 =
+      hard exclusion, higher values increase selection priority). All other content in the block
+      is ignored. The block is hand-authored and is not written or modified by CARL on save.
+<pre>BEGIN ASSUMPTIONS;
+  WTSET descriptions = 0:1;
+  WTSET compare = 0:1 2;
+  WTSET key = 0.5:1-4 29, 5:21 23, 10:5 8 19 20;
+END;</pre></li>
+</ul>
+<p>CARL reads all blocks on file load. If a <code>BEGIN CARL;</code> block is absent but a
+<code>DATA</code> block is present, CARL enters <strong>Build mode</strong> — DATA row labels appear as
+unassigned raw material in the Nomenclature tab. If neither block is present, the file is rejected
+as invalid.</p>
+<div class="tip"><strong>Loading an existing NEXUS file?</strong> If you have a matrix from MrBayes, TNT,
+PAUP*, or any other NEXUS-compatible program, CARL can load it in Build mode and let you add
+nomenclatural declarations without modifying your original analytical workflow.</div>
+</div>
+
+<div class="card" id="minimum-file">
+<h3>The minimum file</h3>
+<p>The simplest file CARL will load is:</p>
+<pre>#NEXUS
+
+BEGIN CARL;
+END;</pre>
+<p>This file declares no taxa and contains no data. It is a valid starting point for a project
+built entirely within CARL. Declare taxa in the Nomenclature tab, add character data in the
+Editor, and save — CARL writes the complete NEXUS file, including the <code>DATA</code> block.</p>
+</div>
+
+<div class="card">
+<h3>NEXUS DATA block format</h3>
+<p>When a DATA block is present, CARL expects the following structure:</p>
+<pre>#NEXUS
+
+BEGIN DATA;
+DIMENSIONS NTAX=3 NCHAR=3;
+FORMAT DATATYPE=STANDARD MISSING=M GAP=-;
+CHARSTATELABELS
+    1 "Number of anterior lateral spinnerets" / 0 "two" 1 "one",
+    2 "Posterior median spinnerets" / 0 "absent" 1 "present",
+    3 "Shape of posterior median spinnerets" / 0 "digitiform" 1 "broad, with obliquely truncated tips",
+;
+MATRIX
+Taxon_A 10N
+Taxon_B M1(0,1)
+Taxon_C 00N
+;
+END;</pre>
+<ul>
+  <li>Character and state labels must be in quotation marks.</li>
+  <li><code>M</code> = missing or unknown; <code>N</code> = not applicable (the character does not
+      apply to this taxon).</li>
+  <li>Polymorphic states are listed in parentheses: <code>(0,1)</code>.</li>
+  <li>Taxon names in the MATRIX block must not contain spaces — use underscores
+      (e.g. <code>Latrodectus_mactans</code>).</li>
+</ul>
+<div class="tip">Character and state labels are passed directly to language models in Part B.
+Labels written as natural phrases ("spinnerets present", "two anterior lateral spinnerets")
+produce better narrated output than terse codes. See Part B for guidance on iterating style.</div>
+<div class="warning"><strong>Characters that will break the parser.</strong>
+<table style="margin-top:8px;">
+  <tr><th>Symbol</th><th>Prohibited in</th><th>Reason</th></tr>
+  <tr><td><code>"</code> double quote</td><td>Character names &amp; state labels</td>
+      <td>Closes the quoted string early, truncating the name or label</td></tr>
+  <tr><td><code>/</code> forward slash</td><td>Character names</td>
+      <td>Used to split each <code>CHARSTATELABELS</code> entry into name and state list</td></tr>
+  <tr><td><code>;</code> semicolon</td><td>Character names &amp; state labels</td>
+      <td>Terminates the <code>CHARSTATELABELS</code> block early, silently dropping all
+          subsequent characters</td></tr>
+</table>
+<p style="margin-top:8px;"><strong>State IDs</strong> (the integers before each state label, e.g. <code>0 "red"</code>)
+must be integers. <strong>Taxon names</strong> in the MATRIX block must not contain spaces.</p>
+</div>
+</div>
+
+
+<!-- ===== CARL BLOCK SYNTAX ===== -->
+<h2 id="carl-block-syntax">The CARL Block</h2>
+
+<div class="card">
+<p>The <code>BEGIN CARL;</code> block is CARL's nomenclatural layer — a flat list of statements
+describing the taxonomic status and relationships of named entities. It lives inside the NEXUS
+file alongside any DATA block and is ignored by other NEXUS software.</p>
+<p>There are two ways to author CARL block statements:</p>
+<ol>
+  <li><strong>Via the Nomenclature tab UI</strong> — the recommended approach. CARL generates the
+      syntax automatically from form inputs and writes syntactically complete blocks on save.</li>
+  <li><strong>By hand-editing the .nex file</strong> — useful for scripted workflows or bulk edits.
+      Hand-edited files may use the shorthand omission rules described below; CARL expands these
+      to full form on the next save.</li>
+</ol>
+</div>
+
+<div class="card">
+<h3>Two domains: Data and Nomenclature</h3>
+<p>CARL distinguishes two independent domains:</p>
+<ul>
+  <li><strong>Nomenclature</strong> — taxa with names, ranks, and relationships to each other.
+      Lives in the <code>BEGIN CARL;</code> block.</li>
+  <li><strong>Data</strong> — rows in the NEXUS DATA matrix. Each row has a label (called a
+      <em>DataID</em> or DATA variable name) and a set of character states. These labels are
+      arbitrary strings — <code>Taxon_A</code>, <code>SP3</code>, or <code>Hexurella</code>
+      are all equally valid DataIDs.</li>
+</ul>
+<p>The two domains are connected by <strong>data pointers</strong>
+(<code>[&amp;D ...]</code> annotations) on each CARL statement, which link a nomenclatural name
+to a DataID. The same string can appear on both sides of a pointer
+(e.g. <code>[&amp;D Hexurella=Hexurella]</code>) — this is not tautological. The left-hand name is
+a nomenclatural entity; the right-hand name is a DATA row label that happens to share the same
+string.</p>
+<div class="tip">A taxon declared with <code>[&amp;D Name=none]</code> — no DataID assigned — is a
+<strong>CARL-only taxon</strong>. It has full nomenclatural standing and can be fetched from
+external databases, but cannot participate in character-based analyses (descriptions, keys,
+comparisons, diagnoses) until linked to a DATA row.</div>
+</div>
+
+<div class="card">
+<h3>Statement syntax</h3>
+<p>Every CARL statement follows this general form:</p>
+<pre>&lt;Name&gt; &lt;is|is_new&gt; &lt;rank&gt; [&lt;action&gt; &lt;Name&gt;, &lt;Name&gt; ...] [&amp;D &lt;Name=DataID&gt;: &lt;Name=DataID&gt;, ... #comment];</pre>
+<table>
+  <tr><th>Part</th><th>Required?</th><th>Meaning</th></tr>
+  <tr><td><code>&lt;Name&gt;</code></td><td>Yes</td>
+      <td>Nomenclatural name of the subject taxon</td></tr>
+  <tr><td><code>is</code> or <code>is_new</code></td><td>Yes</td>
+      <td><code>is</code> = existing published name; <code>is_new</code> = new to science,
+          not yet in any external database</td></tr>
+  <tr><td><code>&lt;rank&gt;</code></td><td>Yes</td>
+      <td>Any rank string. Standard Darwin Core ranks map to DWC fields on export;
+          non-standard ranks (e.g. <code>infraorder</code>, <code>clade</code>)
+          are stored as-is.</td></tr>
+  <tr><td>Action keyword + object list</td><td>No</td>
+      <td>Absent for definition statements; present for <code>renames</code>,
+          <code>synonymizes</code>, <code>includes</code>, <code>divides</code></td></tr>
+  <tr><td><code>[&amp;D ...]</code></td><td>Recommended</td>
+      <td>Data pointer — links nomenclatural names to DataIDs. May be omitted if all
+          names were already declared in a prior statement.</td></tr>
+</table>
+</div>
+
+<div class="card" id="five-types">
+<h3>The five statement types</h3>
+
+<h4>1. Definition (no action keyword)</h4>
+<p>Declares a taxon's name, status, rank, and data pointer. Acts as the entity registry.</p>
+<pre>Hexurella is_new genus [&amp;D Hexurella=Hexurella];
+Mecicobothrium is genus [&amp;D Mecicobothrium=Mecicobothrium];
+Hexurilliana is_new genus [&amp;D Hexurilliana=none];</pre>
+<p><code>is_new</code> taxa are new to science — retrieval from external databases is blocked.
+<code>is</code> taxa are existing published names and are retrievable normally. <code>none</code>
+means no DataID is currently assigned.</p>
+
+<h4>2. Renames</h4>
+<p>Replaces an old name with a new name. The old name is retired and never shown in the Derived
+View. The new name may be <code>is</code> (an existing name change) or <code>is_new</code> (a
+new combination / nomen novum).</p>
+<pre>Atticus is genus renames Atypus [&amp;D Atticus=none: Atypus=Atypus_data];
+Atticus is_new genus renames Atypus [&amp;D Atticus=none: Atypus=Atypus_data];</pre>
+<p><strong>Data inheritance rule:</strong> if the new name has no DataID of its own
+(<code>none</code>) but the old name has a DataID, the new name inherits the old name's DataID
+at display time.</p>
+<p>A particularly instructive case is swapping the names of two taxa:</p>
+<pre>Systematicus is genus renames Biologica [&amp;D Systematicus=Biologica: Biologica=none];
+Biologica is genus renames Systematicus [&amp;D Biologica=Systematicus: Systematicus=none];</pre>
+<p>Here the matrix rows are labelled <em>Systematicus</em> and <em>Biologica</em>; after the
+<code>renames</code> action each taxon acquires the DataID previously held by the other. To
+avoid circularity, each <code>renames</code> statement must assign <code>=none</code> for one
+taxon.</p>
+
+<h4>3. Synonymizes</h4>
+<p>Places one or more synonyms under an accepted name, creating a synonymy group. The accepted
+name (subject) appears as a group header labelled <code>&lt;taxon_name&gt;_syn</code>; each
+synonym appears as a sub-row labelled <code>&lt;taxon_name&gt;_syn_&lt;member&gt;</code>. All
+objects must have status <code>is</code>.</p>
+<pre>Illawarra is genus synonymizes Hexura, Mecicobothrium
+    [&amp;D Illawarra=none: Hexura=Hexura_data, Mecicobothrium=Mec_data];</pre>
+<p><strong>DataID rule:</strong> members may retain their own DataIDs. A pre-coded DataID for
+the accepted-name concept may be assigned explicitly to the subject; otherwise the subject
+defaults to <code>none</code>.</p>
+
+<h4>4. Includes</h4>
+<p>Designates a higher-rank taxon as a formal group containing listed lower-rank taxa. Included
+taxa appear both under the group header and as their own standalone rows elsewhere in the Derived
+View.</p>
+<pre>Mygalomorphae is order includes Atypidae, Hexurellidae [&amp;D Mygalomorphae=none: ];</pre>
+<p>Member names already declared elsewhere do not need to be re-declared in the data pointer.</p>
+
+<h4>5. Divides</h4>
+<p>Splits a taxon into two or more daughter taxa. The parent (subject) is retired as an active
+taxonomic concept but remains visible in the Derived View as a group header, with daughters
+nested beneath it. This allows the parent's historical database records to be retrieved (if
+<code>is</code>) or its Darwin Core fields to be populated (if <code>is_new</code>).</p>
+<p>By default, CARL pre-fills the first daughter with the parent's name, reflecting the
+nomenclatural convention that one daughter carries continuity with the parent. The first daughter
+also inherits the parent's DataID as a starting point; additional daughters default to
+<code>DataID=none</code>.</p>
+<pre>Hexufilia is_new genus [&amp;D Hexufilia=Hexurella_daughter];
+Hexurella is genus divides Hexurella, Hexufilia [&amp;D Hexurella=none: Hexurella=Hex_data];</pre>
+<p>OR (if the pre-division codings should remain with the parent for historical retrieval):</p>
+<pre>Hexurella is genus divides Hexurella, Hexufilia [&amp;D Hexurella=Hex_data: Hexurella=none];</pre>
+<p><strong>DataID rule:</strong> because the parent and the first daughter initially point to the
+same DataID, a shared-DataID warning fires on save. Resolve by deciding which entity should
+retain the DataID:</p>
+<ul>
+  <li>If the pre-division data best represent the <strong>first daughter</strong>, set the
+      parent's DataID to <code>none</code> and retain the DataID on the daughter.</li>
+  <li>If the pre-division data should remain with the <strong>parent</strong> (for historical
+      retrieval), set the first daughter's DataID to <code>none</code> or assign it a new row.</li>
+  <li>If neither daughter's biology matches the pre-division codings, set both to
+      <code>none</code> and assign DataIDs afresh.</li>
+</ul>
+<p class="note">The dataID for <code>Hexufilia</code> is omitted from the <code>divides</code>
+declaration above because <code>Hexufilia</code> is independently declared in the preceding
+statement.</p>
+
+<div class="note"><strong>Named block headers</strong> such as <code>[# DEFINE TAXA ]</code>,
+<code>[# RENAME TAXA ]</code>, <code>[# UNITE TAXA ]</code>, and <code>[# DIVIDE TAXA ]</code>
+are treated as comments by the parser. They have no syntactic effect but help organise a
+hand-edited CARL block for human readers. CARL's UI does not produce them automatically.</div>
+</div>
+
+<div class="card" id="data-pointers">
+<h3>Data pointer rules</h3>
+<p>The <code>[&amp;D ...]</code> annotation maps nomenclatural names to DataIDs:</p>
+<ul>
+  <li>Left of <code>:</code> — DataID for the <strong>subject</strong> (name before the action keyword)</li>
+  <li>Right of <code>:</code> — DataIDs for the <strong>objects</strong> (names after the action
+      keyword), comma-separated</li>
+  <li>The colon is always present when a pointer block appears, even if one or both sides
+      are empty</li>
+  <li><code>=none</code> — no DataID assigned to this name</li>
+</ul>
+<p><strong>Omission rule:</strong> if a name was already declared in an earlier statement, its
+pointer may be omitted from the bracket. <code>[&amp;D :]</code> (both sides empty) is valid
+when all names have been previously declared.</p>
+<p><strong>Shared DataID warning:</strong> if two taxa point to the same non-<code>none</code>
+DataID, CARL issues a warning at load and save: <em>"Taxa X and Y both point to DataID Z —
+they will be analytically indistinguishable."</em></p>
+<p><strong>Display labels</strong> in the Data tab and Derived View encode the nomenclatural act:</p>
+<table>
+  <tr><th>Act</th><th>Label form</th><th>Example</th></tr>
+  <tr><td><code>is_new</code> definition</td><td><code>Name_rank_nov</code></td>
+      <td><code>Hexurella_gen_nov</code></td></tr>
+  <tr><td><code>is_new</code> renames</td><td><code>Name nom. nov. (syn. OldName)</code></td>
+      <td><code>Atticus nom. nov. (syn. Atypus)</code></td></tr>
+  <tr><td><code>is</code> renames</td><td><code>Name (syn. OldName)</code></td>
+      <td><code>Atticus (syn. Atypus)</code></td></tr>
+  <tr><td>Synonymizes group</td><td><code>AcceptedName_syn</code></td>
+      <td><code>Illawarra_syn</code></td></tr>
+  <tr><td>Includes group</td><td>Plain name</td><td><code>Hexurellinae</code></td></tr>
+</table>
+</div>
+
+
+<div class="card" id="precludes">
+<h3>Preclusion statements</h3>
+<p>Preclusion statements may appear anywhere in the <code>BEGIN CARL;</code> block body (typically
+after all taxon declarations). They exclude characters from key building whenever a specified
+condition is met. Read as: <em>"if character N has state S, then do not use characters X, Y, Z
+at this branch or below."</em></p>
+<p>This models logical dependencies between characters. For example, if character 5 is
+"spinnerets present/absent" and characters 6–7 describe spinneret morphology, it is pointless
+to ask about morphology once absence is established:</p>
+<pre>5(0) precludes 6, 7</pre>
+<p>All numbers are 1-based, matching the <code>CHARSTATELABELS</code> numbering. The state index
+in parentheses is 0-based (0 = first state, 1 = second state, and so on).</p>
+
+<h4>Complete example</h4>
+<pre>BEGIN ASSUMPTIONS;
+  WTSET key = 0.5:1-4, 5:21 23, 10:5 8 19 20;
+END;
+
+BEGIN CARL;
+
+Hexurella is_new genus [&amp;D Hexurella=Hexurella];
+Mecicobothrium is genus [&amp;D Mecicobothrium=Mecicobothrium];
+
+5(0) precludes 6, 7
+8(0) precludes 9, 10
+23(0) precludes 24, 25, 26
+
+END;</pre>
+
+<div class="tip">High weights (10×, 5×) are appropriate for characters that are easy to observe
+in the field and reliably coded. Low weights (0.5) are useful for characters that are difficult
+to observe, subjective, or available for only some specimens.</div>
+<div class="note">Preclusion statements and WTSET key weights are parsed automatically on file
+load. No action is required in the UI — the Keys tab applies them immediately the next time a
+key is generated.</div>
+</div>
+
+
+<!-- ===== NOMENCLATURE TAB ===== -->
+<h2 id="nomenclature-tab">Nomenclature Tab</h2>
+
+<div class="card">
+<p>The Nomenclature tab is the <strong>landing tab</strong> of the File panel and the primary
+interface for authoring the <code>BEGIN CARL;</code> block. All nomenclatural declarations —
+taxon definitions, synonymy, hierarchical groupings, renames, and divisions — are made here.
+All taxon groups are expressed entirely within the <code>BEGIN CARL;</code> block via
+<code>synonymizes</code> and <code>includes</code> declarations.</p>
+</div>
+
+<div class="card" id="nom-areas">
+<h3>Three areas</h3>
+<p>The Nomenclature tab presents three areas side by side:</p>
+<dl>
+  <dt><strong>Statements list</strong></dt>
+  <dd>A scrollable list of all current CARL block declarations, one per line, using display
+  labels. Select a statement and click <strong>Delete</strong> (or right-click → Delete) to
+  remove it. Changes propagate immediately to the Derived View and Information tab —
+  no manual refresh is needed.</dd>
+
+  <dt><strong>Derived View</strong></dt>
+  <dd>A treeview showing the materialised result of all declarations: group headers for
+  <code>synonymizes</code> and <code>includes</code> actions with their members as children;
+  individual taxa as leaf nodes. Greyed rows indicate <code>is_new</code> taxa or taxa with
+  no DataID assigned. This is the same view that drives the Information tab. It is read-only
+  in the Nomenclature tab — editing is done via the Statements list and the +Add dialog.</dd>
+
+  <dt><strong>DataID Pool</strong></dt>
+  <dd>Lists all DATA row labels from the loaded NEXUS matrix that are not yet assigned to
+  any CARL entity via a <code>[&amp;D ...]</code> pointer. Use this pool to identify unlinked
+  rows when building declarations in a file that already has a DATA block.</dd>
+</dl>
+</div>
+
+<div class="card" id="nom-loading">
+<h3>Loading states</h3>
+<p>When a file is loaded, the Nomenclature tab enters one of three states:</p>
+<table>
+  <tr><th>State</th><th>Condition</th><th>Behaviour</th></tr>
+  <tr><td><strong>Normal</strong></td><td>CARL block present</td>
+      <td>All declarations displayed. Analyses and retrieval available for all
+          linked taxa.</td></tr>
+  <tr><td><strong>Build</strong></td><td>DATA block only, no CARL block</td>
+      <td>DATA row labels appear in the DataID Pool as raw material. Analyses are
+          locked until at least one CARL declaration is created and linked to data.</td></tr>
+  <tr><td><strong>Invalid</strong></td><td>Neither block present</td>
+      <td>File rejected with a warning. Load a valid CARL or TaxonGPT NEXUS file.</td></tr>
+</table>
+<p>A file with a CARL block but no DATA block is a valid Normal state. The Editor tab can
+create the DATA block from scratch.</p>
+</div>
+
+<div class="card" id="nom-add">
+<h3>Adding declarations</h3>
+<p>Click <strong>+ Add Statement</strong> to open the Add dialog. Select the statement type
+via the radio switch at the top:</p>
+<table>
+  <tr><th>Type</th><th>Key fields</th></tr>
+  <tr><td><strong>Definition</strong></td>
+      <td>Name; status (<code>is</code> / <code>is_new</code>); rank; DataID
+          (choose from pool or enter free text)</td></tr>
+  <tr><td><strong>Renames</strong></td>
+      <td>New name; status; rank; DataID; Old Name (selected from declared entities only
+          — read-only combobox)</td></tr>
+  <tr><td><strong>Synonymizes</strong></td>
+      <td>Accepted name; status; rank; DataID; object list (comma-separated, from declared
+          <code>is</code> entities)</td></tr>
+  <tr><td><strong>Includes</strong></td>
+      <td>Group name; status; rank; member list (from declared entities)</td></tr>
+  <tr><td><strong>Divides</strong></td>
+      <td>Parent name; status; rank; daughter names and their DataIDs</td></tr>
+</table>
+<p>Confirming the dialog adds the statement to the Statements list, updates the Derived View,
+and marks any newly assigned DataIDs as used in the DataID Pool. Changes are written to the
+<code>BEGIN CARL;</code> block when the file is saved via <strong>Save</strong> or
+<strong>Save As…</strong> in the Nomenclature file toolbar.</p>
+<div class="tip"><strong>Declaring an <code>is_new</code> taxon</strong> via the Definition form
+automatically opens the Editor tab with a blank row pre-focused, ready for character-state entry.
+<br><br>
+<strong>Declaring a CARL-only taxon</strong> (<code>is</code> status, no DataID) queues it for
+retrieval in the Information tab — it will appear in the Derived View and can be fetched immediately.</div>
+</div>
+
+<div class="card" id="nom-rightclick">
+<h3>Right-click context menu</h3>
+<p>Right-click any row in the Derived View to open a context menu. Options depend on the
+taxon's data state:</p>
+<p><strong>Non-greyed taxon (has a DataID):</strong></p>
+<ul>
+  <li><strong>View characters/states</strong> — read-only popup showing the taxon's coded
+      character and state data from the matrix</li>
+  <li><strong>Edit in Editor</strong> — switches to the Editor tab, scrolling to the row
+      for this taxon's DataID. Edits made there are reflected in analyses once the file
+      is saved.</li>
+</ul>
+<p><strong>Greyed taxon (no DataID assigned):</strong></p>
+<ul>
+  <li><strong>View characters/states</strong> — disabled (no data to show)</li>
+  <li><strong>Create in Editor</strong> — switches to the Editor tab and appends a blank row.
+      The new row is <em>not</em> automatically linked to this taxon (see below).</li>
+  <li><strong>Link to data</strong> — opens a picker showing all unassigned DataIDs in the
+      Editor. Selecting one assigns it as this taxon's data pointer
+      (<code>[&amp;D Taxon=chosenDataID]</code>).</li>
+</ul>
+<p><strong>Group header:</strong></p>
+<ul>
+  <li><strong>View members</strong> — lists all member taxa with their current data states</li>
+</ul>
+<div class="note"><strong>Why isn't Create in Editor linked automatically?</strong>
+You may create several rows in the Editor before deciding which belongs to which taxon. An
+automatic link would make assumptions you have not confirmed. Use <em>Link to data</em> when
+you are ready to assign the row.</div>
+</div>
+
+
+<div class="card">
+<h3>Nomenclature tab — button reference</h3>
+<table>
+  <tr><th>Button</th><th>Location</th><th>Function</th></tr>
+
+  <tr><td><strong>Load NEXUS</strong></td>
+      <td>File toolbar</td>
+      <td>Opens a file dialog to load a <code>.nex</code> file. Replaces the current session. Accepts any NEXUS file containing a <code>BEGIN CARL;</code> block, a <code>BEGIN DATA;</code> block, or both.</td></tr>
+
+  <tr><td><strong>Save</strong></td>
+      <td>File toolbar</td>
+      <td>Saves all current content — DATA block, CARL block, and any other blocks in the file (e.g. TREES) — to the currently loaded file, overwriting it in place. If no file is loaded yet (e.g. after clicking <strong>New</strong> in the Editor), this behaves as <strong>Save As…</strong> and prompts for a path. This is the only place in CARL where file saving occurs.</td></tr>
+
+  <tr><td><strong>Save As…</strong></td>
+      <td>File toolbar</td>
+      <td>Saves all current content to a new file chosen via a save dialog. The DATA block is regenerated in full from the in-memory dataset (so any added DataIDs or characters are included), the CARL block is serialised from current declarations, and any other blocks (e.g. TREES) in the original file are preserved. The new file becomes the active file for subsequent saves.</td></tr>
+
+  <tr><td><strong>+ Add</strong></td>
+      <td>Statement toolbar</td>
+      <td>Opens the Add Statement dialog. Select a statement type (Definition, Renames, Synonymizes, Includes, Divides) at the top, then fill in the required fields. The new statement appears in the Statements list immediately and the Derived View updates in real time. See <a href="#nom-add">Adding declarations</a> for full field descriptions.</td></tr>
+
+  <tr><td><strong>Edit</strong></td>
+      <td>Statement toolbar</td>
+      <td>Opens the Edit Statement dialog for the statement currently selected in the Statements list. Pre-fills all fields from the existing statement. Also triggered by double-clicking any row in the Statements list.</td></tr>
+
+  <tr><td><strong>Delete</strong></td>
+      <td>Statement toolbar</td>
+      <td>Deletes all selected statements after a confirmation prompt. Multiple statements can be selected with <kbd>Ctrl+click</kbd> or <kbd>Shift+click</kbd> before clicking Delete. Changes propagate immediately to the Derived View and Records tab.</td></tr>
+
+  <tr><td><strong>Assign Rank…</strong></td>
+      <td>Statement toolbar</td>
+      <td>Opens a small dialog with a rank dropdown (species, genus, family, etc.). Applies the chosen rank to <em>all</em> selected statements at once. Useful for bulk rank assignment after using <strong>Create Taxa…</strong> to import many DataIDs simultaneously.</td></tr>
+
+  <tr><td><strong>▼ Preview / ▲ Preview</strong></td>
+      <td>Statement toolbar</td>
+      <td>Toggles a collapsible panel below the main three-pane area showing the serialised <code>BEGIN CARL;</code> block text exactly as it will be written to the file. Useful for reviewing block syntax before saving. The Copy button inside the panel copies the text to the clipboard.</td></tr>
+
+  <tr><td><strong>+Add</strong></td>
+      <td>Derived View header</td>
+      <td>Opens the Add Statement dialog pre-filled with the entity (or entities) currently selected in the Derived View as objects. Useful for quickly creating a relationship starting from a taxon already visible in the tree — for example, select two species in the Derived View and click <strong>+Add</strong> to open a Synonymizes dialog with those species pre-filled as objects.</td></tr>
+
+  <tr><td><strong>Create Taxa…</strong></td>
+      <td>DataID Pool header</td>
+      <td>Opens a dialog listing all unassigned DataIDs in the pool. Set a single status (<code>is</code> or <code>is_new</code>) and a rank that will apply to all of them, then confirm. CARL creates one Definition statement per unassigned DataID, each pointing back to its own DataID. Already-assigned DataIDs are highlighted grey and skipped. Combine with <strong>Assign Rank…</strong> to update ranks in bulk afterwards.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== EDITOR TAB ===== -->
+<h2 id="editor-tab">Editor Tab</h2>
+
+<div class="card">
+<p>The Editor tab is the data-entry surface for the NEXUS character-state matrix. It manages
+<strong>DataIDs</strong> (matrix row labels) and their coded character states. It has no
+knowledge of nomenclatural names — that relationship is handled separately in the Nomenclature
+tab via data pointers. <strong>All file saving is done from the Nomenclature tab</strong>;
+the Editor has no Save button.</p>
+
+<p>The Editor serves two workflows:</p>
+<ul>
+  <li><strong>Edit existing</strong> — load a NEXUS file via the Nomenclature tab, then switch
+      to the Editor to modify coded states, rename DataIDs, or edit character and state
+      labels.</li>
+  <li><strong>Create new</strong> — click <strong>New</strong> to start a blank session, add
+      characters with <strong>+ Add Character</strong>, add DataIDs with
+      <strong>+ Add DataID</strong>, code states, then switch to the Nomenclature tab to
+      save.</li>
+</ul>
+
+<p>The Editor is split into two panes:</p>
+<ul>
+  <li><strong>DataIDs</strong> (left pane) — a list of all matrix DataIDs, grouped visually
+      by any <code>synonymizes</code> or <code>includes</code> declarations in the CARL block.
+      Click a DataID to load its characters in the right pane. Right-click to rename.</li>
+  <li><strong>Character/state canvas</strong> (right pane) — one row per character for the
+      selected DataID. Click a character name to edit its label inline; right-click a character
+      name to open the full <a href="#editor-char-def">Character Definition dialog</a>;
+      click a state value to edit the coded state.</li>
+</ul>
+
+<p>When unsaved edits are pending, a label reads <em>"Unsaved changes — use Nomenclature tab
+to save"</em> in the toolbar. Switch to the Nomenclature tab and click <strong>Save</strong>
+or <strong>Save As…</strong> to write the changes to disk.</p>
+</div>
+
+<div class="card" id="editor-states">
+<h3>Entering states</h3>
+<p>Click any data cell to open the inline editor. Valid inputs:</p>
+<table>
+  <tr><th>Input</th><th>Meaning</th><th>NEXUS equivalent</th></tr>
+  <tr><td>Integer (0, 1, 2…)</td><td>Single coded state</td><td>The integer directly</td></tr>
+  <tr><td><code>M</code></td><td>Missing or unknown data</td><td><code>?</code></td></tr>
+  <tr><td><code>N</code></td><td>Not applicable — the character does not apply to this taxon</td>
+      <td><code>-</code></td></tr>
+  <tr><td><code>(0,1)</code></td><td>Polymorphic — taxon exhibits more than one state</td>
+      <td><code>(0,1)</code></td></tr>
+</table>
+<p>Invalid input is highlighted red and not committed. Press <kbd>Enter</kbd> or click
+elsewhere to commit a valid entry.</p>
+</div>
+
+<div class="card" id="editor-char-def">
+<h3>Character Definition dialog</h3>
+<p>Right-click any character name in the right pane to open the full Character Definition
+dialog. The same fields are available when adding a new character with <strong>+ Add Character</strong>:</p>
+<ul>
+  <li><strong>Character name</strong> — free-text label (pre-filled from column header)</li>
+  <li><strong>Character type</strong> — multistate (default), continuous, or meristic</li>
+  <li><strong>States</strong> — for multistate characters: an ordered list of state labels,
+      numbered 0, 1, 2…</li>
+  <li><strong>Notes</strong> — optional free-text annotation</li>
+</ul>
+<p>Confirming the dialog updates the column header and writes the character definition to
+<code>CHARSTATELABELS</code> when the file is saved.</p>
+<div class="note">In this version of CARL, all characters are analysed as multistate characters
+regardless of the type setting. The character type is stored with the definition and will be
+used by the analysis engine in a future release.</div>
+</div>
+
+<div class="card">
+<h3>Renaming DataIDs — CARL block propagation</h3>
+<p>If you rename a DataID row header in the Editor, CARL scans the loaded CARL block for all
+<code>[&amp;D ...]</code> pointer references to the old name. A warning dialog lists all affected
+declarations:</p>
+<blockquote style="font-style:italic; border-left:3px solid #bdc3c7; padding-left:10px; color:#555;">
+"Renaming 'Hexurella_var' will also update 3 references in the CARL block. Continue?"
+</blockquote>
+<p>On confirmation, both the matrix row label and all CARL block pointer references are updated
+atomically before saving. On cancel, the rename is reverted.</p>
+</div>
+
+<div class="card" id="editor-upgrade">
+<h3>Upgrading CARL-only taxa</h3>
+<p>A CARL-only taxon (declared with <code>[&amp;D Name=none]</code>) can be promoted to a full
+matrix taxon:</p>
+<ol>
+  <li>Right-click the greyed taxon in the Derived View (Nomenclature tab) →
+      <strong>Create in Editor</strong></li>
+  <li>A new blank row is added in the Editor, ready for character-state entry</li>
+  <li>Return to the Nomenclature tab, right-click the same taxon →
+      <strong>Link to data</strong> → select the new row from the picker</li>
+  <li>Save — the taxon's pointer is upgraded from <code>none</code> to the new DataID,
+      and it becomes fully available for analysis</li>
+</ol>
+</div>
+
+
+<div class="card">
+<h3>Editor tab — button reference</h3>
+<table>
+  <tr><th>Button</th><th>Function</th></tr>
+
+  <tr><td><strong>New</strong></td>
+      <td>Starts a blank session: creates an empty dataset and an empty CARL block. Both the Editor and the Nomenclature tab become active immediately. DataIDs added afterwards appear in the Nomenclature tab's DataID Pool in real time. If a file is already loaded, CARL asks for confirmation before discarding it.</td></tr>
+
+  <tr><td><strong>+ Add DataID</strong></td>
+      <td>Prompts for a DataID name (underscores required in place of spaces, e.g. <code>Puma_concolor</code>). Appends a new row to the matrix with all states coded as missing (<code>M</code>). The new DataID immediately appears in the left pane and in the Nomenclature tab's DataID Pool. Select it and click states in the right pane to begin coding.</td></tr>
+
+  <tr><td><strong>+ Add Character</strong></td>
+      <td>Opens a dialog to define a new character: enter the character name, then add at least two state labels using the <strong>+ Add State</strong> button. On confirmation, the character is appended to the matrix (all existing DataIDs get <code>M</code> for it) and immediately appears in the right pane for every DataID.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== INFORMATION TAB ===== -->
+<h2 id="information-tab">Information Tab</h2>
+
+<div class="card">
+<p>The <strong>Information tab</strong> retrieves published taxonomic records
+from external biodiversity databases for taxa declared in the CARL block. Its treeview mirrors
+the Derived View in the Nomenclature tab exactly — the same group structure, ordering, and
+display labels. Adding or removing a CARL declaration immediately updates both views.</p>
+
+<p><strong>Fetchability rules:</strong></p>
+<ul>
+  <li><code>is</code> taxa — fetchable from external databases</li>
+  <li><code>is_new</code> taxa — not fetchable (new to science; not yet in any database).
+      Shown greyed with "New taxon" status.</li>
+  <li><code>includes</code> group headers — fetchable if the group itself has <code>is</code>
+      status</li>
+  <li><code>synonymizes</code> members — each synonym is fetched individually; results are
+      presented under the accepted concept</li>
+  <li><code>renames</code> entities — fetched under the current (post-rename) name only.
+      Records published under the historical name are not queried separately.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Fetching records</h3>
+<p>The four treeview columns are <strong>Taxon</strong>, <strong>Status</strong>,
+<strong>Retrieved</strong>, and <strong>Comments</strong>. Row colours indicate status:</p>
+<table>
+  <tr><th>Colour</th><th>Meaning</th></tr>
+  <tr><td>Green — <em>fetched</em></td><td>Data retrieved successfully</td></tr>
+  <tr><td>Green + amber background — <em>fetched ⚠</em></td><td>Retrieved but one or more fields have conflicting values from different providers</td></tr>
+  <tr><td>Red — <em>error</em></td><td>Network or API error — try Fetch Selected to retry</td></tr>
+  <tr><td>Grey — <em>pending</em></td><td>Fetchable but not yet fetched</td></tr>
+  <tr><td>Light grey — <em>not fetchable</em></td><td><code>is_new</code> taxon; not yet in any database</td></tr>
+  <tr><td>Bold — <em>group header</em></td><td>A <code>synonymizes</code> group header, <code>includes</code> group header, or <code>divides</code> parent from the CARL block</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Data providers</h3>
+<p>CARL queries the following biodiversity databases. Each provider can be enabled or disabled
+and assigned a priority in <strong>Settings → Databases</strong> (1 = highest priority). When
+providers return different values for the same Darwin Core field, the higher-priority provider's
+value is used; lower-priority values are stored and flagged as conflicts.</p>
+<table>
+  <tr><th>Provider</th><th>URL</th></tr>
+  <tr><td><strong>GBIF</strong> — Global Biodiversity Information Facility</td>
+      <td><a href="https://gbif.org">gbif.org</a></td></tr>
+  <tr><td><strong>CoL</strong> — Catalogue of Life</td>
+      <td><a href="https://catalogueoflife.org">catalogueoflife.org</a></td></tr>
+  <tr><td><strong>ITIS</strong> — Integrated Taxonomic Information System</td>
+      <td><a href="https://itis.gov">itis.gov</a></td></tr>
+  <tr><td><strong>WoRMS</strong> — World Register of Marine Species</td>
+      <td><a href="https://marinespecies.org">marinespecies.org</a></td></tr>
+  <tr><td><strong>WSC</strong> — World Spider Catalog <em>(API key required)</em></td>
+      <td><a href="https://wsc.nmbe.ch">wsc.nmbe.ch</a></td></tr>
+  <tr><td><strong>BacDive</strong> — Bacterial Diversity Metadatabase (DSMZ)</td>
+      <td><a href="https://bacdive.dsmz.de">bacdive.dsmz.de</a></td></tr>
+  <tr><td><strong>POWO</strong> — Plants of the World Online (Royal Botanic Gardens, Kew)</td>
+      <td><a href="https://powo.science.kew.org">powo.science.kew.org</a></td></tr>
+  <tr><td><strong>NCBI</strong> — National Center for Biotechnology Information</td>
+      <td><a href="https://ncbi.nlm.nih.gov">ncbi.nlm.nih.gov</a></td></tr>
+  <tr><td><strong>ZooBank</strong> — Official registry of zoological nomenclature</td>
+      <td><a href="https://zoobank.org">zoobank.org</a></td></tr>
+  <tr><td><strong>CrossRef</strong> — Publication DOI resolution</td>
+      <td><a href="https://crossref.org">crossref.org</a></td></tr>
+  <tr><td><strong>BHL</strong> — Biodiversity Heritage Library</td>
+      <td><a href="https://biodiversitylibrary.org">biodiversitylibrary.org</a></td></tr>
+  <tr><td><strong>Plazi</strong> — Taxonomic treatment repository</td>
+      <td><a href="https://plazi.org">plazi.org</a></td></tr>
+  <tr><td><strong>Wikipedia</strong> — Encyclopaedic summary</td>
+      <td><a href="https://wikipedia.org">wikipedia.org</a></td></tr>
+  <tr><td><strong>Wikidata</strong> — Structured metadata</td>
+      <td><a href="https://wikidata.org">wikidata.org</a></td></tr>
+</table>
+</div>
+
+<div class="card" id="dwc-fields">
+<h3>Darwin Core fields</h3>
+<p>In <strong>Settings → Databases</strong>, the Darwin Core Fields panel lists all available
+terms in collapsible sections. Each field has two checkboxes:</p>
+<ul>
+  <li><strong>Retrieve</strong> — if ticked, CARL asks data providers for this field during
+      fetching. Untick fields you never need to reduce stored data.</li>
+  <li><strong>Include</strong> — if ticked, this field is included in the taxonomic preamble
+      used by <em>generate_descriptions_with_lit</em>. A field cannot be included if it is
+      not also set to Retrieve.</li>
+</ul>
+<p>In CARL, the Darwin Core fields are relevant for taxon-level records, and not specimen- or observation-level records.</p>
+<p>Commonly useful fields include: <code>scientificName</code>,
+<code>scientificNameAuthorship</code>, <code>namePublishedInYear</code>,
+<code>originalNameUsage</code> (synonyms), the classification ranks (kingdom → genus), and
+the type-specimen fields (<code>typeStatus</code>, <code>locality</code>,
+<code>institutionCode</code>, <code>catalogNumber</code>).</p>
+</div>
+
+<div class="card" id="reviewing-records">
+<h3>Reviewing and resolving records</h3>
+<p>Right-click any fetchable row to open the Darwin Core field popup for that taxon. The popup
+shows a three-column table:</p>
+<ul>
+  <li><strong>DC Field</strong> — the Darwin Core term name</li>
+  <li><strong>Value</strong> — the cached value, shown as an editable text box or controlled-
+      vocabulary dropdown. Edit any cell to correct wrong values (e.g. a misspelt author name
+      or incorrect date).</li>
+  <li><strong>Source</strong> — the provider that supplied this value (or "auto" if
+      auto-extracted during fetch).</li>
+</ul>
+<p>If two or more providers returned different values for a field, that row's background is
+highlighted amber. The <strong>Conflicts / Comments</strong> box at the bottom of the popup
+is pre-populated with a summary of all conflicts when the popup is first opened. The same box
+is used for free-text notes.</p>
+<p>You can also add or edit a comment directly from the treeview — double-click the
+<strong>Comments</strong> cell of any row without opening the full popup.</p>
+<p>Action buttons at the bottom of the popup:</p>
+<ul>
+  <li><strong>Commit</strong> — saves all edits and marks the entry as <em>resolved</em>
+      (green row). A resolved entry is used in <em>generate_descriptions_with_lit</em>
+      exactly as committed, without further conflict checking.</li>
+  <li><strong>Fix / Unfix</strong> — a Fixed entry is never overwritten by a re-fetch:
+      it is skipped by <strong>Fetch All</strong> and must be unfixed before it can be
+      refreshed. Use Fix to protect a carefully curated record. Note that
+      <strong>Clear All</strong> and <strong>Clear Selected</strong> still delete Fixed
+      entries — Fixing guards against re-fetching, not clearing.</li>
+  <li><strong>Remove</strong> — deletes the cached data for this taxon.</li>
+</ul>
+
+<div class="warning"><strong>Data quality.</strong> Biodiversity databases occasionally contain
+errors — incorrect authors, wrong publication years, or catalogue numbers that refer to different
+specimens. CARL retrieves and displays these values verbatim. Always cross-check critical fields
+(type-specimen catalogue numbers, ZooBank LSIDs, authorship) against primary literature before
+including them in a formal publication.</div>
+</div>
+
+<div class="card" id="information-export">
+<h3>Exporting records</h3>
+<p><strong>Export as .txt</strong> writes the full plain-text report for the selected taxon to
+a <code>.txt</code> file. <strong>Export DC</strong> writes Darwin Core records for all selected
+taxa to a CSV file compatible with GBIF's Integrated Publishing Toolkit (IPT).</p>
+<p>Select the rows to export (<kbd>Ctrl+click</kbd> or <kbd>Shift+click</kbd>), then click the
+export button and choose a save location. Each row in the CSV corresponds to one taxon; columns
+correspond to Darwin Core terms with the Retrieve checkbox ticked in Settings.</p>
+<div class="tip"><strong>Submitting to GBIF via IPT.</strong> GBIF does not accept a plain CSV
+directly. The recommended workflow: (1) export the CSV from CARL; (2) upload it to an IPT
+instance via its Source Data import; (3) map the columns to Darwin Core terms; (4) publish as
+a Darwin Core Archive. The IPT is available as a hosted service through most GBIF national
+nodes.</div>
+<div class="warning">CARL does not submit data to any external service. Export writes only to
+your local file system. Submission to GBIF or any other database is always a separate,
+user-initiated step outside CARL.</div>
+</div>
+
+
+<div class="card">
+<h3>Information tab — button reference</h3>
+<table>
+  <tr><th>Button</th><th>Function</th></tr>
+
+  <tr><td><strong>Fetch All</strong></td>
+      <td>Queries all enabled data providers for every fetchable, uncached taxon. The cache is written after each taxon so a partial run is never lost. Already-fetched taxa are skipped.</td></tr>
+
+  <tr><td><strong>Fetch Selected</strong></td>
+      <td>Fetches only the currently selected rows. Use <kbd>Shift+click</kbd> for a range; <kbd>Ctrl+click</kbd> for individual toggles.</td></tr>
+
+  <tr><td><strong>Cancel</strong></td>
+      <td>Stops the current fetch run after the current taxon completes. Already-cached taxa are preserved.</td></tr>
+
+  <tr><td><strong>Clear All</strong></td>
+      <td>Deletes every cached record for the current file — both the fetched reports and the Darwin Core fields. This cannot be undone.</td></tr>
+
+  <tr><td><strong>Clear Selected</strong></td>
+      <td>Deletes the cached report and Darwin Core fields for the currently selected taxa only. Use <kbd>Shift+click</kbd> for a range; <kbd>Ctrl+click</kbd> for individual toggles.</td></tr>
+
+  <tr><td><strong>Export as .txt</strong></td>
+      <td>Writes the full plain-text report for the selected taxon to a <code>.txt</code> file. Select a single row first, then choose a save location.</td></tr>
+
+  <tr><td><strong>Export DC</strong></td>
+      <td>Writes Darwin Core records for all selected taxa to a CSV file. The format is compatible with GBIF's Integrated Publishing Toolkit (IPT). Each row is one taxon; columns are the Darwin Core terms ticked Retrieve in Settings → Databases.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== ANALYSES PANEL ===== -->
+
+<h2 id="descriptions-raw">Descriptions Tab</h2>
+
+<div class="card">
+<p>The Descriptions tab generates a formal description of each selected taxon or group. The
+Analyses panel is split into two panes: a narrow <strong>selection pane</strong> on the left
+and the <strong>tab area</strong> on the right.</p>
+</div>
+
+<div class="card">
+<h3>Selecting taxa and groups</h3>
+<p>The left pane contains two listboxes — <strong>Taxa</strong> and <strong>Groups</strong> —
+populated automatically from the CARL block declarations in the Nomenclature tab. Only taxa
+with an assigned DataID (non-greyed rows) appear. Groups are virtual taxa formed by
+<code>synonymizes</code> and <code>includes</code> declarations.</p>
+<ul>
+  <li>Click a name to select it; <kbd>Ctrl+click</kbd> to add to the selection;
+      <kbd>Shift+click</kbd> for a contiguous range.</li>
+  <li>If <em>nothing</em> is selected, CARL analyses all taxa in the list.</li>
+  <li>Right-click any taxon to view its full character-state coding in a popup.</li>
+  <li>A group selected from the Groups listbox is treated as a single virtual taxon whose
+      states aggregate across its members.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Output Mode</h3>
+<p>The <strong>Output Mode</strong> radio buttons control how the description is produced:</p>
+<ul>
+  <li><strong>Raw only</strong> — the description is generated deterministically from the
+      character-state matrix. Every character and its coded state is listed in order as
+      <em>character name: state</em>. Where several <em>consecutive</em> characters share an
+      <em>identical</em> name, their states are merged into one sentence
+      (<em>character name: state1, state2, and state3</em>). The output is exact and
+      reproducible; no language model is involved. The heading for each taxon reads
+      <em>DESCRIPTION FOR TAXON_NAME</em>.</li>
+  <li><strong>Raw + LLM</strong> — the Raw description is generated first (and shown), then
+      passed to the configured Output Model, which reformats it as fluent natural-language
+      prose. See <a href="#analyses-llm">Analyses with AI</a> in Part B for full details on
+      model selection and output quality.</li>
+  <li><strong>Raw + NLG</strong> — the Raw description is generated first (and shown), then a
+      deterministic <strong>natural-language generation</strong> (NLG) rendering is shown below
+      it. NLG replaces the <em>character name: state</em> colon with the verb <em>is</em> or
+      <em>are</em>, chosen from the grammatical number of the character name's head noun (e.g.
+      <em>Abdominal tergites: present</em> → <em>Abdominal tergites are present</em>). Like Raw,
+      it is programmatic, offline, and reproducible — no language model is involved.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>LLM Mode (Fast / Full)</h3>
+<p>The <strong>LLM Mode</strong> dropdown is only active when <strong>Raw + LLM</strong> is
+selected:</p>
+<ul>
+  <li><strong>Fast</strong> — the Output Model reformats the Raw description once. The result
+      appears immediately; no verification is performed.</li>
+  <li><strong>Full</strong> — the Output Model reformats as above, then the Verification Model
+      reads both the Raw and AI output and flags any discrepancies or omissions. The
+      verification report is shown below the description.</li>
+</ul>
+<p>See <a href="#llm-modes">Fast and Full modes</a> in Part B for guidance on when to use
+each.</p>
+</div>
+
+<div class="card">
+<h3>Include Literature</h3>
+<p>When the <strong>Include Literature</strong> checkbox is ticked, a taxonomic preamble is
+prepended to the Raw description before it is displayed (and before it is passed to the LLM
+in Raw + LLM mode). The preamble is drawn from the cached record in the Information tab for
+that taxon and may include:</p>
+<ul>
+  <li>Scientific name and authorship</li>
+  <li>Publication year and original reference</li>
+  <li>Known synonyms</li>
+  <li>Classification hierarchy (kingdom through genus)</li>
+  <li>Type-specimen data (status, locality, institution, catalogue number)</li>
+</ul>
+<p>If no cached record exists for a taxon, the preamble is omitted for that taxon and the
+description falls back to matrix data only. A warning is shown before the run if some taxa
+have no cached data.</p>
+<div class="tip">Fetch records for your taxa in the <strong>Information tab</strong> before
+running descriptions with literature included.</div>
+</div>
+
+<div class="card">
+<h3>Preview/Edit Preamble</h3>
+<p>Clicking <strong>Preview/Edit Preamble</strong> opens a dialog showing the exact preamble
+text that will be prepended for the first selected taxon (or the most recently selected one).
+The text is fully editable in the dialog — useful for correcting a wrong author name, removing
+fields you do not want, or supplying a manual preamble when no cached record exists. The edited
+text is used for the current run only; it does not modify the cache.</p>
+</div>
+
+<div class="card">
+<h3>Descriptions tab — button reference</h3>
+<table>
+  <tr><th>Button / Control</th><th>Function</th></tr>
+
+  <tr><td><strong>Output Mode: Raw only</strong></td>
+      <td>Generate output deterministically from the matrix — no LLM required.</td></tr>
+
+  <tr><td><strong>Output Mode: Raw + LLM</strong></td>
+      <td>Generate raw output first, then pass it to the Output Model for reformatting as prose. Requires a model configured in Settings → LLM Settings.</td></tr>
+
+  <tr><td><strong>Output Mode: Raw + NLG</strong></td>
+      <td>Generate raw output first, then a deterministic natural-language rendering below it: the character/state colon is replaced by "is"/"are", chosen from the grammatical number of the character name's head noun. Programmatic, offline, no LLM required.</td></tr>
+
+  <tr><td><strong>LLM Mode: Fast / Full</strong></td>
+      <td>Fast = reformat only, no verification. Full = reformat, then verify (and optionally correct) with the Verification Model. See Part B.</td></tr>
+
+  <tr><td><strong>Include Literature (checkbox)</strong></td>
+      <td>Prepend a preamble from the cached Information tab record to each description. Has no effect if no record is cached for that taxon.</td></tr>
+
+  <tr><td><strong>Preview/Edit Preamble</strong></td>
+      <td>Opens an editable preview of the preamble for the current selection. Changes apply to the current run only.</td></tr>
+
+  <tr><td><strong>Run</strong></td>
+      <td>Runs the current analysis for the selected taxa or groups (all taxa if none selected). Processed one at a time; output appears progressively.</td></tr>
+
+  <tr><td><strong>Copy</strong></td>
+      <td>Copies the currently displayed output to the clipboard.</td></tr>
+
+  <tr><td><strong>Save…</strong></td>
+      <td>Writes the output text to a plain-text <code>.txt</code> file at a path you choose.</td></tr>
+</table>
+</div>
+
+<h2 id="comparisons-raw">Comparisons Tab</h2>
+
+<div class="card">
+<p>The Comparisons tab performs character-based comparisons between taxa. Like the Descriptions
+tab, it uses the shared left pane for taxon and group selection — see
+<a href="#descriptions-raw">Descriptions Tab</a> for details on how to select taxa and groups.</p>
+</div>
+
+<div class="card">
+<h3>Output Mode and LLM Mode</h3>
+<p>The <strong>Output Mode</strong> and <strong>LLM Mode</strong> controls work identically to
+those in the Descriptions tab. <strong>Raw only</strong> produces deterministic output from the
+matrix; <strong>Raw + LLM</strong> passes that output to the Output Model for reformatting as
+prose. See <a href="#descriptions-raw">Descriptions Tab</a> and
+<a href="#analyses-llm">Analyses with AI</a> (Part B) for full details.</p>
+</div>
+
+<div class="card">
+<h3>Actions</h3>
+<p>Select the type of comparison via the <strong>Action</strong> radio buttons:</p>
+
+<h4 style="margin-top:14px;">Compare</h4>
+<p>Produces a side-by-side character table for all selected taxa. Every character in the matrix
+is listed, with each taxon's coded state shown alongside. Identical states are displayed
+normally; differing states make differences immediately visible. Useful for a full
+character-by-character audit of any set of taxa.</p>
+
+<h4>Distinguish</h4>
+<p>Lists <em>only</em> the characters on which the selected taxa differ — characters where all
+selected taxa share the same state are suppressed. The output is a concise table of the
+characters that actually separate the taxa. Use this to quickly identify what makes a taxon
+distinctive within a chosen set.</p>
+
+<h4>Diagnose</h4>
+<p>Finds the <em>minimal</em> set of characters that uniquely identifies a focal (<em>index</em>)
+taxon against all members of a comparison group. This action has specific selection
+requirements:</p>
+<ul>
+  <li>Select <strong>exactly one taxon</strong> from the Taxa listbox — this is the index
+      taxon to be diagnosed.</li>
+  <li>Select <strong>one or more groups</strong> from the Groups listbox — these provide the
+      comparison taxa against which uniqueness is tested.</li>
+</ul>
+<p>If no group is selected, CARL uses all other taxa in the list as the comparison set
+automatically — useful for a quick diagnosis of any taxon against the full dataset.</p>
+<p><strong>How the diagnosis works:</strong> CARL searches for character-state combinations
+that uniquely distinguish the index taxon from every comparison taxon. The search is
+combinatorial and proceeds in three passes:</p>
+<ol>
+  <li><strong>Single characters</strong> — any one character whose state in the index taxon
+      is different from (or absent in) all comparison taxa.</li>
+  <li><strong>Pairs of characters</strong> — if no single character is sufficient, all pairs
+      of characters are tested. A pair qualifies if no comparison taxon shares the same states
+      as the index taxon for <em>both</em> characters simultaneously.</li>
+  <li><strong>Triples of characters</strong> — if no pair suffices, all three-character
+      combinations are tested by the same logic.</li>
+</ol>
+<p>All qualifying combinations at the smallest size found are reported, ranked by how well-
+sampled they are (combinations involving characters with more missing data in comparison taxa
+are ranked lower, as they are less reliable diagnostics).</p>
+<p><strong>Nearest neighbours:</strong> In addition to the diagnosis, CARL identifies
+comparison taxa that are most similar to the index taxon — those differing by the fewest
+character states. The <strong>Max differences</strong> spinner (range 1–20, default 3)
+controls the maximum number of character-state differences allowed for a comparison taxon to
+be listed as a nearest neighbour. Set this higher to see more distant neighbours; lower to see
+only the most similar taxa. Characters coded as missing (<code>M</code>) or not applicable
+(<code>N</code>) in either taxon are excluded from the difference count.</p>
+<div class="tip"><strong>Interpreting the diagnosis.</strong> A size-1 diagnosis (one character
+suffices) is the strongest result — a single observable character distinguishes the taxon from
+all others. A size-2 or size-3 diagnosis means no single character is unique; the taxon is only
+distinguishable by a specific <em>combination</em> of characters. This can signal either genuine
+morphological similarity or gaps in the character set.</div>
+<div class="note"><strong>Missing data.</strong> A comparison taxon coded as missing
+(<code>M</code>) for any character in a diagnostic combination is excluded from the uniqueness
+check for that combination — CARL cannot determine whether it matches. Such taxa are flagged
+in the output. A comparison taxon coded as not applicable (<code>N</code>) is included in the
+check; <code>N</code> cannot match any real state and therefore reinforces the uniqueness
+claim.</div>
+</div>
+
+<div class="card">
+<h3>Comparisons tab — button reference</h3>
+<table>
+  <tr><th>Button / Control</th><th>Function</th></tr>
+
+  <tr><td><strong>Output Mode: Raw only</strong></td>
+      <td>Generate output deterministically from the matrix — no LLM required.</td></tr>
+
+  <tr><td><strong>Output Mode: Raw + LLM</strong></td>
+      <td>Generate raw output first, then pass it to the Output Model for reformatting as prose.</td></tr>
+
+  <tr><td><strong>LLM Mode: Fast / Full</strong></td>
+      <td>Fast = reformat only; Full = reformat then verify. See Part B.</td></tr>
+
+  <tr><td><strong>Action: Compare</strong></td>
+      <td>Full character-by-character table for all selected taxa.</td></tr>
+
+  <tr><td><strong>Action: Distinguish</strong></td>
+      <td>Table of only the characters on which the selected taxa differ.</td></tr>
+
+  <tr><td><strong>Action: Diagnose</strong></td>
+      <td>Minimal diagnostic character combinations (size 1, 2, or 3) that uniquely identify the index taxon against all comparison taxa, plus nearest neighbours.</td></tr>
+
+  <tr><td><strong>Max differences (spinner)</strong></td>
+      <td>Nearest-neighbour threshold for Diagnose: comparison taxa differing from the index taxon by at most this many character states are listed as nearest neighbours. Range 1–20; default 3.</td></tr>
+
+  <tr><td><strong>Run</strong></td>
+      <td>Executes the selected action for the current taxon/group selection.</td></tr>
+
+  <tr><td><strong>Copy</strong></td>
+      <td>Copies the currently displayed output to the clipboard.</td></tr>
+
+  <tr><td><strong>Save…</strong></td>
+      <td>Writes the output to a plain-text <code>.txt</code> file.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== KEYS TAB ===== -->
+<h2 id="keys-tab">Keys Tab</h2>
+
+<div class="card">
+<p>The Keys tab generates a branching identification key for the selected taxa and groups.
+At each node the algorithm scores all remaining characters and selects the highest-scoring
+one, recursively until every taxon has a unique path through the key. Taxa and groups are
+selected in the shared left pane — see <a href="#descriptions-raw">Descriptions Tab</a> for
+selection details. If nothing is selected, all taxa in the list are included.</p>
+</div>
+
+<div class="card">
+<h3>Algorithm — IG (Shannon Information Gain)</h3>
+<p>The IG algorithm scores each candidate character by how much it reduces uncertainty about
+taxon identity at the current node. Characters that split taxa most evenly across their states
+score highest. The effective score incorporates a coverage adjustment (to penalise characters
+with much missing data) and the Repeat Weight (see below).</p>
+
+<div class="note">
+<strong>IG formula</strong><br><br>
+<code>score(c) = H(c) &times; (t<sub>def</sub> / t<sub>total</sub>) &times; W &times; &alpha;<sup>uses</sup></code><br><br>
+<code>H(c) = &minus;&sum;<sub>i</sub> p<sub>i</sub> &times; log<sub>2</sub>(p<sub>i</sub>)</code>
+&nbsp;&nbsp;where&nbsp;&nbsp;
+<code>p<sub>i</sub> = n<sub>i</sub> / t<sub>def</sub></code><br><br>
+<table style="font-size:0.9em; margin-top:8px; width:auto;">
+  <tr><td><code>n<sub>i</sub></code></td><td style="padding-left:12px;">number of taxa with state <em>i</em> (definite states only; M, N, unknown excluded)</td></tr>
+  <tr><td><code>t<sub>def</sub></code></td><td style="padding-left:12px;">total taxa with a definite state for character <em>c</em></td></tr>
+  <tr><td><code>t<sub>total</sub></code></td><td style="padding-left:12px;">total taxa at the current node</td></tr>
+  <tr><td><code>H(c)</code></td><td style="padding-left:12px;">Shannon entropy of the state partition (0 = all taxa in one state; maximum = perfectly even split)</td></tr>
+  <tr><td><code>W</code></td><td style="padding-left:12px;">character weight from <code>WTSET key</code> in the ASSUMPTIONS block (default 1.0)</td></tr>
+  <tr><td><code>&alpha;</code></td><td style="padding-left:12px;">Repeat Weight (default 0.05)</td></tr>
+  <tr><td><code>uses</code></td><td style="padding-left:12px;">number of times <em>c</em> has been used on the path from root to this node</td></tr>
+</table>
+</div>
+<p>The character with the highest score is selected at each node. IG produces balanced,
+even-depth keys and is the recommended default.</p>
+</div>
+
+<div class="card">
+<h3>Algorithm — DG (Diversity Gain, Simpson's Index)</h3>
+<p>The DG algorithm scores each candidate character by a lookahead ratio: how much
+between-group diversity does choosing this character now create across the <em>remaining</em>
+characters, relative to the residual within-group diversity? In other words, DG prefers
+characters whose split makes the resulting groups easier to distinguish with future characters.
+This tends to produce shorter keys when state frequencies are unequal.</p>
+
+<div class="note">
+<strong>DG formula — step by step</strong><br><br>
+
+<strong>1. Simpson's Diversity Index</strong><br>
+For character j and a taxon set T, let n = number of taxa in T with a definite state
+(not M, N, or polymorphic), and n<sub>s</sub> = number of those taxa coded as state s:<br>
+<code>D(j, T) = 1 &minus; &sum;<sub>s</sub> (n<sub>s</sub> / n)<sup>2</sup></code><br><br>
+
+<strong>2. Partition and exact decomposition</strong><br>
+Let c be the candidate character under evaluation. Define:<br>
+&nbsp;&nbsp;T<sub>def</sub> = taxa with a definite state for c &nbsp;(n<sub>def</sub> = |T<sub>def</sub>|)<br>
+&nbsp;&nbsp;G<sub>1</sub>, &hellip;, G<sub>K</sub> = partition of T<sub>def</sub> by state of c, one group per distinct state of c in T<sub>def</sub> (K = number of distinct states)<br><br>
+For any remaining character c<sub>j</sub>, D decomposes exactly as:<br>
+<code>D(c<sub>j</sub>, T<sub>def</sub>) = D<sub>within</sub>(c<sub>j</sub> | c) + D<sub>between</sub>(c<sub>j</sub> | c)</code><br><br>
+
+<strong>3. Within-group and between-group components</strong><br>
+<code>D<sub>within</sub>(c<sub>j</sub> | c) = &sum;<sub>k</sub> (|G<sub>k</sub>| / n<sub>def</sub>)<sup>2</sup> &times; D(c<sub>j</sub>, G<sub>k</sub>)</code><br>
+&nbsp;&nbsp;(p<sub>k</sub><sup>2</sup> weighting — not linear p<sub>k</sub> — makes the decomposition an exact algebraic identity)<br>
+<code>D<sub>between</sub>(c<sub>j</sub> | c) = D(c<sub>j</sub>, T<sub>def</sub>) &minus; D<sub>within</sub>(c<sub>j</sub> | c)</code><br><br>
+
+<strong>4. Summed across remaining characters C<sub>after</sub> = C<sub>available</sub> \ {c}</strong><br>
+Let C<sub>after</sub> = {c<sub>1</sub>, c<sub>2</sub>, &hellip;, c<sub>m</sub>} (m = |C<sub>after</sub>|). Then:<br>
+<code>D&#773;<sub>B</sub>(c) = (1/m) &times; [D<sub>between</sub>(c<sub>1</sub> | c) + D<sub>between</sub>(c<sub>2</sub> | c) + &hellip; + D<sub>between</sub>(c<sub>m</sub> | c)]</code><br>
+<code>D&#773;<sub>res</sub>(c) = (1/m) &times; [D(c<sub>1</sub>, T<sub>def</sub>) + D(c<sub>2</sub>, T<sub>def</sub>) + &hellip; + D(c<sub>m</sub>, T<sub>def</sub>)]</code><br>
+D&#773;<sub>B</sub> is the mean between-group diversity activated across future characters by choosing c now.
+D&#773;<sub>res</sub> is the mean total diversity remaining across future characters.<br><br>
+
+<strong>5. Score</strong><br>
+<code>score(c) = (D&#773;<sub>B</sub>(c) / D&#773;<sub>res</sub>(c)) &times; (n<sub>def</sub> / n<sub>total</sub>) &times; W &times; &alpha;<sup>uses</sup></code><br>
+where n<sub>def</sub> / n<sub>total</sub> is the coverage factor (penalises characters with many M/N codings),
+W is the user weight, and &alpha;<sup>uses</sup> is the cross-branch repeat penalty.<br><br>
+<em>Edge case: if C<sub>after</sub> is empty, the lookahead is undefined; score falls back to
+D(c, T<sub>def</sub>) &times; (n<sub>def</sub> / n<sub>total</sub>) &times; W &times; &alpha;<sup>uses</sup>.</em>
+</div>
+<p>The ratio D&#773;<sub>B</sub> / D&#773;<sub>res</sub> selects the character that maximises
+future between-group separation relative to future within-group confusion. DG is less sensitive
+to rare states than IG and may produce keys with better early couplets for skewed datasets.</p>
+</div>
+
+<div class="card">
+<h3>IG vs DG — comparison</h3>
+<table>
+  <tr><th>Feature</th><th>IG (Shannon)</th><th>DG (Simpson's)</th></tr>
+  <tr><td>Objective</td>
+      <td>Maximise entropy reduction at the current node</td>
+      <td>Maximise between-group diversity across remaining characters</td></tr>
+  <tr><td>Mathematical basis</td>
+      <td>Shannon entropy: H = &minus;&sum; p<sub>i</sub> log<sub>2</sub> p<sub>i</sub></td>
+      <td>Simpson's D: D = 1 &minus; &sum; p<sub>i</sub><sup>2</sup></td></tr>
+  <tr><td>Lookahead</td>
+      <td>No — scores the current split only</td>
+      <td>Yes — considers how remaining characters perform after the split</td></tr>
+  <tr><td>Sensitivity to rare states</td>
+      <td>Higher — entropy is maximised by equal frequencies</td>
+      <td>Lower — D<sup>2</sup> weighting is less sensitive to rare states</td></tr>
+  <tr><td>Computational cost</td>
+      <td>Low</td>
+      <td>Higher (computes D across all remaining characters at each node)</td></tr>
+  <tr><td>Typical key shape</td>
+      <td>Balanced, even depth</td>
+      <td>May be shallower when early choices are better</td></tr>
+  <tr><td>Default?</td>
+      <td>Yes</td>
+      <td>No</td></tr>
+  <tr><td>Prefer when</td>
+      <td>General use; balanced character state frequencies</td>
+      <td>State frequencies are unequal; or IG produces poor early couplets</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Format</h3>
+<p>The <strong>Format</strong> radio buttons control the structure of each couplet:</p>
+<ul>
+  <li><strong>Binary (dichotomous)</strong> — every couplet has exactly two leads labelled
+      <strong>a</strong> and <strong>b</strong>. The conventional format for printed identification
+      keys. When a character has more than two states, states are grouped into two contrasting
+      leads. Familiar to users of traditional taxonomic keys.</li>
+  <li><strong>Multi-arm</strong> — a couplet branches into one lead per distinct state.
+      Produces shorter keys (fewer couplets to reach an identification) because multi-state
+      characters resolve more taxa per node. Can be harder to navigate when a single character
+      has many states.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Repeat Weight</h3>
+<p>The <strong>Repeat Weight</strong> (default 0.05, range 0–1) controls how strongly the
+algorithm discourages reusing a character that has already appeared on the current branch of
+the key. It acts as a multiplicative weight applied to the character's score for each prior
+use on the same branch:</p>
+<ul>
+  <li>First use at any node: full score (Repeat Weight raised to power 0 = 1 — no adjustment)</li>
+  <li>Second use on the same branch: score &times; &alpha;<sup>1</sup> (e.g. &times;0.05 at default)</li>
+  <li>Third use on the same branch: score &times; &alpha;<sup>2</sup> (e.g. &times;0.0025 at default)</li>
+</ul>
+<div class="warning">A <em>lower</em> Repeat Weight
+means a <em>greater</em> penalty for reuse. At the default of 0.05, a character used once on
+a branch has only 5% of its base score — making reuse very unlikely. A value of 1 means no
+penalty (the character may be freely reused). A value of 0 hard-excludes the character after
+its first use.</div>
+<p>Values near 0.05 (the default) almost completely prevent cross-branch repetition, producing
+diverse keys where each branch uses different characters. Values of 0.3–0.5 allow moderate
+repetition when no better alternative exists. Values near 1 allow the algorithm to freely
+reuse the most informative character at every level.</p>
+</div>
+
+<div class="card">
+<h3>Character weights and preclusion</h3>
+<p>Character weights can be set in the <code>BEGIN ASSUMPTIONS;</code> block using
+<code>WTSET key</code>. Preclusion rules are written directly in the <code>BEGIN CARL;</code>
+block. See <a href="#precludes">Preclusion statements</a> in the CARL block section for full
+syntax and examples.</p>
+</div>
+
+<div class="card">
+<h3>Output</h3>
+<p>The key is prefaced by a statistics block showing the total number of taxa, the number
+uniquely resolved, any unresolved taxa, and the total couplet count. The key body uses
+numbered couplets:</p>
+<pre>1a.  Spinnerets long …………………………………… 2
+1b.  Spinnerets short ………………………………… Taxon A</pre>
+<p>Unresolved taxa — those that cannot be uniquely identified given the available characters
+and selected subset — are listed after the key body. Unresolved taxa typically arise when
+two or more taxa are identically coded for all characters, or when missing data prevents
+any character from reliably distinguishing them.</p>
+<p>The Raw key can be rendered two further ways, selected with the <strong>Output Mode</strong>
+radio buttons. <strong>Raw + NLG</strong> shows a deterministic natural-language version below the
+Raw key: the <em>character = state</em> condition in each lead is rewritten with <em>is</em> or
+<em>are</em> (e.g. <em>Anterior lateral spinnerets = present</em> → <em>Anterior lateral
+spinnerets are present</em>), programmatically and offline. <strong>Raw + LLM</strong> instead
+passes the Raw key to the Output Model for reformatting as prose — see
+<a href="#analyses-llm">Analyses with AI</a> in Part B.</p>
+</div>
+
+<div class="card">
+<h3>Keys tab — button reference</h3>
+<table>
+  <tr><th>Button / Control</th><th>Function</th></tr>
+
+  <tr><td><strong>Output Mode: Raw only</strong></td>
+      <td>Generate the key deterministically from the matrix — no LLM required.</td></tr>
+
+  <tr><td><strong>Output Mode: Raw + LLM</strong></td>
+      <td>Generate the raw key first, then pass it to the Output Model for reformatting as prose. Requires a model configured in Settings → LLM Settings.</td></tr>
+
+  <tr><td><strong>Output Mode: Raw + NLG</strong></td>
+      <td>Generate the raw key first, then a deterministic natural-language rendering below it: the character/state "=" in each lead is replaced by "is"/"are", chosen from the grammatical number of the character name's head noun. Programmatic, offline, no LLM required.</td></tr>
+
+  <tr><td><strong>Algorithm: IG</strong></td>
+      <td>Use Information Gain (Shannon entropy) scoring. Maximises entropy reduction at each node. Recommended default.</td></tr>
+
+  <tr><td><strong>Algorithm: DG</strong></td>
+      <td>Use Diversity Gain (Simpson's Index) scoring. Lookahead approach; may produce shallower keys for skewed state distributions.</td></tr>
+
+  <tr><td><strong>Format: Binary</strong></td>
+      <td>Classic two-lead dichotomous couplets (a / b).</td></tr>
+
+  <tr><td><strong>Format: Multi-arm</strong></td>
+      <td>One lead per distinct character state; produces shorter keys.</td></tr>
+
+  <tr><td><strong>Repeat weight (field)</strong></td>
+      <td>Multiplicative penalty on reusing a character within a branch. Lower = stronger penalty. Default 0.05. Range 0–1.</td></tr>
+
+  <tr><td><strong>Run</strong></td>
+      <td>Generates the key for the selected taxa and groups.</td></tr>
+
+  <tr><td><strong>Copy</strong></td>
+      <td>Copies the full key output to the clipboard.</td></tr>
+
+  <tr><td><strong>Save…</strong></td>
+      <td>Writes the key output to a plain-text <code>.txt</code> file.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== MULTI-ACCESS KEY TAB ===== -->
+<h2 id="mak-tab">Multi-Access Key Tab</h2>
+
+<div class="card">
+<p>The Multi-Access Key (also called a polyclave) is an interactive tool for identification by
+elimination. Unlike a dichotomous key — which requires answering characters in a fixed sequence —
+the Multi-Access Key lets you enter characters in any order. As criteria are added, the candidate
+taxa list narrows live. No key text is produced; this is a live identification workspace.</p>
+
+<h3>Workflow</h3>
+<ol>
+  <li>Click a character in the <strong>Characters</strong> listbox (left column). Its states
+      appear in the <strong>States</strong> listbox (centre column).</li>
+  <li>Select one or more states that describe your specimen.</li>
+  <li>Click <strong>Add Criterion</strong>. The criterion appears in the <strong>Current Criteria</strong>
+      list (right column) and the taxa list updates immediately.</li>
+  <li>Repeat for additional characters to narrow the candidates further.</li>
+  <li>To remove a criterion, select it in the Current Criteria list and click
+      <strong>Remove Selected</strong>. To restart entirely, click <strong>Clear All</strong>.</li>
+</ol>
+
+<h3>Filtering logic</h3>
+<ul>
+  <li><strong>Within a character — OR:</strong> selecting multiple states for one character means
+      the taxon must have <em>at least one</em> of those states to remain an active candidate.</li>
+  <li><strong>Across characters — AND:</strong> all criteria must be satisfied simultaneously.
+      Adding a second character narrows further; it does not replace the first criterion.</li>
+</ul>
+
+<h3>Taxon list indicators</h3>
+<table>
+  <tr><th>Display</th><th>Meaning</th></tr>
+  <tr><td>Normal text</td>
+      <td>Active candidate — consistent with all current criteria</td></tr>
+  <tr><td>Greyed</td>
+      <td>Eliminated — a definite non-match was found for at least one criterion character,
+          or the taxon has an inapplicable (<code>N</code>) state for a criterion character</td></tr>
+  <tr><td><code>[M: Char 3, Char 7]</code></td>
+      <td>Active candidate, but missing data for the listed characters — kept in the pool
+          (the character may simply be uncoded, not inapplicable) but flagged as uncertain</td></tr>
+</table>
+<p>The <strong>candidate count</strong> above the taxa list shows how many taxa remain active
+(e.g. <em>3 of 15 active</em>).</p>
+
+<div class="tip"><strong>Tip:</strong> start with characters you can observe most easily and
+reliably. Use the <strong>Comparisons</strong> tab afterwards to investigate what distinguishes
+the remaining candidates.</div>
+<div class="note">The Multi-Access Key produces no exportable key text. Once the candidate list
+is small, use the <strong>Keys</strong> tab to generate a formal key for just that subset, or
+the <strong>Comparisons</strong> tab to see exactly what distinguishes them.</div>
+</div>
+
+<div class="card" id="special-states">
+<h3>How special states are handled in analyses</h3>
+<table>
+  <tr><th>Analysis</th><th>Polymorphic <code>()</code></th>
+      <th>Missing <code>M</code></th><th>Inapplicable <code>N</code></th></tr>
+  <tr><td><strong>Descriptions</strong></td>
+      <td>All states listed</td>
+      <td>Reported as "unknown"</td>
+      <td>Reported as "not applicable"</td></tr>
+  <tr><td><strong>Compare / Distinguish</strong></td>
+      <td>Any shared state = not distinguishing</td>
+      <td>Treated as distinct from any known state; treated as a difference</td>
+      <td>Treated as a distinct state; reported as a difference</td></tr>
+  <tr><td><strong>Diagnose</strong></td>
+      <td>As for Compare</td>
+      <td>As for Compare</td>
+      <td>As for Compare</td></tr>
+  <tr><td><strong>Keys</strong></td>
+      <td>Polymorphic taxa penalised in character scoring; placed in separate branch</td>
+      <td>Heavily penalised; taxa that cannot be placed are flagged UNRESOLVED</td>
+      <td>Excluded from character scoring; <code>N</code>-coded taxa placed in a
+          separate branch</td></tr>
+  <tr><td><strong>Multi-Access Key</strong></td>
+      <td>Active candidate — taxon matches if any of its polymorphic states overlaps the
+          selected states</td>
+      <td>Active candidate, annotated <code>[M: Char N]</code> — kept in pool but flagged
+          as uncertain for that character</td>
+      <td>Eliminated immediately — taxon is greyed</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Copying and saving output</h3>
+<p>Each analysis tab has a <strong>Copy</strong> button (copies all output to the clipboard)
+and a <strong>Save…</strong> button (writes output to a plain-text <code>.txt</code> file).
+Use Copy to paste results into a manuscript; use Save to archive individual analysis runs.</p>
+</div>
+
+
+<!-- ===== SETTINGS PANEL ===== -->
+
+<h2 id="lm-settings-tab">LM Settings Tab</h2>
+
+<div class="card">
+<p>The LM Settings tab configures language models for analysis narration, verification, and
+the Carl chatbot. For background on providers and model types,
+see <a href="#llm-setup">Setting Up Language Models</a> (Part B).</p>
+</div>
+
+<div class="card">
+<h3>API Keys</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Groq / OpenAI / Anthropic / Google / HuggingFace / OpenRouter</strong>
+          (entry, masked)</td>
+      <td>API key for each cloud provider. Keys are saved to
+          <code>taxongpt_settings.json</code> in the CARL folder and are never
+          transmitted to any service other than the provider you configure.</td></tr>
+  <tr><td><strong>Show</strong> (button, per provider)</td>
+      <td>Toggles the key field between masked (●●●) and visible text.</td></tr>
+  <tr><td><strong>Free models only</strong> (checkbox, OpenRouter)</td>
+      <td>Restricts the OpenRouter model list to free-tier models only.</td></tr>
+  <tr><td><strong>Save API Keys</strong></td>
+      <td>Writes all API keys to <code>taxongpt_settings.json</code> immediately.
+          Keys are also saved automatically when CARL closes.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>OUTPUT (Generation)</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Model</strong> (combobox)</td>
+      <td>The model used to narrate analysis output as fluent prose. Type a model name
+          directly or select from the list populated by <strong>Fetch Models</strong>.
+          For API models use the format <code>provider/model-name</code>
+          (e.g. <code>groq/llama-3.3-70b-versatile</code>); for Ollama use
+          <code>model:tag</code> (e.g. <code>llama3.2:3b</code>).</td></tr>
+  <tr><td><strong>Temperature</strong> (entry)</td>
+      <td>Controls output variability. 0 = highly deterministic; higher values produce
+          more varied prose. For formal taxonomic output, 0.1–0.3 is recommended.</td></tr>
+  <tr><td><strong>Style Guide</strong> (entry + Browse…)</td>
+      <td>Path to a plain-text or Markdown file injected into every analysis prompt
+          to control writing style. Leave blank to use CARL's built-in defaults.
+          See <a href="#style-guide">Style guides</a> (Part B) for details.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>VERIFICATION (Full Mode)</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Model</strong> (combobox)</td>
+      <td>The model used in Full mode to review the Output Model's draft against the
+          raw data. Models with dedicated reasoning capability perform best in this
+          role. Used only when LLM Mode is set to Full.</td></tr>
+  <tr><td><strong>Temperature</strong> (entry)</td>
+      <td>Temperature for the Verification Model. 0.0 is recommended — deterministic
+          review is preferable for a critic role.</td></tr>
+  <tr><td><strong>Max Tokens</strong> (entry)</td>
+      <td>Maximum token budget for the verification response. If the verifier output
+          ends mid-sentence or shows a truncation message, increase this value.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>CARL (Chatbot)</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Model</strong> (combobox)</td>
+      <td>The model that powers the Carl chatbot panel. A conversational model with
+          strong instruction-following is recommended.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Local server ports, Fetch Models and Model Test</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Local server ports</strong> (entry)</td>
+      <td>Comma-separated port numbers for locally running OpenAI-compatible servers
+          (LM Studio, Jan, LocalAI, llama.cpp). CARL probes these ports during
+          Fetch Models. Leave blank to skip local server probing.</td></tr>
+  <tr><td><strong>Fetch Models</strong></td>
+      <td>Queries Ollama and any configured local ports for available models, then
+          populates all model dropdowns. Run this after starting Ollama or after
+          pulling a new model.</td></tr>
+  <tr><td><strong>Test Model</strong> (combobox + button)</td>
+      <td>Select any model and click <strong>Test Model</strong> to send a brief prompt
+          and display the response in the text area below. Use to verify that a model
+          is reachable and producing output before running a full analysis.</td></tr>
+  <tr><td><strong>Reset to Defaults</strong></td>
+      <td>Restores all LM Settings values to CARL's factory defaults. API keys are
+          not affected.</td></tr>
+</table>
+</div>
+
+
+<h2 id="databases-tab">Databases Tab</h2>
+
+<div class="card">
+<p>The Databases tab controls which external biodiversity databases are queried during
+information retrieval, in what order, and how many records are fetched per category.
+For how retrieved records are displayed and used, see the
+<a href="#information-tab">Information Tab</a>.</p>
+</div>
+
+<div class="card">
+<h3>Data Providers</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>Enabled</strong> (checkbox, per provider)</td>
+      <td>Toggles a database on or off. Disabled databases are skipped entirely
+          during retrieval.</td></tr>
+  <tr><td><strong>Priority</strong> (spinbox 1–N, per provider)</td>
+      <td>Sets the order in which providers are consulted when multiple sources
+          return data for the same field. Lower numbers = higher priority.</td></tr>
+</table>
+<p>Available providers: GBIF, CoL, ITIS, WoRMS, WSC (Araneae; requires API key),
+BacDive (Prokaryotes), POWO (Vascular plants), NCBI, ZooBank (per-IP verification
+required), CrossRef, BHL (requires API key), Plazi (genus/species only),
+Wikipedia, Wikidata.</p>
+</div>
+
+<div class="card">
+<h3>Retrieval Limits</h3>
+<p>Spinboxes (range 1–500) capping the number of records fetched per category per taxon:</p>
+<table>
+  <tr><th>Limit</th><th>Default</th><th>What it caps</th></tr>
+  <tr><td>Publications</td><td>10</td><td>Publication records fetched from all sources</td></tr>
+  <tr><td>Images</td><td>10</td><td>Image URLs fetched</td></tr>
+  <tr><td>Specimens</td><td>20</td><td>Specimen occurrence records fetched</td></tr>
+  <tr><td>NCBI accessions (sample)</td><td>10</td><td>NCBI sequence accession numbers fetched</td></tr>
+  <tr><td>Plazi treatments</td><td>10</td><td>Plazi treatment UUIDs fetched</td></tr>
+  <tr><td>Plazi treatments with keys</td><td>5</td><td>Plazi treatments that contain dichotomous keys</td></tr>
+  <tr><td>BHL title records</td><td>5</td><td>BHL title-level bibliographic records fetched</td></tr>
+  <tr><td>BHL page records</td><td>10</td><td>BHL page-level records fetched</td></tr>
+  <tr><td>ZooBank acts</td><td>10</td><td>ZooBank nomenclatural acts fetched</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>API Keys</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+  <tr><td><strong>BHL API Key</strong> (entry, masked) + <strong>Show</strong></td>
+      <td>API key for the Biodiversity Heritage Library. Free registration at
+          <code>biodiversitylibrary.org/getapikey.aspx</code>. Required to enable
+          BHL as a provider.</td></tr>
+  <tr><td><strong>WSC API Key</strong> (entry, masked) + <strong>Show</strong></td>
+      <td>API key for the World Spider Catalog. Free registration at
+          <code>wsc.nmbe.ch</code>. Required to enable WSC as a provider.</td></tr>
+  <tr><td><strong>Open ZooBank verification page ↗</strong></td>
+      <td>Opens <code>zoobank.org/search</code> in your browser. ZooBank requires a
+          one-time human verification from each new IP address. If ZooBank returns no
+          results after enabling it, complete the verification here and retry.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Darwin Core Fields</h3>
+<p>A scrollable table of all Darwin Core terms supported by CARL. Each row represents
+one field:</p>
+<table>
+  <tr><th>Column</th><th>Meaning</th></tr>
+  <tr><td><strong>Retrieve</strong> (checkbox)</td>
+      <td>Fetch this field's value from external databases during information retrieval.
+          Unticking suppresses retrieval even if the provider returns data for this
+          term.</td></tr>
+  <tr><td><strong>Include</strong> (checkbox)</td>
+      <td>Include this field in exported Darwin Core CSV files.
+          <em>Retrieve</em> must be enabled for <em>Include</em> to have any
+          effect.</td></tr>
+  <tr><td><strong>Status</strong></td>
+      <td>Darwin Core standard classification for this term:
+          <span style="color:#c0392b">Required</span>,
+          <span style="color:#1a5276">Recommended</span>, or
+          <span style="color:#7f8c8d">Optional</span>.</td></tr>
+  <tr><td><strong>Field</strong></td>
+      <td>The Darwin Core term name (e.g. <code>scientificName</code>,
+          <code>taxonRank</code>).</td></tr>
+  <tr><td><strong>Description</strong></td>
+      <td>Brief description of the field's meaning. Hover over the label for the
+          full Darwin Core definition.</td></tr>
+  <tr><td><strong>Vocab</strong></td>
+      <td>Indicates whether the field uses a controlled vocabulary
+          (e.g. dropdown in the DwC popup).</td></tr>
+</table>
+</div>
+
+
+<h2 id="preferences-tab">Preferences Tab</h2>
+
+<div class="card">
+<h3>Preferences tab — widget reference</h3>
+<table>
+  <tr><th>Widget</th><th>Function</th></tr>
+
+  <tr><td><strong>General text (pt) (spinbox 7–24)</strong></td>
+      <td>Point size for all interface text: labels, menus, buttons, and tree rows.</td></tr>
+
+  <tr><td><strong>Code/output text (pt) (spinbox 7–24)</strong></td>
+      <td>Point size for monospace text: analyses output, CARL block preview, and the information report.</td></tr>
+
+  <tr><td><strong>Apply</strong></td>
+      <td>Applies the new font sizes immediately without restarting CARL. Sizes are saved to settings and restored at next launch.</td></tr>
+
+  <tr><td><strong>Working Directory (entry + Browse…)</strong></td>
+      <td>Default folder opened by File → Open and File → Save dialogs. When blank, dialogs open at the operating system default location.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== PLUGINS ===== -->
+<h2 id="plugins-tab">Plugins Panel</h2>
+
+<div class="card">
+<p>The Plugins panel runs external command-line programs from inside CARL, and lets you
+author the small JSON <strong>descriptor</strong> files that tell CARL how to drive them.
+The guiding principle is that a plugin wraps a <strong>standalone command-line program</strong>:
+CARL builds a command from your field values, runs it, streams its output, and displays the
+files it produces. Nothing about a plugin is specific to CARL's data model, so the same
+descriptor works for anyone who has that program installed.</p>
+<p>The panel has two tabs — <strong>Run Plugin</strong> (configure and execute an existing
+descriptor) and <strong>Generate Descriptor</strong> (create or edit one).</p>
+</div>
+
+<h3 id="run-plugin">Run Plugin tab</h3>
+<div class="card">
+<p>Click <strong>Open Descriptor…</strong> to load a plugin's <code>.json</code> file. CARL
+checks that the program is available and lists its option <strong>Sections</strong> on the
+left; selecting a section shows its <strong>Fields</strong>. A star (★) marks
+<strong>Common Options</strong> — the handful of fields most runs need.</p>
+<p>As you fill in fields, CARL assembles the command in the editable
+<strong>command box</strong> at the top of the right pane. You can:</p>
+<ul>
+  <li>edit the command by hand — press <strong>Enter</strong> or <strong>Run</strong> to
+      execute it (CARL parses the arguments itself and never invokes a shell);</li>
+  <li>click <strong>Rebuild</strong> to discard manual edits and regenerate the command from
+      the current field values;</li>
+  <li>click <strong>Run</strong> to execute and <strong>Stop</strong> to terminate.</li>
+</ul>
+<p>The right pane splits into <strong>Output</strong> — the live terminal (stdout and stderr,
+ending with a coloured exit-code line) — and <strong>Results</strong>. When the run finishes,
+CARL resolves the descriptor's output-file patterns and lists any files that exist. Selecting
+one shows an inline preview; the <strong>⧉ Pop out</strong> button opens it in a dedicated
+window: text in an editable viewer (Save / Save As), trees in the interactive
+<a href="#run-plugin">Phylogeny Viewer</a>, and images in the Image Viewer. If no output
+prefix was set, use <strong>Add: Text… / Tree… / Image…</strong> to browse to a file manually.</p>
+</div>
+
+<h3 id="generate-descriptor">Generate Descriptor tab</h3>
+<div class="card">
+<p>This tab builds and edits descriptors with a live <strong>JSON preview</strong> and a
+command-line preview. Use <strong>Plugin Info</strong> to set the program name, executable,
+and citation; add option <strong>Sections</strong>, and within each section add
+<strong>Fields</strong>. Each field has a type:</p>
+<table>
+  <tr><th>Field type</th><th>Control shown</th></tr>
+  <tr><td><strong>string / integer / float</strong></td>
+      <td>A text box (integers use a spinner).</td></tr>
+  <tr><td><strong>boolean</strong></td>
+      <td>A checkbox; the flag is emitted only when ticked.</td></tr>
+  <tr><td><strong>choice</strong></td>
+      <td>A drop-down of allowed values. Optional choices stay blank unless you pick one.</td></tr>
+  <tr><td><strong>file</strong></td>
+      <td>An input path with a <strong>Browse…</strong> (open-file) dialog.</td></tr>
+  <tr><td><strong>outfile</strong></td>
+      <td>An output path with a <strong>Save As…</strong> dialog (choose folder and name).</td></tr>
+  <tr><td><strong>directory</strong></td>
+      <td>A folder path with a directory picker.</td></tr>
+</table>
+<p>A field with a <strong>flag</strong> (e.g. <code>-s</code>) emits that flag; a field with
+no flag is a <strong>positional</strong> argument ordered by its positional number. A field
+may also declare a <strong>condition</strong> (show it only when another field has a given
+value), a <strong>mutex group</strong> (only one member of the group is emitted), and the
+<strong>common</strong> flag (surface it in Common Options).</p>
+<p>The <strong>Output</strong> section describes what the program produces:</p>
+<ul>
+  <li><strong>Display mode</strong> — terminal, file, or both.</li>
+  <li><strong>Stdout file</strong> — capture standard output to a file.</li>
+  <li><strong>Output files</strong> — a table of file entries. Each has a
+      <strong>pattern</strong> using <code>{flag}</code> tokens that expand to that field's
+      value (e.g. <code>{pre}.treefile</code> uses the <code>-pre</code> value), an
+      <strong>output type</strong>, and a description.</li>
+</ul>
+<table>
+  <tr><th>Output type</th><th>Shown in Results as</th></tr>
+  <tr><td><strong>text / table / trace</strong></td>
+      <td>Text preview; pop-out opens the editable text viewer.</td></tr>
+  <tr><td><strong>image</strong></td>
+      <td>Image preview; pop-out opens the Image Viewer.</td></tr>
+  <tr><td><strong>tree</strong></td>
+      <td>Static tree preview; pop-out opens the interactive Phylogeny Viewer.</td></tr>
+</table>
+<p>Generate Descriptor is the graphical way to author a descriptor; for every descriptor
+key and field property, see the <a href="#descriptor-reference">Descriptor reference</a> below.</p>
+</div>
+
+<h3 id="descriptor-reference">Descriptor reference</h3>
+<div class="card">
+<p>A descriptor is a JSON file. You normally build it with Generate Descriptor, but the
+complete format is documented here.</p>
+
+<p><strong>Top-level keys</strong></p>
+<table>
+  <tr><th>Key</th><th>Required?</th><th>Meaning</th></tr>
+  <tr><td><code>schema_version</code></td><td>Yes</td>
+      <td>Descriptor format version (currently <code>"1.0"</code>).</td></tr>
+  <tr><td><code>plugin_id</code></td><td>Yes</td>
+      <td>Short unique identifier for the plugin.</td></tr>
+  <tr><td><code>name</code></td><td>Yes</td>
+      <td>Human-readable name shown in the interface.</td></tr>
+  <tr><td><code>executable</code></td><td>Yes</td>
+      <td>Program to run: a name on the system <code>PATH</code>, an absolute path, or a
+          <code>.py</code> script (run with CARL's own interpreter).</td></tr>
+  <tr><td><code>alt_executables</code></td><td>No</td>
+      <td>Alternative executable names tried if the first is not found (e.g. a frozen
+          <code>.exe</code>).</td></tr>
+  <tr><td><code>description</code>, <code>homepage</code>, <code>citation</code>,
+          <code>license</code>, <code>min_version</code></td><td>No</td>
+      <td>Metadata. <code>citation</code> is included in the run summary.</td></tr>
+  <tr><td><code>sections</code></td><td>Yes</td>
+      <td>List of option sections; each has an <code>id</code>/<code>name</code> and a list
+          of <code>fields</code>.</td></tr>
+  <tr><td><code>output</code></td><td>No</td>
+      <td>How to display results (see the Output object below).</td></tr>
+</table>
+
+<p><strong>Field object</strong> (each entry in a section's <code>fields</code>)</p>
+<table>
+  <tr><th>Property</th><th>Meaning</th></tr>
+  <tr><td><code>flag</code></td>
+      <td>Command-line flag (e.g. <code>-s</code>, <code>--model</code>). Empty string means a
+          positional argument.</td></tr>
+  <tr><td><code>label</code></td><td>Human-readable field name.</td></tr>
+  <tr><td><code>type</code></td>
+      <td><code>string</code>, <code>integer</code>, <code>float</code>, <code>boolean</code>,
+          <code>choice</code>, <code>file</code>, <code>outfile</code>, or
+          <code>directory</code>.</td></tr>
+  <tr><td><code>required</code></td><td>Field must be filled before the plugin will run.</td></tr>
+  <tr><td><code>common</code></td><td>Surface the field in Common Options (★).</td></tr>
+  <tr><td><code>default</code></td><td>Default value.</td></tr>
+  <tr><td><code>value_hint</code></td><td>Placeholder/example shown beside the field.</td></tr>
+  <tr><td><code>help</code></td><td>Longer help text.</td></tr>
+  <tr><td><code>options</code></td><td>Allowed values, for <code>type: choice</code>.</td></tr>
+  <tr><td><code>mutex_group</code></td>
+      <td>Group name; only one field from a mutex group is emitted.</td></tr>
+  <tr><td><code>condition</code></td>
+      <td>Show/emit only when another field matches, e.g.
+          <code>{"field": "-bb", "present": true}</code> or
+          <code>{"field": "--to", "equals": "phylip"}</code>.</td></tr>
+  <tr><td><code>separator</code></td>
+      <td>Between flag and value: <code>" "</code> (space), <code>"="</code>, or
+          <code>""</code> (joined).</td></tr>
+  <tr><td><code>positional_order</code></td>
+      <td>Ordering for positional arguments (when <code>flag</code> is empty).</td></tr>
+  <tr><td><code>multi_separator</code></td>
+      <td>Separator used when a field emits multiple values.</td></tr>
+</table>
+
+<p><strong>Output object</strong></p>
+<table>
+  <tr><th>Key</th><th>Meaning</th></tr>
+  <tr><td><code>display_mode</code></td><td><code>terminal</code>, <code>file</code>, or <code>both</code>.</td></tr>
+  <tr><td><code>stdout_file</code></td><td>Capture standard output to this path.</td></tr>
+  <tr><td><code>files</code></td>
+      <td>List of output-file entries. Each has a <code>pattern</code> (with
+          <code>{flag}</code> tokens that expand to a field's value), an
+          <code>output_type</code> (<code>text</code>, <code>table</code>, <code>image</code>,
+          <code>tree</code>, or <code>trace</code>), and a <code>description</code>.</td></tr>
+</table>
+
+<p><strong>A minimal descriptor</strong></p>
+<pre>{
+  "schema_version": "1.0",
+  "plugin_id": "wordcount",
+  "name": "Word Count",
+  "executable": "wc",
+  "sections": [
+    {
+      "id": "options",
+      "name": "Options",
+      "fields": [
+        { "flag": "-l", "label": "Count lines", "type": "boolean", "common": true },
+        { "flag": "", "label": "Input file", "type": "file",
+          "required": true, "positional_order": 1, "value_hint": "notes.txt" }
+      ]
+    }
+  ],
+  "output": { "display_mode": "terminal" }
+}</pre>
+
+<div class="note">To see complete, working descriptors, open
+<strong>Generate Descriptor → Open…</strong> and load one of the bundled plugins
+(<code>iqtree2.json</code> or <code>alignment_converter.json</code>) from the
+<code>plugins/bundled</code> folder.</div>
+</div>
+
+<h3 id="plugins-bundled">Script and bundled plugins</h3>
+<div class="card">
+<p>A descriptor's executable can be a compiled program on the system <code>PATH</code> or a
+Python <code>.py</code> script. When it is a script, CARL runs it with its own Python
+interpreter, so plugins can be developed and tested without being compiled first; for
+distribution the script can be frozen to a standalone executable, and the descriptor still
+finds it by name. Two plugins ship with CARL:</p>
+<ul>
+  <li><strong>IQ-TREE</strong> — maximum-likelihood phylogenetic inference. Its
+      <code>.treefile</code> result opens in the Phylogeny Viewer, which reads node support
+      from IQ-TREE, RAxML, FastTree, MrBayes, BEAST, and RevBayes trees alike.</li>
+  <li><strong>Alignment Format Converter</strong> — converts alignments and character
+      matrices between FASTA, NEXUS, PHYLIP, NeXML, Clustal, and Stockholm, in any direction.
+      Morphology (<code>standard</code>) data is fully represented only in NEXUS and NeXML;
+      when writing the simpler sequence formats, undeclared symbols and polymorphism are
+      normalised to missing/ambiguity.</li>
+</ul>
+</div>
+
+<h3>Plugins tab — button reference</h3>
+<table>
+  <tr><th>Button</th><th>Location</th><th>Function</th></tr>
+
+  <tr><td><strong>Open Descriptor…</strong></td>
+      <td>Run Plugin</td>
+      <td>Load a plugin <code>.json</code> descriptor into the Run Plugin tab.</td></tr>
+
+  <tr><td><strong>Run</strong></td>
+      <td>Run Plugin — command bar</td>
+      <td>Execute the assembled command. Required fields must be filled in first.</td></tr>
+
+  <tr><td><strong>Stop</strong></td>
+      <td>Run Plugin — command bar</td>
+      <td>Terminate the running plugin process.</td></tr>
+
+  <tr><td><strong>Rebuild</strong></td>
+      <td>Run Plugin — command bar</td>
+      <td>Discard manual edits to the command box and regenerate it from the current field values.</td></tr>
+
+  <tr><td><strong>Clear</strong></td>
+      <td>Run Plugin — Output</td>
+      <td>Clear the terminal output area.</td></tr>
+
+  <tr><td><strong>Text…</strong></td>
+      <td>Run Plugin — Results</td>
+      <td>Browse to a text or log file and add it to Results.</td></tr>
+
+  <tr><td><strong>Tree…</strong></td>
+      <td>Run Plugin — Results</td>
+      <td>Browse to a tree file and add it to Results.</td></tr>
+
+  <tr><td><strong>Image…</strong></td>
+      <td>Run Plugin — Results</td>
+      <td>Browse to an image file and add it to Results.</td></tr>
+
+  <tr><td><strong>⧉ Pop out</strong></td>
+      <td>Run Plugin — Results</td>
+      <td>Open the selected result in a dedicated window — the text editor, Phylogeny Viewer, or Image Viewer.</td></tr>
+
+  <tr><td><strong>New</strong></td>
+      <td>Generate Descriptor — toolbar</td>
+      <td>Start a new, empty descriptor after confirming any unsaved changes.</td></tr>
+
+  <tr><td><strong>Open…</strong></td>
+      <td>Generate Descriptor — toolbar</td>
+      <td>Open an existing descriptor for editing.</td></tr>
+
+  <tr><td><strong>Save</strong></td>
+      <td>Generate Descriptor — toolbar</td>
+      <td>Save the descriptor to its current file (prompts for a path if it has none).</td></tr>
+
+  <tr><td><strong>Save As…</strong></td>
+      <td>Generate Descriptor — toolbar</td>
+      <td>Save the descriptor to a new file.</td></tr>
+
+  <tr><td><strong>+ Add</strong></td>
+      <td>Generate Descriptor — Sections / Fields / Output</td>
+      <td>Add a new section, field, or output-file entry to the active editor.</td></tr>
+
+  <tr><td><strong>Delete</strong></td>
+      <td>Generate Descriptor — Sections / Fields / Output</td>
+      <td>Remove the selected section, field, or output-file entry.</td></tr>
+
+  <tr><td><strong>Duplicate</strong></td>
+      <td>Generate Descriptor — Fields</td>
+      <td>Copy the selected field.</td></tr>
+
+  <tr><td><strong>▲</strong></td>
+      <td>Generate Descriptor — Sections / Fields / Output</td>
+      <td>Move the selected section, field, or output-file entry up.</td></tr>
+
+  <tr><td><strong>▼</strong></td>
+      <td>Generate Descriptor — Sections / Fields / Output</td>
+      <td>Move the selected section, field, or output-file entry down.</td></tr>
+
+  <tr><td><strong>Rename</strong></td>
+      <td>Generate Descriptor — Fields</td>
+      <td>Rename the selected section.</td></tr>
+
+  <tr><td><strong>Apply</strong></td>
+      <td>Generate Descriptor — Plugin Info / Field / Output</td>
+      <td>Commit the current form's edits to the descriptor.</td></tr>
+</table>
+
+
+<!-- ===== PART B ===== -->
+<div class="part-banner">
+  <h2>Part B — CARL with AI</h2>
+  <p>The features in this section require a language model — either a locally installed model
+     via Ollama, or an API-hosted model via Groq, OpenAI, Anthropic, Google, or HuggingFace.
+     No AI connection is needed for any feature in Part A.</p>
+</div>
+
+
+<!-- ===== AI OVERVIEW ===== -->
+<h2 id="llm-overview">AI in CARL</h2>
+
+<div class="card">
+<p>CARL uses language models as a <strong>post-processing layer</strong>, not as an analytical
+engine. All descriptions, comparisons, keys, and diagnoses are first generated deterministically
+from the character-state matrix, producing a Raw Output that is exact and reproducible. The
+language model is then given this Raw Output and asked to rephrase it as fluent natural-language
+prose.</p>
+<p>Because the model works from a structured, verifiable input rather than from memory or
+general training knowledge, the risk of factual error is substantially lower than asking a
+model to generate a description from scratch. The Raw Output is always shown alongside any AI
+output so users can verify the model's work against the original data.</p>
+<p>CARL uses language models for three purposes:</p>
+<ul>
+  <li><strong>Narrating analyses</strong> — converting raw programmatic output into readable
+      descriptions, comparisons, and keys</li>
+  <li><strong>Verifying output</strong> — a second model reviews the first model's output
+      against the raw data, flagging errors and omissions (Full mode)</li>
+  <li><strong>Carl the chatbot</strong> — answering taxonomy and biology questions in
+      conversation, with optional grounding in official nomenclatural codes</li>
+</ul>
+</div>
+
+
+<!-- ===== LLM SETUP ===== -->
+<h2 id="llm-setup">Setting Up Language Models</h2>
+
+<div class="card">
+<p>Language model settings are configured in <strong>Settings → LLM Settings</strong>. CARL
+supports two broad classes of model.</p>
+</div>
+
+<div class="card" id="local-vs-api">
+<h3>Local models via Ollama</h3>
+<p>Local models run entirely on your computer using <a href="https://ollama.com">Ollama</a>.
+They require no API key and no internet connection. No data leaves your machine — making
+local models the privacy-preserving option. Their main limitation is capability: a model
+that fits on a laptop has substantially fewer parameters than a cloud-hosted one, and its
+prose may be less polished or consistent. Performance depends on available RAM (most models
+need at least 4–8 GB) and whether your machine has a compatible GPU.</p>
+<p>To use a local model: install Ollama, pull a model (<code>ollama pull &lt;model&gt;</code>),
+then enter the model name in CARL's model field in the format <code>model:tag</code> —
+for example, <code>llama3:8b</code> or <code>qwen2.5:14b</code>.</p>
+
+<h3>API-hosted models</h3>
+<p>API models run on remote servers and are accessed over the internet. CARL supports the
+following providers:</p>
+<table>
+  <tr><th>Provider</th><th>Model string format</th><th>Notes</th></tr>
+  <tr><td><a href="https://groq.com">Groq</a></td>
+      <td><code>groq/model-name</code></td>
+      <td>Free API key available; fast inference</td></tr>
+  <tr><td><a href="https://platform.openai.com">OpenAI</a></td>
+      <td><code>openai/model-name</code></td>
+      <td>GPT-4o and related models</td></tr>
+  <tr><td><a href="https://anthropic.com">Anthropic</a></td>
+      <td><code>anthropic/model-name</code></td>
+      <td>Claude models</td></tr>
+  <tr><td><a href="https://ai.google.dev">Google</a></td>
+      <td><code>google/model-name</code></td>
+      <td>Gemini models; free tier available</td></tr>
+  <tr><td>HuggingFace</td>
+      <td><code>huggingface/org/model-name</code></td>
+      <td>OpenAI-compatible endpoint</td></tr>
+  <tr><td><a href="https://openrouter.ai">OpenRouter</a></td>
+      <td><code>openrouter/org/model-name</code></td>
+      <td>Aggregator — routes to many providers; free tier available</td></tr>
+</table>
+<p>API keys are entered in <strong>Settings → LLM Settings</strong> and stored locally in
+<code>taxongpt_settings.json</code>. They are never transmitted to any service other than the
+provider you configure.</p>
+
+<br>
+<table>
+  <tr><th>Feature</th><th>Local (Ollama)</th><th>API-hosted</th></tr>
+  <tr><td>Setup</td><td>Install Ollama; pull a model</td>
+      <td>Create an account; add API key in Settings</td></tr>
+  <tr><td>Internet required</td><td>No</td><td>Yes</td></tr>
+  <tr><td>Data privacy</td><td>Data stays on your machine</td>
+      <td>Data sent to provider's servers</td></tr>
+  <tr><td>Output quality</td><td>Variable; depends on model size</td>
+      <td>Generally high</td></tr>
+  <tr><td>Speed</td><td>Slow without a GPU; fast with one</td><td>Fast</td></tr>
+  <tr><td>Cost</td><td>Free (your hardware)</td>
+      <td>Free tier or paid, depending on provider</td></tr>
+</table>
+</div>
+
+
+<!-- ===== ANALYSES WITH AI ===== -->
+<h2 id="analyses-llm">Analyses with AI</h2>
+
+<div class="card">
+<p>To use AI narration on any analysis, set the <strong>Output Mode</strong> selector to
+<strong>Raw + LLM</strong> before clicking Run. The Raw output is generated first and then
+passed to the selected Output Model for rephrasing. Both outputs are shown together in the
+output panel.</p>
+<div class="warning">Raw output is always the authoritative result. If the AI output conflicts
+with the Raw output, trust the Raw output and treat the AI version as a draft requiring
+correction.</div>
+</div>
+
+<div class="card" id="llm-modes">
+<h3>Fast and Full modes</h3>
+<p>The <strong>LLM Mode</strong> selector (visible in Raw + LLM mode) controls how thoroughly
+the model output is processed:</p>
+<ul>
+  <li><strong>Fast</strong> — the Output Model rephrases the Raw output once and the result
+      is displayed immediately. No verification is performed. Suitable for exploratory work
+      or when a quick readable draft is needed.</li>
+  <li><strong>Full</strong> — the Output Model rephrases as in Fast mode, but the result is
+      then passed to the Verification Model, which reviews the AI description against the
+      Raw output and flags any discrepancies, omissions, or potential hallucinations. The
+      verification report is displayed below the description. Full mode makes two model
+      calls per analysis and is slower, but provides an additional check for any output
+      intended for formal or published use.</li>
+</ul>
+<p>The two roles have different requirements. The Output Model needs fluency and the ability
+to follow formatting instructions; the Verification Model needs strong critical-reading and
+reasoning ability. Models with dedicated reasoning or "thinking" capabilities tend to perform
+best as the Verification Model.</p>
+<div class="tip"><strong>Output model = writer &nbsp;|&nbsp; Verification model = editor.</strong></div>
+</div>
+
+<div class="card">
+<h3>LLM settings</h3>
+<p>Configured in <strong>Settings → LLM Settings</strong>:</p>
+<ul>
+  <li><strong>Output Model</strong> — the model used to narrate analysis output</li>
+  <li><strong>Verification Model</strong> — the model used for Full-mode checking</li>
+  <li><strong>Carl Model</strong> — the model that powers the chatbot</li>
+  <li><strong>Temperature</strong> — controls output variability (0 = highly deterministic;
+      higher values = more varied prose). For formal taxonomic output, a low temperature
+      (0.1–0.3) is generally recommended.</li>
+  <li><strong>Max Tokens</strong> — maximum length of the model's response. If output ends
+      abruptly mid-sentence, increase this value and re-run.</li>
+</ul>
+</div>
+
+<div class="card" id="style-guide">
+<h3>Style guides</h3>
+<p>A style guide is a plain-text or Markdown file that is injected directly into the prompt
+for every analysis. It is the primary mechanism for controlling writing style — users can
+specify preferred terminology, sentence structure, level of detail, or formatting conventions,
+and the model will attempt to follow them.</p>
+<p>CARL ships with two built-in style guides:</p>
+<ul>
+  <li><strong>minimal_style_guide.md</strong> — a short set of basic conventions. The default;
+      works well for most datasets.</li>
+  <li><strong>intermediate_style_guide.md</strong> — more detailed instructions for structure
+      and terminology; suitable for users who want more formally styled or consistent output.</li>
+</ul>
+<p>Write your own style guide as a plain text file and select it via the <strong>Browse</strong>
+button in Settings. A separate style guide can optionally be specified for the Verification
+Model — if none is set, it inherits the Output Model's guide. Keep style guides concise:
+a long or complex guide may compete with the main task instruction in smaller models.</p>
+<div class="tip"><strong>Iterating on style.</strong> Generate a description of a single
+well-known taxon, read the output, adjust the style guide, and repeat. Iterate until
+satisfied before running the full dataset.</div>
+</div>
+
+<div class="card">
+<h3>Progress messages</h3>
+<table>
+  <tr><th>Message</th><th>Meaning</th></tr>
+  <tr><td>Running LLM…</td>
+      <td>The Output Model is generating output. The progress bar animates during this time.</td></tr>
+  <tr><td>Rewriting couplet N (i/total)…</td>
+      <td>During key generation in LLM mode, each couplet is rewritten individually.</td></tr>
+  <tr><td>Rate limit (TPM/RPM) — retrying in Ns…</td>
+      <td>A short-term rate limit has been hit. CARL retries automatically after the delay
+          shown.</td></tr>
+  <tr><td>Daily token limit reached for [model]…</td>
+      <td>The free-tier daily allowance is exhausted. Wait or switch to a different model.</td></tr>
+  <tr><td>LLM Error</td>
+      <td>The model call failed. Check your API key and internet connection, then try
+          again.</td></tr>
+</table>
+</div>
+
+
+<!-- ===== CHATBOT ===== -->
+<h2 id="chatbot">Carl the Chatbot</h2>
+
+<div class="card">
+<p>Carl is CARL's built-in conversational assistant, available on the <strong>Chatbot
+panel</strong>. Carl is a general-purpose taxonomy and biology assistant — he can answer
+questions about taxonomic concepts, biological terminology, classification, nomenclature,
+and the interpretation of morphological characters. Carl does not have access to your
+loaded dataset or to any analyses you have run.</p>
+<p>Type your question in the text box at the bottom of the panel and press <strong>Send</strong>
+(or <kbd>Enter</kbd>). Carl's response streams token by token into the chat window above.
+<strong>Clear Chat</strong> resets the conversation entirely; <strong>Copy Chat</strong>
+copies the full conversation to the clipboard.</p>
+<p>Carl remembers the last three exchanges — sufficient for follow-up questions. If you
+need to refer back to an earlier part of a long session, restate the relevant context in
+your next question. The <strong>Memory</strong> checkbox, when unticked, suppresses this
+multi-turn context entirely, making each query independent.</p>
+</div>
+
+<div class="card">
+<h3>Controls</h3>
+<table>
+  <tr><th>Control</th><th>Function</th></tr>
+  <tr><td><strong>RAG Code</strong> dropdown</td>
+      <td>Select a nomenclatural code to ground Carl's answers in official rules (see below).
+          Leave blank for general conversation.</td></tr>
+  <tr><td><strong>k</strong> spinner (1–30, default 12)</td>
+      <td>Number of article chunks retrieved from the selected code's index per query.
+          Increase for broad or multi-part questions; decrease to reduce prompt size for
+          smaller models.</td></tr>
+  <tr><td><strong>Memory</strong> checkbox</td>
+      <td>When ticked (default), Carl retains context from the last three exchanges.
+          Untick to make each query independent.</td></tr>
+</table>
+
+<h3>Good queries for Carl</h3>
+<ul>
+  <li>"What is the difference between a plesiomorphy and an apomorphy?"</li>
+  <li>"How are dichotomous keys typically structured in arachnology?"</li>
+  <li>"What does homoplasy mean, and why does it matter for identification keys?"</li>
+  <li>"Can you explain what spinnerets are and their taxonomic significance in spiders?"</li>
+</ul>
+<p>Carl cannot answer questions about your specific dataset — he has no access to your NEXUS
+file, your analyses, or your cached records. For dataset-specific questions, use the Raw
+output from the Analyses panel or the Verification Model in Full mode.</p>
+</div>
+
+<div class="card" id="nomenclatural-codes">
+<h3>Nomenclatural codes (RAG mode)</h3>
+<p>Carl can answer questions grounded in the text of the official nomenclatural codes by
+consulting a local index built from their text. Select a code from the
+<strong>RAG Code</strong> dropdown before sending your question:</p>
+<ul>
+  <li><strong>ICZN</strong> — International Code of Zoological Nomenclature</li>
+  <li><strong>ICN</strong> — International Code of Nomenclature for algae, fungi, and plants</li>
+  <li><strong>ICNP</strong> — International Code of Nomenclature of Prokaryotes</li>
+  <li><strong>ICVCN</strong> — International Code of Virus Classification and Nomenclature</li>
+</ul>
+<p>When a code is selected, each query triggers a retrieval step before the model is called:
+the most relevant articles are identified from the index and provided to Carl as context. Carl
+is instructed to cite specific article numbers and base his answer only on those retrieved
+rules — not on general training knowledge. A <em>[Retrieving context…]</em> indicator appears
+in the chat while this step runs.</p>
+<p>Select <strong>None</strong> (blank) from the dropdown to return Carl to general
+conversation mode.</p>
+<div class="tip"><strong>Good queries with a code selected:</strong>
+<ul>
+  <li>"What are the requirements for a new species name to be validly published under the ICZN?"</li>
+  <li>"Can a synonym be resurrected, and if so what conditions apply under the ICN?"</li>
+  <li>"What does the ICZN say about nomina dubia?"</li>
+  <li>"Does the ICZN require type specimens to be deposited in a recognised institution?"</li>
+</ul>
+</div>
+<div class="note">Only codes whose index files are present on disk appear in the RAG Code
+dropdown. If a code you expect to see is missing, check that its FAISS index has been built
+and is located in the correct directory.</div>
+</div>
+
+
+<!-- ===== HALLUCINATIONS ===== -->
+<h2 id="hallucinations">Hallucinations and Best Practice</h2>
+
+<div class="card">
+<p>All language models can <em>hallucinate</em> — produce fluent, confident text that is
+factually incorrect. A model may invent a species name, misquote a measurement, or describe
+a character state not present in the data. This is an inherent property of how language
+models work, not a software bug, and no model is immune.</p>
+<p>In a taxonomic context, hallucination is particularly consequential. An incorrect character
+state, a fabricated citation, or a wrong species name in a formal description can cause lasting
+confusion in the literature.</p>
+<p><strong>How CARL reduces hallucination risk:</strong></p>
+<ul>
+  <li><strong>Models work from Raw Output, not from memory.</strong> Because the model is
+      asked to rephrase a deterministic, matrix-derived input rather than generate content
+      from scratch, the scope for hallucination is substantially reduced. The model cannot
+      easily insert information that is not already in the Raw Output.</li>
+  <li><strong>Raw Output is always shown.</strong> Every AI description appears alongside its
+      Raw Output, making it straightforward to spot any discrepancy.</li>
+  <li><strong>Full mode adds a verification step.</strong> The Verification Model reads both
+      the Raw Output and the AI description and flags inconsistencies. This does not guarantee
+      correctness, but provides an additional layer of checking.</li>
+</ul>
+<p><strong>Best practice:</strong></p>
+<ul>
+  <li>Always compare AI output against Raw Output before using it.</li>
+  <li>Use <strong>Full</strong> mode for any output intended for publication or formal use.</li>
+  <li>Treat AI output as a first draft requiring editorial review, not a finished product.</li>
+  <li>Be especially cautious with species names, measurements, and any information the model
+      could plausibly have encountered in its training data — these are the most likely
+      candidates for hallucination.</li>
+  <li>Larger, API-hosted models hallucinate less than small local models, but no model is
+      immune.</li>
+</ul>
+<div class="warning">AI output should never be incorporated into formal taxonomic work without
+independent verification against the original data and the primary literature.</div>
+</div>
+
+
+<!-- ===== ACKNOWLEDGEMENTS ===== -->
+<h2 id="acknowledgements">Acknowledgements</h2>
+
+<div class="card">
+<p>CARL is the successor to TaxonGPT, which was developed from the original TaxonGPT framework
+by Haoyuan Huang and colleagues. Users are encouraged to consult and cite the foundational paper:</p>
+<p>Huang, H., Li, T., Wang, Z., Seldon, D., &amp; Rodrigo, A. (2024). TaxonGPT: Taxonomic
+Classification Using Generative Artificial Intelligence. <em>bioRxiv</em>, 2024.10.28.618575.
+<a href="https://doi.org/10.1101/2024.10.28.618575">https://doi.org/10.1101/2024.10.28.618575</a></p>
+<p>Code for CARL was produced with the assistance of
+<a href="https://chatgpt.com">ChatGPT</a> (OpenAI) and
+<a href="https://claude.ai/claude-code">Claude Code</a> (Anthropic).</p>
+<p>The sample Mygalomorph dataset included with CARL was extracted from data deposited by
+Jeremy Wilson and colleagues in the Dryad Digital Repository:
+<a href="https://doi.org/10.5061/dryad.547d7wmcm">https://doi.org/10.5061/dryad.547d7wmcm</a>.
+Users wishing to use these data for publication should cite the original source.</p>
+</div>
+
+</div><!-- end .content -->
+</div><!-- end .wrapper -->
+
+</body>
+</html>
