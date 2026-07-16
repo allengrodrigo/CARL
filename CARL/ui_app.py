@@ -619,7 +619,7 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         _db_tab.grid_columnconfigure(0, weight=0)
         _db_tab.grid_columnconfigure(1, weight=0)
         _db_tab.grid_columnconfigure(2, weight=1)
-        _db_tab.grid_rowconfigure(3, weight=1)
+        _db_tab.grid_rowconfigure(1, weight=1)
 
         _status("Building settings panel...")
         self.root.update_idletasks()
@@ -645,12 +645,16 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                      fg="#666666", anchor="w").grid(row=_ri, column=3, sticky="w")
 
         # ── Retrieval Limits ──────────────────────────────────────────
+        # One field per row (not two) so this frame is narrow enough to sit
+        # beside Providers/API Keys in column 2 instead of stacking under
+        # Providers — narrower than the old two-per-row layout (~275px vs
+        # ~556px), which is what keeps the row from growing too wide.
         _lim_frame = ttk.LabelFrame(_db_tab, text="Retrieval Limits")
-        _lim_frame.grid(row=1, column=0, sticky="new", padx=10, pady=(0, 5))
+        _lim_frame.grid(row=0, column=2, sticky="new", padx=(0, 10), pady=(10, 5))
 
         # ── API Keys column — BHL, WSC, ZooBank grouped together at top ─
         _apikeys_frame = tk.Frame(_db_tab)
-        _apikeys_frame.grid(row=0, column=1, rowspan=2, sticky="new", padx=(0, 10), pady=(10, 5))
+        _apikeys_frame.grid(row=0, column=1, sticky="new", padx=(0, 10), pady=(10, 5))
 
         _bhl_frame = ttk.LabelFrame(_apikeys_frame, text="BHL API Key")
         _bhl_frame.pack(fill="x", pady=(0, 5))
@@ -689,22 +693,36 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                    command=lambda: webbrowser.open("https://zoobank.org/search")
                    ).grid(row=1, column=0, sticky="w", padx=8, pady=(0, 8))
         for _li, (key, label, _default, _attr) in enumerate(_DB_LIMITS):
-            _col = (_li % 2) * 3
-            _row = _li // 2
             tk.Label(_lim_frame, text=f"{label}:", anchor="e", width=28).grid(
-                row=_row, column=_col, sticky="e", padx=(10 if _col == 0 else 20, 4), pady=3)
+                row=_li, column=0, sticky="e", padx=(10, 4), pady=3)
             ttk.Spinbox(_lim_frame, textvariable=self._db_limit_vars[key],
                         from_=1, to=500, width=6).grid(
-                row=_row, column=_col + 1, sticky="w", pady=3)
+                row=_li, column=1, sticky="w", pady=3)
 
 
-        # Darwin Core Fields (scrollable) — right column, full height
+        # Darwin Core Fields (scrollable) — full-width row below Providers/
+        # Limits/API Keys (now all in row 0), instead of a third column
+        # beside them. The table's true content width (~890px across its 6
+        # columns) was previously invisible to the grid (the canvas silently
+        # squeezes its embedded frame to whatever width column 2 happened to
+        # get), so column 2's width used to be dictated by leftover space
+        # rather than by what the table actually needs — hence text clipping
+        # on narrower screens. Giving it the full tab width removes that
+        # squeeze entirely.
         _dc_frame = ttk.LabelFrame(_db_tab, text="Darwin Core Fields")
-        _dc_frame.grid(row=0, column=2, rowspan=4, sticky="nsew", padx=(0, 10), pady=10)
+        _dc_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=10, pady=10)
         _dc_frame.grid_rowconfigure(0, weight=1)
         _dc_frame.grid_columnconfigure(0, weight=1)
 
-        _dc_canvas = tk.Canvas(_dc_frame, highlightthickness=0)
+        # Fixed height, not left to its natural/default size: the row is no
+        # longer "free" height absorbed into a taller Providers/Limits stack
+        # above it (Retrieval Limits moved beside Providers in row 0 instead
+        # of stacking under it). The panel already has its own vertical
+        # scrollbar for the full field list, so a shorter viewport just means
+        # scrolling a little sooner — not lost content, unlike the width bug.
+        # 340 (vs the previous 220) uses the height freed up by collapsing
+        # Providers+Limits from two stacked rows into one.
+        _dc_canvas = tk.Canvas(_dc_frame, highlightthickness=0, height=340)
         _dc_canvas.grid(row=0, column=0, sticky="nsew")
         _dc_sb = ttk.Scrollbar(_dc_frame, orient="vertical", command=_dc_canvas.yview)
         _dc_sb.grid(row=0, column=1, sticky="ns")
