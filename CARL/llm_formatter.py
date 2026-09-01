@@ -943,36 +943,12 @@ def format_with_literature(raw_text: str, literature: str, taxon_name: str,
 
 
 # ============================================================
-# FAST FORMATTER WITHOUT VALIDATION -- original version, passing full description
-# ============================================================
-def format_fast(
-    raw_text: str,
-    config,
-    style: str = "verbose",
-    status_fn=None
-) -> str:
-    """
-    Fast LLM formatting without validation.
-    """
-    print("THREAD:", threading.current_thread().name)
-    prompt = _build_prompt(raw_text, config, style)
-
-    try:
-        return _strip_thinking_text(
-            call_llm(prompt, config, use_chat=config.use_chat, status_fn=status_fn)
-        )
-    except Exception as e:
-        print(f"[format_fast error] {e}")
-        return raw_text
-
-
-# ============================================================
 # STREAMING VARIANTS
 # ============================================================
 
 def format_fast_stream(raw_text, config, style="concise", status_fn=None,
                        cancel_fn=None, suppress_reasoning=True):
-    """Streaming variant of format_fast. Yields string tokens."""
+    """Streams fluent-prose formatting of raw_text. Yields string tokens."""
     from llm_interface import call_llm_stream
     prompt = _build_prompt(raw_text, config, style)
     stream = call_llm_stream(prompt, config, status_fn=status_fn,

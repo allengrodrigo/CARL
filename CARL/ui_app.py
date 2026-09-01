@@ -30,7 +30,6 @@ from description_generator import build_base_description
 from key_builder import build_tree_kg, format_key, generate_key
 from carl_parser import parse_wtsets, parse_precludes, serialize_carl_block
 from llm_formatter import (
-    format_fast,
     format_diagnosis,
     format_with_literature,
     verify_output_with_llm,
@@ -282,7 +281,6 @@ DEFAULT_SETTINGS = {
 
         "verify_model": "gemma3n:e4b",
         "verify_temp": 0.0,
-        "verify_max_tokens": 4096,
         "style_guide": _bundle_path("minimal_style_guide.md"),
         "verify_style_guide": "",
 
@@ -460,7 +458,6 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             value=get_default_model("verification", "gemma3n:e4b")
         )
         self.verify_temp_var = tk.DoubleVar(value=0.0)
-        self.verify_max_tokens_var = tk.IntVar(value=2048)
 
         # --------------------------------------------------
         # CARL (Chatbot)
@@ -1844,9 +1841,6 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         tk.Label(_lf, text="Temperature:").grid(row=10, column=0, sticky="w", padx=10)
         ttk.Entry(_lf, textvariable=self.verify_temp_var, width=22).grid(row=10, column=1, sticky="w", pady=2)
 
-        tk.Label(_lf, text="Max Tokens:").grid(row=11, column=0, sticky="w", padx=10)
-        ttk.Entry(_lf, textvariable=self.verify_max_tokens_var, width=22).grid(row=11, column=1, sticky="w", pady=2)
-
         # ── CARL (Chatbot) ────────────────────────────────────────
         tk.Label(_lf, text="CARL (Chatbot)", font=self.app_ui_bold).grid(
             row=13, column=0, columnspan=2, sticky="w", padx=10, pady=(12, 4))
@@ -1983,7 +1977,6 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
 
             "verify_model": self.verify_model_var.get(),
             "verify_temp": self.verify_temp_var.get(),
-            "verify_max_tokens": self.verify_max_tokens_var.get(),
             "style_guide": self.style_guide_path_var.get(),
             "verify_style_guide": self.verify_style_guide_path_var.get(),
 
@@ -2063,7 +2056,6 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
 
         self.verify_model_var.set(settings.get("verify_model", ""))
         self.verify_temp_var.set(settings.get("verify_temp", 0.0))
-        self.verify_max_tokens_var.set(settings.get("verify_max_tokens", 4096))
 
         self.style_guide_path_var.set(settings.get("style_guide", ""))
         self.verify_style_guide_path_var.set(settings.get("verify_style_guide", ""))
@@ -2206,7 +2198,6 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
         self.verify_model_var.set(
             get_default_model("verification", d["verify_model"]))
         self.verify_temp_var.set(d["verify_temp"])
-        self.verify_max_tokens_var.set(d["verify_max_tokens"])
         self.style_guide_path_var.set(d["style_guide"])
         self.verify_style_guide_path_var.set(d["verify_style_guide"])
 
@@ -3596,6 +3587,12 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                             break
                         update_status(
                             f"Running {verify_config.model} (verification {k}/{rounds})...")
+                        # Size the verifier's own budget from what it's actually
+                        # being asked to read (raw + the draft under review) and
+                        # its own model's real limits — not a static setting.
+                        verify_config.num_predict = estimate_num_predict_from_text(
+                            raw_text + "\n" + current,
+                            model_name=verify_config.model, mode="full")
                         try:
                             report = verify_output_with_llm(
                                 raw_text, current, config=verify_config,
@@ -3628,6 +3625,14 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                         _emit(f"Round {k}/{rounds}: issues found — correcting…\n")
                         update_status(
                             f"Running {llm_config.model} (correction {k}/{rounds - 1})...")
+                        # Size the correction budget from the actual correction
+                        # prompt (raw + current draft + verifier report) — a
+                        # report demanding many restorations needs real room to
+                        # produce a complete corrected version, not the budget
+                        # sized for the original (shorter) writing pass.
+                        llm_config.num_predict = estimate_num_predict_from_text(
+                            raw_text + "\n" + current + "\n" + report,
+                            model_name=llm_config.model, mode="full")
                         try:
                             if is_key:
                                 current = correct_key_with_llm(
@@ -4102,11 +4107,13 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             think=False,
             use_chat=False
         )
-        verify_num_predict = max(self.verify_max_tokens_var.get(), 1024)
+        # Placeholder only -- apply_llm_formatting resizes this per round from
+        # the actual verification/correction prompt text once it knows it.
         verify_config = LLMConfig(
             model=self.verify_model_var.get(),
             temperature=self.verify_temp_var.get(),
-            num_predict=verify_num_predict,
+            num_predict=estimate_num_predict_from_text(
+                "", model_name=self.verify_model_var.get(), mode="full"),
             style_guide=verify_style_guide,
             think=False,
             use_chat=False
@@ -4342,11 +4349,14 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             use_chat=False
         )
 
-        verify_num_predict = max(self.verify_max_tokens_var.get(), num_predict // 3)
+        # Placeholder only -- apply_llm_formatting resizes this per round from
+        # the actual verification/correction prompt text once it knows it.
         verify_config = LLMConfig(
             model=self.verify_model_var.get(),
             temperature=self.verify_temp_var.get(),
-            num_predict=verify_num_predict,
+            num_predict=estimate_num_predict_from_kg(
+                self.dataset, entities, temp_kg,
+                model_name=self.verify_model_var.get(), mode="full"),
             style_guide=verify_style_guide,
             think=False,
             use_chat=False

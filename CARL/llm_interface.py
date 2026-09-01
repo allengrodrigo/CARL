@@ -315,7 +315,46 @@ def _detect_provider(model_name: str) -> tuple[str, str]:
 
 # ── OpenAI-compatible branch (Groq, OpenAI, HuggingFace) ─────────────────────
 
+def _is_rate_limit_response(response) -> bool:
+    """True if an error response is a rate/quota limit in disguise, even when
+    it isn't HTTP 429 -- Groq, for one, returns 413 ("payload too large") for
+    its tokens-per-minute quota instead, which is not a payload-size problem
+    at all and isn't fixed by compacting the prompt. Checked from the body's
+    own error code/text, not the HTTP status alone."""
+    try:
+        body = response.json()
+        error = body.get("error") or body
+    except Exception:
+        return False
+    if error.get("code") == "rate_limit_exceeded":
+        return True
+    msg = str(error.get("message", ""))
+    return any(s in msg for s in
+               ("tokens per day", "(TPD)", "tokens per minute", "(TPM)",
+                "requests per minute", "(RPM)"))
+
+
+def _response_tpm_ceiling(response) -> tuple[int, int] | None:
+    """Extract (limit, requested) from a Groq-style TPM-too-large message,
+    e.g. 'Limit 8000, Requested 8264, please reduce your message size and
+    try again.' Distinct from genuine quota exhaustion: this means THIS
+    SINGLE request's prompt+max_tokens exceeds the account's per-minute cap
+    outright, so no amount of waiting fixes it -- only a smaller max_tokens
+    does. Returns None if the message doesn't match this pattern."""
+    try:
+        body = response.json()
+        msg = (body.get("error") or body).get("message", "")
+    except Exception:
+        return None
+    m = re.search(r"Limit\s+(\d+),\s*Requested\s+(\d+)", msg)
+    return (int(m.group(1)), int(m.group(2))) if m else None
+
+
 def _parse_openai_429(response) -> tuple[str, float]:
+    """Parse a rate-limit error body for its limit type and suggested wait.
+    Despite the name, also used for rate-limit-flavored non-429 responses
+    (see _is_rate_limit_response) -- the parsing itself doesn't depend on
+    the status code, only on the body's own message text."""
     try:
         body = response.json()
         msg = (body.get("error") or body).get("message", "")
@@ -402,6 +441,7 @@ def _call_openai_compatible(base_url: str, api_key: str, provider: str,
                     "messages":    effective_messages,
                     "max_tokens":  effective_max_tokens,
                     "temperature": temperature if temperature is not None else 0.2,
+                    **({"reasoning_format": "hidden"} if provider == "groq" else {}),
                 },
                 timeout=120,
             )
@@ -423,7 +463,7 @@ def _call_openai_compatible(base_url: str, api_key: str, provider: str,
                 if status_fn:
                     status_fn(msg)
                 break
-            if response.status_code == 413:
+            if response.status_code == 413 and not _is_rate_limit_response(response):
                 current_size = _messages_char_count(effective_messages)
                 retry_budget = _next_compaction_budget(current_size)
                 smaller = (_compact_messages(effective_messages, retry_budget)
@@ -448,7 +488,19 @@ def _call_openai_compatible(base_url: str, api_key: str, provider: str,
                 if status_fn:
                     status_fn(msg)
                 break
-            if response.status_code == 429:
+            if response.status_code == 429 or _is_rate_limit_response(response):
+                ceiling = _response_tpm_ceiling(response)
+                if ceiling and attempt < 7:
+                    limit, requested = ceiling
+                    overage = requested - limit
+                    if overage > 0 and effective_max_tokens - overage - 50 > 0:
+                        effective_max_tokens = max(1, effective_max_tokens - overage - 50)
+                        msg = (f"Request exceeded the account's per-minute token cap; "
+                               f"retrying with {effective_max_tokens} tokens.")
+                        print(f"[{provider}] {msg}")
+                        if status_fn:
+                            status_fn(msg)
+                        continue
                 limit_type, retry_secs = _parse_openai_429(response)
                 # Fail fast: only pause for a short, transient limit, and only on
                 # the first attempt. Anything longer -> give up with a clear
@@ -638,7 +690,8 @@ def _stream_openai_compatible(base_url: str, api_key: str, provider: str,
                 json={"model": model, "messages": effective_messages,
                       "max_tokens": effective_max_tokens,
                       "temperature": config.temperature if config.temperature is not None else 0.2,
-                      "stream": True},
+                      "stream": True,
+                      **({"reasoning_format": "hidden"} if provider == "groq" else {})},
                 timeout=120, stream=True,
             )
             if response.status_code == 400:
@@ -646,7 +699,7 @@ def _stream_openai_compatible(base_url: str, api_key: str, provider: str,
                 if advertised_limit and advertised_limit < effective_max_tokens and attempt < 7:
                     effective_max_tokens = max(1, advertised_limit)
                     continue
-            if response.status_code == 413:
+            if response.status_code == 413 and not _is_rate_limit_response(response):
                 current_size = _messages_char_count(effective_messages)
                 retry_budget = _next_compaction_budget(current_size)
                 smaller = (_compact_messages(effective_messages, retry_budget)
@@ -659,7 +712,19 @@ def _stream_openai_compatible(base_url: str, api_key: str, provider: str,
                     f"[{provider} stream] LLM payload could not be reduced further; "
                     "keeping raw CARL output.")
                 return
-            if response.status_code == 429:
+            if response.status_code == 429 or _is_rate_limit_response(response):
+                ceiling = _response_tpm_ceiling(response)
+                if ceiling and attempt < 7:
+                    limit, requested = ceiling
+                    overage = requested - limit
+                    if overage > 0 and effective_max_tokens - overage - 50 > 0:
+                        effective_max_tokens = max(1, effective_max_tokens - overage - 50)
+                        msg = (f"Request exceeded the account's per-minute token cap; "
+                               f"retrying with {effective_max_tokens} tokens.")
+                        print(f"[{provider} stream] {msg}")
+                        if status_fn:
+                            status_fn(msg)
+                        continue
                 limit_type, retry_secs = _parse_openai_429(response)
                 if (limit_type == "TPD" or retry_secs > RETRY_MAX_WAIT
                         or rate_limit_retries >= 1):

@@ -1628,10 +1628,12 @@ see <a href="#llm-setup">Setting Up Language Models</a> (Part B).</p>
   <tr><td><strong>Temperature</strong> (entry)</td>
       <td>Temperature for the Verification Model. 0.0 is recommended — deterministic
           review is preferable for a critic role.</td></tr>
-  <tr><td><strong>Max Tokens</strong> (entry)</td>
-      <td>Maximum token budget for the verification response. If the verifier output
-          ends mid-sentence or shows a truncation message, increase this value.</td></tr>
 </table>
+<p class="note">Response length is sized automatically from the model's real
+context window and the actual content being sent — there is no Max Tokens
+setting to configure. This applies to the Output Model and Verification
+Model alike, including the correction step that runs when Full-mode
+verification finds issues.</p>
 </div>
 
 <div class="card">
@@ -2217,9 +2219,12 @@ best as the Verification Model.</p>
   <li><strong>Temperature</strong> — controls output variability (0 = highly deterministic;
       higher values = more varied prose). For formal taxonomic output, a low temperature
       (0.1–0.3) is generally recommended.</li>
-  <li><strong>Max Tokens</strong> — maximum length of the model's response. If output ends
-      abruptly mid-sentence, increase this value and re-run.</li>
 </ul>
+<p class="note">Response length is sized automatically from each model's real context
+window and the actual content being sent for that call — there is no Max Tokens
+setting. This is worked out per model and per call, so the Output Model, the
+Verification Model, and the correction pass that runs when Full-mode verification
+finds issues are each sized from their own real limits, not a single shared number.</p>
 </div>
 
 <div class="card" id="style-guide">
