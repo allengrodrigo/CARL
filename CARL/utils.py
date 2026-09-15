@@ -57,13 +57,18 @@ def get_model_context_size(model_name):
         result = subprocess.run(
             ["ollama", "show", model_name],
             capture_output=True,
-            text=True
+            text=True,
+            timeout=10,
         )
 
         output = result.stdout
 
-        # Look for context/token hints
-        match = re.search(r"(\d{3,5})\s*(context|tokens|ctx)", output, re.IGNORECASE)
+        # `ollama show` prints a table like "context length      32768" --
+        # label before the number. Also accept the reverse ordering
+        # ("32768 context"/"ctx") in case a different Ollama version formats
+        # it that way.
+        match = (re.search(r"(?:context|tokens|ctx)\D{0,20}?(\d{3,6})", output, re.IGNORECASE)
+                 or re.search(r"(\d{3,6})\s*(?:context|tokens|ctx)", output, re.IGNORECASE))
         if match:
             return int(match.group(1))
 
@@ -91,11 +96,11 @@ _GENERIC_OUTPUT_FALLBACK = 4096
 _OPENROUTER_MODEL_CACHE: dict | None = None
 
 
-def _fetch_openrouter_limits(bare_model: str) -> tuple[int | None, int | None]:
-    """Return (context_length, max_completion_tokens) for an OpenRouter model
-    id, from OpenRouter's own live model catalogue — exact, per-model, not a
-    guess. Cached for the process lifetime since this would otherwise be a
-    live HTTP call on every single LLM call."""
+def _openrouter_model_info(bare_model: str) -> dict | None:
+    """Return the raw model dict for bare_model from OpenRouter's live
+    catalogue (pricing, context_length, top_provider, ...), or None if it
+    can't be found. Cached for the process lifetime since this would
+    otherwise be a live HTTP call on every single LLM call."""
     global _OPENROUTER_MODEL_CACHE
     if _OPENROUTER_MODEL_CACHE is None:
         _OPENROUTER_MODEL_CACHE = {}
@@ -107,13 +112,32 @@ def _fetch_openrouter_limits(bare_model: str) -> tuple[int | None, int | None]:
                 _OPENROUTER_MODEL_CACHE[m.get("id")] = m
         except Exception:
             pass  # leave cache empty for this process; caller falls back
+    return _OPENROUTER_MODEL_CACHE.get(bare_model)
 
-    m = _OPENROUTER_MODEL_CACHE.get(bare_model)
+
+def _fetch_openrouter_limits(bare_model: str) -> tuple[int | None, int | None]:
+    """Return (context_length, max_completion_tokens) for an OpenRouter model
+    id, from OpenRouter's own live model catalogue — exact, per-model, not a
+    guess."""
+    m = _openrouter_model_info(bare_model)
     if not m:
         return None, None
     context = m.get("context_length")
     completion = (m.get("top_provider") or {}).get("max_completion_tokens")
     return context, completion
+
+
+def is_openrouter_model_free(bare_model: str) -> bool | None:
+    """True if bare_model's prompt+completion pricing on OpenRouter's live
+    catalogue is exactly zero, False if either is nonzero, None if the model
+    can't be found/verified. Callers enforcing a "no charge" guarantee should
+    treat None the same as False — a model we can't verify isn't one we can
+    promise is free."""
+    m = _openrouter_model_info(bare_model)
+    if not m:
+        return None
+    pricing = m.get("pricing", {})
+    return pricing.get("prompt") == "0" and pricing.get("completion") == "0"
 
 
 def get_model_output_budget(model_name: str | None, prompt_tokens: int) -> int:

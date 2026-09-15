@@ -279,7 +279,7 @@ DEFAULT_SETTINGS = {
         "output_model": "llama3.2:1b",
         "output_temp": 0.2,
 
-        "verify_model": "gemma3n:e4b",
+        "verify_model": "openai/gpt-oss-safeguard-20b",
         "verify_temp": 0.0,
         "style_guide": _bundle_path("minimal_style_guide.md"),
         "verify_style_guide": "",
@@ -2236,7 +2236,7 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             try:
                 result = subprocess.run(
                     ["ollama", "list"],
-                    capture_output=True, text=True, check=True,
+                    capture_output=True, text=True, check=True, timeout=10,
                     creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
                 )
                 for line in result.stdout.strip().split("\n")[1:]:

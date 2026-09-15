@@ -9,8 +9,7 @@
     "iqtree",
     "iqtree3.exe",
     "iqtree2.exe",
-    "iqtree.exe",
-    "C:/Users/arod004/OneDrive - The University of Auckland/Documents/IQTree/iqtree-3.1.2-Windows/bin/iqtree3.exe"
+    "iqtree.exe"
   ],
   "description": "Fast and effective stochastic algorithm for phylogenetic inference by maximum likelihood.",
   "homepage": "https://iqtree.github.io",

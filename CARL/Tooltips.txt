@@ -1,0 +1,48 @@
+Tooltips: 
+Menu: 
+File - Load, Create, Edit data
+Information -- Retrieve taxonomic Information
+Analyses -- Build descriptions, comparisons and keys
+Chatbot -- Get information about taxonomic codes
+Plugins -- Generate plugin descriptors and run plugins
+Settings -- select databases, LMs and CARL settings
+About -- Help and citation
+
+File>Nomenclature:
+Preview -- Shows the statements in the CARL block
+Create Taxa -- Select dataIDs to create taxa
+
+Analyses>Keys
+Keys -- Build an identification key using Information Gain or Diversity Gain scoring, in binary or multi-arm form
+
+Settings>LM Settings
+
+Groq Show (and all other provider Show buttons) -- Show the API Key
+Free Models Only (OpenRouter) -- Only show free OpenRouter models
+Save API Keys -- Save API keys to file
+
+Style Guide -- Style guide file
+Browse -- Select the style guide
+
+Fetch Models -- Populate model selection dropdowns with available models from sources listed.
+
+Model test (dropdown) -- Select a model to test. 
+Test Model -- Test the model with a simple "Hello" query.
+
+Reset to Defaults -- restore all settings
+
+Settings>Databases
+
+Data providers Priority spinboxes -- Set <database> priority
+BHL and WSC API keys Show -- Show API key
+Open ZooBank verification page -- Link to the Zoobank site to verify this computer
+
+Darwin Core fields Include checkboxes - Check to include in user DwC records
+
+About>Help
+Search -- Search
+Next -- Next item
+Previous -- Previous item
+Clear -- Clear search
+
+NOTE: Exclude tooltips from sidebar. 

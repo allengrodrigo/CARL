@@ -42,6 +42,12 @@ class LLMConfig:
         self.use_chat = use_chat
 
     def to_options(self):
+        # NOTE: "think" is deliberately NOT included here. Ollama treats it as
+        # a top-level request/kwarg parameter, not a member of `options` — a
+        # value nested inside `options` is silently ignored, leaving a
+        # thinking-capable model (e.g. olmo-3) to default to thinking mode
+        # regardless of config.think. Callers must pass config.think
+        # separately (see _stream_ollama and call_llm's ollama branch).
         options = {}
         if self.temperature is not None:
             options["temperature"] = self.temperature
@@ -49,8 +55,6 @@ class LLMConfig:
             options["num_predict"] = self.num_predict
         if self.num_ctx is not None:
             options["num_ctx"] = self.num_ctx
-        if self.think:
-            options["think"] = True
         return options
 
 
@@ -65,7 +69,7 @@ DEFAULT_PROVIDER = "groq"
 
 DEFAULT_MODELS = {
     "output":       "meta-llama/llama-4-scout-17b-16e-instruct",
-    "verification": "qwen/qwen3-32b",
+    "verification": "openai/gpt-oss-safeguard-20b",
     "chat":         "meta-llama/llama-4-scout-17b-16e-instruct",
 }
 
@@ -225,7 +229,7 @@ def fetch_provider_models(provider: str, api_key: str) -> list[str]:
         elif provider == "google":
             resp = requests.get(
                 "https://generativelanguage.googleapis.com/v1beta/models",
-                params={"key": api_key},
+                headers={"x-goog-api-key": api_key},
                 timeout=10,
             )
             resp.raise_for_status()
@@ -326,6 +330,11 @@ def _is_rate_limit_response(response) -> bool:
         error = body.get("error") or body
     except Exception:
         return False
+    # Some backends (observed via HuggingFace's router) return a flat string
+    # for "error" instead of Groq/OpenAI's nested {"code", "message"} object
+    # -- normalise so the .get() calls below never hit a plain str.
+    if not isinstance(error, dict):
+        error = {"message": str(error)}
     if error.get("code") == "rate_limit_exceeded":
         return True
     msg = str(error.get("message", ""))
@@ -605,7 +614,7 @@ def _call_google(api_key: str, model: str, messages: list,
     try:
         response = requests.post(
             f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-            params={"key": api_key},
+            headers={"x-goog-api-key": api_key},
             json={
                 "contents": contents,
                 "generationConfig": {
@@ -643,6 +652,7 @@ def _stream_ollama(model: str, messages: list, config: LLMConfig,
         response = requests.post(
             "http://localhost:11434/api/chat",
             json={"model": model, "messages": messages, "stream": True,
+                  "think": bool(config.think),
                   "options": config.to_options(), "keep_alive": KEEP_ALIVE},
             timeout=600, stream=True,
         )
@@ -759,7 +769,8 @@ def _stream_openai_compatible(base_url: str, api_key: str, provider: str,
                 if data == "[DONE]":
                     break
                 try:
-                    token = json.loads(data)["choices"][0]["delta"].get("content", "")
+                    delta = json.loads(data)["choices"][0]["delta"]
+                    token = delta.get("content", "") if isinstance(delta, dict) else ""
                     if token:
                         yield token
                 except (ValueError, KeyError, IndexError):
@@ -829,7 +840,8 @@ def _stream_google(api_key: str, model: str, messages: list,
     try:
         response = requests.post(
             f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent",
-            params={"key": api_key, "alt": "sse"},
+            params={"alt": "sse"},
+            headers={"x-goog-api-key": api_key},
             json={"contents": contents,
                   "generationConfig": {
                       "maxOutputTokens": config.num_predict or 4096,
@@ -918,6 +930,24 @@ def call_llm(prompt: str, config: LLMConfig, use_chat: bool | None = None,
 
     provider, bare_model = _detect_provider(config.model)
 
+    # ── OpenRouter "no charge" guarantee ─────────────────────────────────────
+    # A model list filter alone doesn't stop a stale/manually-typed non-free
+    # selection from actually being called and billed. Enforce it here, at
+    # the single choke point every OpenRouter call (streaming or not) passes
+    # through, using OpenRouter's own live pricing data rather than a name
+    # guess. A model that can't be verified is treated as not free -- we
+    # can't promise no charge for something we can't check.
+    if provider == "openrouter" and _openrouter_free_only:
+        from utils import is_openrouter_model_free
+        if not is_openrouter_model_free(bare_model):
+            msg = (f"[openrouter] Refused: '{bare_model}' is not confirmed free, "
+                   f"and 'Free models only' is enabled in Settings > LM Settings. "
+                   f"Uncheck it to allow paid OpenRouter models, or pick a free one.")
+            print(msg)
+            if status_fn:
+                status_fn(msg)
+            return ""
+
     # ── Ollama (local) ────────────────────────────────────────────────────────
     if provider == "ollama":
         try:
@@ -932,6 +962,7 @@ def call_llm(prompt: str, config: LLMConfig, use_chat: bool | None = None,
                 response = chat(
                     model=bare_model,
                     messages=ollama_messages,
+                    think=bool(config.think),
                     options=config.to_options(),
                     keep_alive=KEEP_ALIVE,
                 )
@@ -940,6 +971,7 @@ def call_llm(prompt: str, config: LLMConfig, use_chat: bool | None = None,
                 response = generate(
                     model=bare_model,
                     prompt=prompt,
+                    think=bool(config.think),
                     options=config.to_options(),
                     keep_alive=KEEP_ALIVE,
                 )

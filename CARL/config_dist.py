@@ -56,6 +56,6 @@ API_KEY = "<your Groq API key here>"
 
 DEFAULT_MODELS = {
     "output":       "llama-3.3-70b-versatile",
-    "verification": "qwen/qwen3-32b",
+    "verification": "openai/gpt-oss-safeguard-20b",
     "chat":         "meta-llama/llama-4-scout-17b-16e-instruct",
 }

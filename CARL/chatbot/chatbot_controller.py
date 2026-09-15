@@ -203,7 +203,12 @@ def ask_stream(user_query: str, llm_config=None, history=None,
 
         model = llm_config.model if llm_config else CHATBOT_MODEL
         chat_config = LLMConfig(
-            model=model, temperature=0.1, num_predict=1024,
+            # Some local models (e.g. olmo-3) always emit a full hidden
+            # reasoning trace regardless of think=False, consuming several
+            # hundred tokens before any visible content is written. 1024 was
+            # too tight a budget for those models -- responses were coming
+            # back empty because generation hit the cap mid-thought.
+            model=model, temperature=0.1, num_predict=4096,
             style_guide="", think=False, use_chat=True,
         )
 
@@ -214,6 +219,10 @@ def ask_stream(user_query: str, llm_config=None, history=None,
             rag_context = _get_rag_context(user_query, rag_code, k=rag_k)
 
         messages = _build_messages(user_query, history, rag_context)
+
+        prompt_tokens = sum(len(m.get("content", "")) for m in messages) // 4
+        chat_config.num_ctx = max(4096, prompt_tokens + chat_config.num_predict + 256)
+
         yield from call_llm_stream("", chat_config, messages=messages)
 
     except Exception as e:

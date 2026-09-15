@@ -444,20 +444,29 @@ CRITICAL BALANCE RULE:
 
 PRECISION RULE:
 - DO NOT flag spelling unless clearly incorrect.
+- EXCEPTION: always flag a misspelled taxon or scientific name (e.g. a genus
+  or species name), even a single-character difference from how the ORIGINAL
+  spells it. A taxon name is a unique identifier, not an ordinary word — any
+  deviation is a factual error, never a stylistic variant.
 - DO NOT flag wording differences if meaning is preserved.
 - Prefer fewer, high-confidence issues over many weak ones.
 - DO check for incorrect interpretations of character states
 - DO check for missing information present in the original
 - DO check for added (hallucinated) information or misleading rephrasings
+- DO check that every taxon name in the REWRITTEN text is spelled exactly as
+  in the ORIGINAL
 - DO report an issue if the REWRITTEN text merely reproduces the ORIGINAL's
   structured or coded format instead of fluent natural-language prose
 
 OUTPUT RULES (STRICT):
 
-You must produce EXACTLY ONE of the following:
+End your response with a line containing the single word VERDICT (formatting
+around it, like "===VERDICT===" or "VERDICT:", does not matter — the word
+itself is what's required), followed by EXACTLY ONE of the following, and
+nothing else after it:
 
 CASE 1 — Issues exist:
-- Output ONLY a list of issues.
+- A list of issues only.
 - Do NOT include "NO ISSUES FOUND".
 - Do NOT include any additional commentary.
 
@@ -465,11 +474,16 @@ CASE 2 — No issues exist:
 - Output EXACTLY:
 NO ISSUES FOUND
 
-Do NOT combine the two cases.
-Do NOT add anything before or after the output.
-Do NOT include reasoning, analysis, explanations, headings, Markdown, or labels.
+Everything before the VERDICT line is discarded and never read by anyone —
+keep it as short as possible. Do not narrate your comparison process step by
+step and do not explain why something is or isn't an issue; if you write
+anything before the marker at all, state conclusions only.
+
+Do NOT combine CASE 1 and CASE 2.
+Do NOT include reasoning, analysis, explanations, headings, Markdown, or
+labels after the VERDICT line.
 If your reasoning concludes that the rewrite is semantically equivalent to the
-original, your entire final answer must be exactly one line:
+original, everything after the VERDICT line must be exactly one line:
 NO ISSUES FOUND
 
 --- ORIGINAL ---
@@ -492,6 +506,29 @@ NO ISSUES FOUND
 
     raw = call_llm(prompt, cfg, use_chat=config.use_chat, status_fn=status_fn, cancel_fn=cancel_fn).strip()
 
+    # Highest priority: the VERDICT marker the prompt asks for. Far more
+    # reliable than a <think> tag or the tail-scanning fallback below, since
+    # it's an unambiguous signal the model itself was told to produce --
+    # reuses the same [Reasoning]/[Verification] labelling as the <think>
+    # path so nothing downstream needs to change.
+    #
+    # Only the keyword itself is required, not exact decoration around it
+    # (models drift on how many "=" they write) -- and it's the LAST
+    # occurrence that counts, since a model may use the word "verdict"
+    # casually in its reasoning before the real final one.
+    handled = False
+    verdict_matches = list(re.finditer(r"VERDICT", raw, re.IGNORECASE))
+    if verdict_matches:
+        last_match = verdict_matches[-1]
+        reasoning = re.sub(r"[\s=:\-*]*\Z", "", raw[:last_match.start()])
+        verdict = re.sub(r"^[\s=:\-*]*\n?", "", raw[last_match.end():]).strip()
+        if verdict:
+            raw = (f"[Reasoning]\n{reasoning}\n\n[Verification]\n{verdict}"
+                    if reasoning else verdict)
+            handled = True
+        # else: marker present but nothing followed (truncated) -- fall
+        # through to the <think> handling below for a clear truncation message.
+
     # Handle <think>...</think> blocks from reasoning models (e.g. qwen3).
     #
     # Complete block: show reasoning as a labelled section above the output,
@@ -500,19 +537,20 @@ NO ISSUES FOUND
     # Incomplete block (</think> missing): the model hit its token limit
     # mid-reasoning and never produced output — discard the fragment and
     # surface a clear message rather than showing a wall of raw CoT.
-    think_re = re.compile(r"<think>(.*?)</think>", re.DOTALL | re.IGNORECASE)
-    think_match = think_re.search(raw)
-    if think_match:
-        reasoning  = think_match.group(1).strip()
-        after      = think_re.sub("", raw).strip()
-        if after:
-            raw = f"[Reasoning]\n{reasoning}\n\n[Verification]\n{after}"
-        else:
-            raw = reasoning   # edge case: think block with no trailing output
-    elif re.search(r"<think>", raw, re.IGNORECASE):
-        # Truncated mid-reasoning — discard the fragment
-        raw = ("[Reasoning truncated — verifier ran out of tokens.\n"
-               "Increase the verifier token budget in the LLM tab.]")
+    if not handled:
+        think_re = re.compile(r"<think>(.*?)</think>", re.DOTALL | re.IGNORECASE)
+        think_match = think_re.search(raw)
+        if think_match:
+            reasoning  = think_match.group(1).strip()
+            after      = think_re.sub("", raw).strip()
+            if after:
+                raw = f"[Reasoning]\n{reasoning}\n\n[Verification]\n{after}"
+            else:
+                raw = reasoning   # edge case: think block with no trailing output
+        elif re.search(r"<think>", raw, re.IGNORECASE):
+            # Truncated mid-reasoning — discard the fragment
+            raw = ("[Reasoning truncated — verifier ran out of tokens.\n"
+                   "Increase the verifier token budget in the LLM tab.]")
 
     # Return the display text, not the normalized verdict.  The UI still shows
     # detailed verifier reasoning when a reasoning model provides it, while
@@ -949,9 +987,19 @@ def format_with_literature(raw_text: str, literature: str, taxon_name: str,
 def format_fast_stream(raw_text, config, style="concise", status_fn=None,
                        cancel_fn=None, suppress_reasoning=True):
     """Streams fluent-prose formatting of raw_text. Yields string tokens."""
+    import copy
     from llm_interface import call_llm_stream
     prompt = _build_prompt(raw_text, config, style)
-    stream = call_llm_stream(prompt, config, status_fn=status_fn,
+    # Same context-sizing as the verify/correct calls below -- without this,
+    # a local (Ollama) model runs at Ollama's own default context (typically
+    # 4096) regardless of the model's real window or the prompt+output size
+    # actually needed, which can make an otherwise-capable model produce
+    # truncated or pathologically slow output.
+    prompt_tokens = len(prompt) // 4
+    output_budget = config.num_predict or 2048
+    cfg = copy.copy(config)
+    cfg.num_ctx = max(4096, prompt_tokens + output_budget + 256)
+    stream = call_llm_stream(prompt, cfg, status_fn=status_fn,
                              cancel_fn=cancel_fn)
     yield from (_suppress_thinking_tokens(stream) if suppress_reasoning else stream)
 

@@ -14,6 +14,7 @@ from typing import Callable, Dict, List, Tuple
 
 from .keys import is_key_line, split_key_line
 from .number import Decision, classify
+from .predicate import render_predicate
 from .segmenter import is_structural, split_colon, split_sentences
 
 _EOL_RE = re.compile(r"(.*?)(\r\n|\r|\n|)$", re.S)
@@ -56,7 +57,7 @@ def _description_line(content, cache, order):
             continue
         name, value = parsed
         d = _decide(name, cache, order)
-        rebuilt.append(f"{name} {d.verb} {value}")
+        rebuilt.append(f"{name} {render_predicate(d.number, value)}")
     return "".join(rebuilt)
 
 
@@ -68,7 +69,7 @@ def _key_line(content, cache, order):
         return content
     prefix, name, rest = parsed
     d = _decide(name, cache, order)
-    return f"{prefix}{name} {d.verb} {rest}"
+    return f"{prefix}{name} {render_predicate(d.number, rest)}"
 
 
 _HANDLERS: Dict[str, Callable] = {

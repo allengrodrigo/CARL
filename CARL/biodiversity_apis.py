@@ -49,6 +49,17 @@ def _headers() -> dict:
 # RETRY HELPER
 # ============================================================
 
+_URL_QUERY_RE = re.compile(r"(https?://[^\s'\"?]+)\?[^\s'\"]*")
+
+
+def _redact_query(exc) -> str:
+    """str(exc) with any URL query string stripped. requests' HTTPError text
+    embeds the full request URL, so for APIs that take the key as a query
+    parameter (WSC apiKey, BHL apikey) logging the raw exception would write
+    the key to the log/console."""
+    return _URL_QUERY_RE.sub(r"\1?<redacted>", str(exc))
+
+
 def _get_with_retry(url: str, params: dict = None, headers: dict = None,
                     timeout: int = 25, retries: int = 1, retry_delay: float = 3.0):
     """GET with one retry on timeout or 5xx errors."""
@@ -906,7 +917,7 @@ def _wsc_get(path: str, params: dict = None):
         r = _get_with_retry(f"{_WSC}{path}", params=p, headers=_headers(), timeout=20)
         return r.json()
     except Exception as exc:
-        log.warning("[WSC] %s params=%s → %s", path, params, exc)
+        log.warning("[WSC] %s params=%s → %s", path, params, _redact_query(exc))
         return None
 
 
@@ -2864,7 +2875,7 @@ def fetch_bhl_records(name: str, api_key: str,
                 break
         return publications, pages
     except Exception as exc:
-        log.warning("[fetch_bhl_records] %s → %s", name, exc)
+        log.warning("[fetch_bhl_records] %s → %s", name, _redact_query(exc))
         return [], []
 
 
@@ -4176,7 +4187,7 @@ def _bhl_get(params: dict, api_key: str, timeout: int = 20) -> dict:
                             headers=_headers(), timeout=timeout)
         return r.json()
     except Exception as exc:
-        log.warning("[BHL] %s → %s", params.get("op"), exc)
+        log.warning("[BHL] %s → %s", params.get("op"), _redact_query(exc))
         return {}
 
 

@@ -380,7 +380,7 @@ def generate_descriptions(dataset, kg, taxa, build_base_description,
     temp_kg = build_temp_kg(dataset, kg, taxa_objects)
 
     for t in taxa_objects:
-        display_name = t.name.replace("_", " ").upper()
+        display_name = t.name.replace("_", " ")
         lines.append(f"DESCRIPTION FOR {display_name}\n")
         desc = build_base_description(t, temp_kg, dataset,
                                       char_exclusions=char_exclusions,
