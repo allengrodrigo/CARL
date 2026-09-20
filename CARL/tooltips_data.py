@@ -172,9 +172,10 @@ GROUPS = {
                  'as prose. Requires a model configured in Settings → LLM Settings.'},
         {"key": "analyses.output_mode_nlg", "manual_label": "Output Mode: Raw + NLG",
          "html": 'Generate raw output first, then a deterministic natural-language rendering '
-                 'below it: the character↔state delimiter is replaced by "is"/"are", chosen '
-                 'from the grammatical number of the character name\'s head noun. Programmatic, '
-                 'offline, no LLM required.'},
+                 'below it: the character↔state delimiter is replaced by a verb chosen from '
+                 'the grammatical number of the character name\'s head noun — "is"/"are", or '
+                 '"has"/"have"/"does not have"/"do not have" for states that begin with '
+                 '"with"/"without"/"having". Programmatic, offline, no LLM required.'},
         {"key": "analyses.llm_mode_dropdown", "manual_label": "LLM Mode: Fast / Full",
          "html": 'Fast = reformat only, no verification. Full = reformat, then verify (and '
                  'optionally correct) with the Verification Model. See Part B.'},
@@ -227,8 +228,9 @@ GROUPS = {
          "html": 'Use Information Gain (Shannon entropy) scoring. Maximises entropy reduction at '
                  'each node. Recommended default.'},
         {"label": "DG", "manual_label": "Algorithm: DG",
-         "html": "Use Diversity Gain (Simpson's Index) scoring. Lookahead approach; may produce "
-                 'shallower keys for skewed state distributions.'},
+         "html": "Use Diversity Gain (Simpson's Index) scoring. Lookahead approach that favours "
+                 "characters reflected across the remaining characters; keys are on average no "
+                 "shorter, and often less balanced, than IG's."},
         {"label": "Binary", "manual_label": "Format: Binary",
          "html": 'Classic two-lead dichotomous couplets (a / b).'},
         {"label": "Multi-arm", "manual_label": "Format: Multi-arm",

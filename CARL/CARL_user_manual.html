@@ -1045,17 +1045,24 @@ with an assigned DataID (non-greyed rows) appear. Groups are virtual taxa formed
       <em>identical</em> name, their states are merged into one sentence
       (<em>character name: state1, state2, and state3</em>). The output is exact and
       reproducible; no language model is involved. The heading for each taxon reads
-      <em>DESCRIPTION FOR TAXON_NAME</em>.</li>
+      <em>DESCRIPTION FOR</em> followed by the taxon name as written in the dataset, with
+      underscores shown as spaces (e.g. <em>Genus_species</em> appears as
+      <em>DESCRIPTION FOR Genus species</em>).</li>
   <li><strong>Raw + LLM</strong> — the Raw description is generated first (and shown), then
       passed to the configured Output Model, which reformats it as fluent natural-language
       prose. See <a href="#analyses-llm">Analyses with AI</a> in Part B for full details on
       model selection and output quality.</li>
   <li><strong>Raw + NLG</strong> — the Raw description is generated first (and shown), then a
       deterministic <strong>natural-language generation</strong> (NLG) rendering is shown below
-      it. NLG replaces the <em>character name: state</em> colon with the verb <em>is</em> or
-      <em>are</em>, chosen from the grammatical number of the character name's head noun (e.g.
-      <em>Abdominal tergites: present</em> → <em>Abdominal tergites are present</em>). Like Raw,
-      it is programmatic, offline, and reproducible — no language model is involved.</li>
+      it. NLG replaces the <em>character name: state</em> colon with a verb, chosen from the
+      grammatical number of the character name's head noun: <em>is</em>/<em>are</em> for
+      ordinary states (e.g. <em>Abdominal tergites: present</em> → <em>Abdominal tergites are
+      present</em>), and <em>has</em>/<em>have</em> or <em>does not have</em>/<em>do not have</em>
+      when the state begins with <em>with</em>, <em>without</em> or <em>having</em> (e.g.
+      <em>Leaves: without auricular setae</em> → <em>Leaves do not have auricular setae</em>). A
+      state of the form <em>with X and without Y</em> becomes <em>has X but does not have Y</em>.
+      Like Raw, it is programmatic, offline, and reproducible — no language model is
+      involved.</li>
 </ul>
 </div>
 
@@ -1115,7 +1122,7 @@ text is used for the current run only; it does not modify the cache.</p>
       <td>Generate raw output first, then pass it to the Output Model for reformatting as prose. Requires a model configured in Settings → LLM Settings.</td></tr>
 
   <tr><td><strong>Output Mode: Raw + NLG</strong></td>
-      <td>Generate raw output first, then a deterministic natural-language rendering below it: the character/state colon is replaced by "is"/"are", chosen from the grammatical number of the character name's head noun. Programmatic, offline, no LLM required.</td></tr>
+      <td>Generate raw output first, then a deterministic natural-language rendering below it: the character/state colon is replaced by a verb chosen from the grammatical number of the character name's head noun — "is"/"are", or "has"/"have"/"does not have"/"do not have" for states that begin with "with"/"without"/"having". Programmatic, offline, no LLM required.</td></tr>
 
   <tr><td><strong>LLM Mode: Fast / Full</strong></td>
       <td>Fast = reformat only, no verification. Full = reformat, then verify (and optionally correct) with the Verification Model. See Part B.</td></tr>
@@ -1299,7 +1306,11 @@ even-depth keys and is the recommended default.</p>
 between-group diversity does choosing this character now create across the <em>remaining</em>
 characters, relative to the residual within-group diversity? In other words, DG prefers
 characters whose split makes the resulting groups easier to distinguish with future characters.
-This tends to produce shorter keys when state frequencies are unequal.</p>
+Because the score rewards a split for what it explains about the <em>other</em> characters, not
+for how evenly it divides the taxa, DG tends to single out distinctive taxa or small groups
+early, and its keys are usually less balanced than IG's. In simulations on a real grass-genus
+dataset, DG keys were on average no shorter than IG keys at the same Repeat Weight — slightly
+longer, and less balanced, as the number of taxa increased.</p>
 
 <div class="note">
 <strong>DG formula — step by step</strong><br><br>
@@ -1337,7 +1348,8 @@ D(c, T<sub>def</sub>) &times; (n<sub>def</sub> / n<sub>total</sub>) &times; W &t
 </div>
 <p>The ratio D&#773;<sub>B</sub> / D&#773;<sub>res</sub> selects the character that maximises
 future between-group separation relative to future within-group confusion. DG is less sensitive
-to rare states than IG and may produce keys with better early couplets for skewed datasets.</p>
+to rare states than IG. It is offered as an alternative scoring rule, not as a way to shorten
+keys — use IG when the aim is the shortest and most balanced key.</p>
 </div>
 
 <div class="card">
@@ -1361,13 +1373,15 @@ to rare states than IG and may produce keys with better early couplets for skewe
       <td>Higher (computes D across all remaining characters at each node)</td></tr>
   <tr><td>Typical key shape</td>
       <td>Balanced, even depth</td>
-      <td>May be shallower when early choices are better</td></tr>
+      <td>Often less balanced: distinctive taxa or small groups are split off early; average
+          length equal to or slightly longer than IG</td></tr>
   <tr><td>Default?</td>
       <td>Yes</td>
       <td>No</td></tr>
   <tr><td>Prefer when</td>
-      <td>General use; balanced character state frequencies</td>
-      <td>State frequencies are unequal; or IG produces poor early couplets</td></tr>
+      <td>General use; whenever the shortest, most balanced key is wanted</td>
+      <td>As an alternative scoring rule for comparison; not recommended when key length or
+          balance matters</td></tr>
 </table>
 </div>
 
@@ -1429,9 +1443,11 @@ two or more taxa are identically coded for all characters, or when missing data 
 any character from reliably distinguishing them.</p>
 <p>The Raw key can be rendered two further ways, selected with the <strong>Output Mode</strong>
 radio buttons. <strong>Raw + NLG</strong> shows a deterministic natural-language version below the
-Raw key: the <em>character = state</em> condition in each lead is rewritten with <em>is</em> or
-<em>are</em> (e.g. <em>Anterior lateral spinnerets = present</em> → <em>Anterior lateral
-spinnerets are present</em>), programmatically and offline. <strong>Raw + LLM</strong> instead
+Raw key: the <em>character = state</em> condition in each lead is rewritten with a verb — <em>is</em> or
+<em>are</em> for ordinary states (e.g. <em>Anterior lateral spinnerets = present</em> → <em>Anterior lateral
+spinnerets are present</em>), or <em>has</em>/<em>have</em> and <em>does not have</em>/<em>do not have</em>
+for states beginning <em>with</em> or <em>without</em> (e.g. <em>Glumes = without awns</em> →
+<em>Glumes do not have awns</em>) — programmatically and offline. <strong>Raw + LLM</strong> instead
 passes the Raw key to the Output Model for reformatting as prose — see
 <a href="#analyses-llm">Analyses with AI</a> in Part B.</p>
 </div>
@@ -1448,13 +1464,13 @@ passes the Raw key to the Output Model for reformatting as prose — see
       <td>Generate the raw key first, then pass it to the Output Model for reformatting as prose. Requires a model configured in Settings → LLM Settings.</td></tr>
 
   <tr><td><strong>Output Mode: Raw + NLG</strong></td>
-      <td>Generate the raw key first, then a deterministic natural-language rendering below it: the character/state "=" in each lead is replaced by "is"/"are", chosen from the grammatical number of the character name's head noun. Programmatic, offline, no LLM required.</td></tr>
+      <td>Generate the raw key first, then a deterministic natural-language rendering below it: the character/state "=" in each lead is replaced by a verb chosen from the grammatical number of the character name's head noun — "is"/"are", or "has"/"have"/"does not have"/"do not have" for states that begin with "with"/"without"/"having". Programmatic, offline, no LLM required.</td></tr>
 
   <tr><td><strong>Algorithm: IG</strong></td>
       <td>Use Information Gain (Shannon entropy) scoring. Maximises entropy reduction at each node. Recommended default.</td></tr>
 
   <tr><td><strong>Algorithm: DG</strong></td>
-      <td>Use Diversity Gain (Simpson's Index) scoring. Lookahead approach; may produce shallower keys for skewed state distributions.</td></tr>
+      <td>Use Diversity Gain (Simpson's Index) scoring. Lookahead approach that favours characters reflected across the remaining characters; keys are on average no shorter, and often less balanced, than IG's.</td></tr>
 
   <tr><td><strong>Format: Binary</strong></td>
       <td>Classic two-lead dichotomous couplets (a / b).</td></tr>
@@ -1590,7 +1606,10 @@ see <a href="#llm-setup">Setting Up Language Models</a> (Part B).</p>
   <tr><td><strong>Show</strong> (button, per provider)</td>
       <td>Toggles the key field between masked (●●●) and visible text.</td></tr>
   <tr><td><strong>Free models only</strong> (checkbox, OpenRouter)</td>
-      <td>Restricts the OpenRouter model list to free-tier models only.</td></tr>
+      <td>Restricts the OpenRouter model list to free-tier models only, and is enforced on every
+          call: if a paid model — or one whose pricing cannot be confirmed from OpenRouter's
+          live catalogue — is selected, CARL refuses the request and shows a message instead of
+          sending it. Untick to allow paid models.</td></tr>
   <tr><td><strong>Save API Keys</strong></td>
       <td>Writes all API keys to <code>taxongpt_settings.json</code> immediately.
           Keys are also saved automatically when CARL closes.</td></tr>
@@ -2197,7 +2216,8 @@ the model output is processed:</p>
       or when a quick readable draft is needed.</li>
   <li><strong>Full</strong> — the Output Model rephrases as in Fast mode, but the result is
       then passed to the Verification Model, which reviews the AI description against the
-      Raw output and flags any discrepancies, omissions, or potential hallucinations. The
+      Raw output and flags any discrepancies, omissions, or potential hallucinations —
+      including any change to the spelling of a taxon name. The
       verification report is displayed below the description. Full mode makes two model
       calls per analysis and is slower, but provides an additional check for any output
       intended for formal or published use.</li>
@@ -2255,6 +2275,20 @@ satisfied before running the full dataset.</div>
   <tr><th>Message</th><th>Meaning</th></tr>
   <tr><td>Running LLM…</td>
       <td>The Output Model is generating output. The progress bar animates during this time.</td></tr>
+  <tr><td>Running &lt;model&gt; (verification k/n)…</td>
+      <td>Full mode: the Verification Model is reviewing the draft. <em>k</em> is the current
+          round and <em>n</em> the number of verification rounds set for the analysis.</td></tr>
+  <tr><td>Running &lt;model&gt; (correction k/m)…</td>
+      <td>Full mode: the verifier reported issues and the Output Model is rewriting the draft
+          to fix them (<em>k</em> of at most <em>m</em> corrections).</td></tr>
+  <tr><td>Large input compacted automatically for the selected Groq model.</td>
+      <td>The input was larger than the selected Groq model accepts in one request, so CARL
+          trimmed it to fit before sending. Very long inputs may therefore be partly
+          truncated; a model with a larger context window avoids this.</td></tr>
+  <tr><td>[openrouter] Refused: '&lt;model&gt;' is not confirmed free…</td>
+      <td><strong>Free models only</strong> is ticked and the selected OpenRouter model is
+          paid or could not be verified as free. Untick the option or choose a free
+          model.</td></tr>
   <tr><td>Rewriting couplet N (i/total)…</td>
       <td>During key generation in LLM mode, each couplet is rewritten individually.</td></tr>
   <tr><td>Rate limit (TPM/RPM) — retrying in Ns…</td>
@@ -2391,6 +2425,9 @@ independent verification against the original data and the primary literature.</
 <h2 id="acknowledgements">Acknowledgements</h2>
 
 <div class="card">
+<p><strong>How to cite CARL:</strong><br>
+Rodrigo, A. G., Huang, H., Wang, Z., Seldon, D., and Li, T. (2026). Classification
+(AI-Accessible) Research Laboratory, CARL: An integrated environment for taxonomic research.</p>
 <p>CARL is the successor to TaxonGPT, which was developed from the original TaxonGPT framework
 by Haoyuan Huang and colleagues. Users are encouraged to consult and cite the foundational paper:</p>
 <p>Huang, H., Li, T., Wang, Z., Seldon, D., &amp; Rodrigo, A. (2024). TaxonGPT: Taxonomic
