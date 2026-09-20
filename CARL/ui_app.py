@@ -123,7 +123,7 @@ _ALL_PROVIDER_META = {
     "WoRMS":       {"default_enabled": True,  "note": "Marine and non-marine; LSID registry"},
     "WSC":         {"default_enabled": False, "note": "Araneae only; requires API key"},
     "BacDive":     {"default_enabled": False, "note": "Prokaryotes, genus/species only; no registration needed"},
-    "POWO":        {"default_enabled": False, "note": "Vascular plants only"},
+    "IPNI":        {"default_enabled": True,  "note": "Vascular plant names; nomenclature only"},
     "NCBI":        {"default_enabled": True,  "note": ""},
     "ZooBank":     {"default_enabled": True,  "note": "Per-IP verification required"},
     "CrossRef":    {"default_enabled": True,  "note": ""},

@@ -65,12 +65,12 @@ INTER_TAXON_DELAY = 1
 # Full provider order — index 0 = highest priority.
 # Wikipedia and Wikidata are disabled by default (unchecked in Settings > Databases).
 DEFAULT_PROVIDER_ORDER = [
-    "GBIF", "CoL", "ITIS", "WoRMS", "WSC", "BacDive", "POWO",
+    "GBIF", "CoL", "ITIS", "WoRMS", "WSC", "BacDive", "IPNI",
     "NCBI", "ZooBank", "CrossRef",
     "BHL", "Plazi", "Wikipedia", "Wikidata",
 ]
 DEFAULT_ENABLED_PROVIDERS = [
-    "GBIF", "CoL", "ITIS", "WoRMS",
+    "GBIF", "CoL", "ITIS", "WoRMS", "IPNI",
     "NCBI", "ZooBank", "CrossRef",
     "BHL", "Plazi",
 ]

@@ -885,8 +885,8 @@ value is used; lower-priority values are stored and flagged as conflicts.</p>
       <td><a href="https://wsc.nmbe.ch">wsc.nmbe.ch</a></td></tr>
   <tr><td><strong>BacDive</strong> — Bacterial Diversity Metadatabase (DSMZ)</td>
       <td><a href="https://bacdive.dsmz.de">bacdive.dsmz.de</a></td></tr>
-  <tr><td><strong>POWO</strong> — Plants of the World Online (Royal Botanic Gardens, Kew)</td>
-      <td><a href="https://powo.science.kew.org">powo.science.kew.org</a></td></tr>
+  <tr><td><strong>IPNI</strong> — International Plant Names Index (Royal Botanic Gardens, Kew)</td>
+      <td><a href="https://www.ipni.org">ipni.org</a></td></tr>
   <tr><td><strong>NCBI</strong> — National Center for Biotechnology Information</td>
       <td><a href="https://ncbi.nlm.nih.gov">ncbi.nlm.nih.gov</a></td></tr>
   <tr><td><strong>ZooBank</strong> — Official registry of zoological nomenclature</td>
@@ -902,6 +902,18 @@ value is used; lower-priority values are stored and flagged as conflicts.</p>
   <tr><td><strong>Wikidata</strong> — Structured metadata</td>
       <td><a href="https://wikidata.org">wikidata.org</a></td></tr>
 </table>
+<p class="note">IPNI covers vascular-plant names, is enabled by default, and replaces POWO,
+whose web service is no longer available to software. IPNI holds nomenclature only, and its
+data appears in the existing sections of a taxon's record report rather than in a section of
+its own: the protologue citation (with a Biodiversity Heritage Library link where one exists)
+in <em>Publications</em>; basionym and nomenclatural synonyms in <em>Synonyms</em>, labelled
+<em>basionym</em> or <em>nomenclatural synonym</em>; and the species, infraspecific names or
+genera listed below the taxon in <em>Daughter taxa</em>. Each entry is tagged
+<code>[IPNI]</code>, and a short <code>[IPNI]</code> block adds the authorship, the World Flora
+Online ID and the remarks recorded in the original publication. IPNI records no
+accepted/synonym status and no classification above family; those come from the other
+providers. Its child names include every name published under the taxon, not only those
+currently accepted.</p>
 </div>
 
 <div class="card" id="dwc-fields">
@@ -1709,7 +1721,7 @@ For how retrieved records are displayed and used, see the
           return data for the same field. Lower numbers = higher priority.</td></tr>
 </table>
 <p>Available providers: GBIF, CoL, ITIS, WoRMS, WSC (Araneae; requires API key),
-BacDive (Prokaryotes), POWO (Vascular plants), NCBI, ZooBank (per-IP verification
+BacDive (Prokaryotes), IPNI (Vascular plants), NCBI, ZooBank (per-IP verification
 required), CrossRef, BHL (requires API key), Plazi (genus/species only),
 Wikipedia, Wikidata.</p>
 </div>
@@ -1729,6 +1741,9 @@ Wikipedia, Wikidata.</p>
   <tr><td>BHL page records</td><td>10</td><td>BHL page-level records fetched</td></tr>
   <tr><td>ZooBank acts</td><td>10</td><td>ZooBank nomenclatural acts fetched</td></tr>
 </table>
+<p class="note">These limits do not apply to IPNI's list of child names, which is always
+retrieved in full. For a large genus or family this can be several thousand names and take
+about half a minute (for example, roughly 5,600 species for <em>Carex</em>).</p>
 </div>
 
 <div class="card">

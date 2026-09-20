@@ -42,7 +42,7 @@ from biodiversity_apis import (
     fetch_itis_summary, fetch_itis_synonyms,
     fetch_worms_summary, fetch_worms_synonyms, fetch_worms_children,
     fetch_wsc_profile,
-    fetch_powo_profile,
+    fetch_ipni_profile,
     fetch_bacdive_profile,
     resolve_publications,
     fetch_wikipedia_report,
@@ -615,11 +615,11 @@ class InformationMixin:
             else:
                 wsc_data = {}
 
-            if "POWO" in _enabled:
-                _status(f"POWO: {query_name} ({i}/{total})...")
-                powo_data = fetch_powo_profile(query_name)
+            if "IPNI" in _enabled:
+                _status(f"IPNI: {query_name} ({i}/{total})...")
+                ipni_data = fetch_ipni_profile(query_name)
             else:
-                powo_data = {}
+                ipni_data = {}
 
             if "BacDive" in _enabled:
                 _status(f"BacDive: {query_name} ({i}/{total})...")
@@ -722,6 +722,20 @@ class InformationMixin:
                     key=lambda p: (p.get("year") or 9999, p.get("citation", ""))
                 )
 
+            # IPNI protologue citation is likewise already a complete reference.
+            if ipni_data.get("citation"):
+                formatted_pubs.append({
+                    "citation":  ipni_data["citation"],
+                    "doi":       "",
+                    "sources":   ["IPNI"],
+                    "plazi_url": "",
+                    "url":       ipni_data.get("bhl_url") or "",
+                    "year":      ipni_data.get("year"),
+                })
+                formatted_pubs.sort(
+                    key=lambda p: (p.get("year") or 9999, p.get("citation", ""))
+                )
+
         except Exception as exc:
             return {
                 "retrieved": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -759,12 +773,12 @@ class InformationMixin:
         _w(f"  NCBI TaxID:     {gbif_info.get('taxid') or 'N/A'}")
         if wsc_data.get("lsid"):
             _w(f"  WSC LSID:       {wsc_data['lsid']}")
-        if powo_data.get("ipni_lsid"):
-            _w(f"  IPNI LSID:      {powo_data['ipni_lsid']}")
+        if ipni_data.get("ipni_lsid"):
+            _w(f"  IPNI LSID:      {ipni_data['ipni_lsid']}")
         if gbif_info.get("publishedIn"):
             _w(f"  Published in:   {gbif_info['publishedIn']}")
-        if powo_data.get("reference"):
-            _w(f"  Published in (POWO): {powo_data['reference']}")
+        if ipni_data.get("reference"):
+            _w(f"  Published in (IPNI): {ipni_data['reference']}")
         _w()
 
         _profile_conflicts = []
@@ -805,23 +819,22 @@ class InformationMixin:
                 _profile_conflicts.append(
                     f"  authorship:  GBIF → {_gbif_auth!r}  |  WSC → {_wsc_auth!r}")
 
-        if powo_data:
-            _w("[POWO]")
-            if powo_data.get("status"):
-                _w(f"  Status:   {powo_data['status']}")
-            if powo_data.get("taxonRemarks"):
-                _w(f"  Remarks:  {powo_data['taxonRemarks']}")
+        if ipni_data:
+            _w("[IPNI]")
+            if ipni_data.get("authorship"):
+                _w(f"  Authorship:        {ipni_data['authorship']}")
+            if ipni_data.get("wfo_id"):
+                _w(f"  WFO ID:            {ipni_data['wfo_id']}")
+            if ipni_data.get("taxonRemarks"):
+                _w(f"  Original remarks:  {ipni_data['taxonRemarks']}")
+            if ipni_data.get("bhl_url"):
+                _w(f"  Protologue (BHL):  {ipni_data['bhl_url']}")
             _w()
 
-            _powo_auth = (powo_data.get("authorship") or "").strip()
-            if _gbif_auth and _powo_auth and _gbif_auth != _powo_auth:
+            _ipni_auth = (ipni_data.get("authorship") or "").strip()
+            if _gbif_auth and _ipni_auth and _gbif_auth != _ipni_auth:
                 _profile_conflicts.append(
-                    f"  authorship:  GBIF → {_gbif_auth!r}  |  POWO → {_powo_auth!r}")
-            _gbif_parent = (gbif_info.get("parent") or "").strip()
-            _powo_parent = (powo_data.get("parent") or "").strip()
-            if _gbif_parent and _powo_parent and _gbif_parent != _powo_parent:
-                _profile_conflicts.append(
-                    f"  parent:      GBIF → {_gbif_parent!r}  |  POWO → {_powo_parent!r}")
+                    f"  authorship:  GBIF → {_gbif_auth!r}  |  IPNI → {_ipni_auth!r}")
 
         for _bd_strain in (bacdive_data.get("type_strains") or []):
             _strain_label = _bd_strain.get("strain_designation") or str(_bd_strain.get("bacdive_id", ""))
@@ -870,7 +883,7 @@ class InformationMixin:
                 if "GBIF" not in _merged_children[_ck]["sources"]:
                     _merged_children[_ck]["sources"].append("GBIF")
 
-        for _src_label, _src_list in [("CoL", col_children), ("WoRMS", worms_children), ("POWO", powo_data.get("children") or [])]:
+        for _src_label, _src_list in [("CoL", col_children), ("WoRMS", worms_children), ("IPNI", ipni_data.get("children") or [])]:
             for _c in _src_list:
                 _ck = _canonical_key(_c["name"]) or _c["name"].lower()[:40]
                 if _ck not in _merged_children:
@@ -986,7 +999,7 @@ class InformationMixin:
                             f"{merged_syns[key]['name']} / {s['name']}")
                         merged_syns[key]["conflict"] = True
 
-        for _src_label, _src_list in [("WoRMS", worms_synonyms), ("ITIS", itis_synonyms), ("POWO", powo_data.get("synonyms") or [])]:
+        for _src_label, _src_list in [("WoRMS", worms_synonyms), ("ITIS", itis_synonyms), ("IPNI", ipni_data.get("synonyms") or [])]:
             for s in _src_list:
                 _sname = s["name"]
                 _sauth = s.get("authorship", "")
@@ -1171,6 +1184,8 @@ class InformationMixin:
                     _w(f"       https://doi.org/{p['doi']}")
                 if p.get("plazi_url"):
                     _w(f"       {p['plazi_url']}")
+                if p.get("url"):
+                    _w(f"       {p['url']}")
         else:
             _w("  None.")
         _w()
@@ -1257,14 +1272,14 @@ class InformationMixin:
             "animalia": "ICZN", "plantae": "ICN", "fungi": "ICN",
             "bacteria": "ICNP", "archaea": "ICNP", "viruses": "ICTV",
         }.get(_king.lower(), "")
-        if not _nom_code and powo_data:
+        if not _nom_code and ipni_data:
             _nom_code = "ICN"
 
         import re as _re
         _yr_m = _re.search(r'\b(1[6-9]\d{2}|20\d{2})\b',
                            gbif_info.get("authorship") or "")
         _pub_year = _first(_yr_m.group(1) if _yr_m else "",
-                           powo_data.get("namePublishedInYear"))
+                           ipni_data.get("namePublishedInYear"))
 
         _lsid_val = gbif_info.get("lsid") or ""
         _sci_name_id = _first(
@@ -1272,13 +1287,12 @@ class InformationMixin:
             wsc_data.get("lsid"),
             worms_info.get("lsid"),
             _lsid_val,
-            powo_data.get("ipni_lsid"),
+            ipni_data.get("ipni_lsid"),
         )
 
         _tax_status = _first(
             gbif_info.get("taxonomicStatus"),
             worms_info.get("status"),
-            powo_data.get("status"),
         )
         _nom_status = _first(
             gbif_info.get("nomenclaturalStatus"),
@@ -1302,18 +1316,20 @@ class InformationMixin:
             "order":                    _first(gbif_info.get("order"),
                                                worms_info.get("order")),
             "family":                   _first(gbif_info.get("family"),
-                                               worms_info.get("family")),
+                                               worms_info.get("family"),
+                                               ipni_data.get("family")),
             "genus":                    _first(gbif_info.get("genus"),
-                                               worms_info.get("genus")),
+                                               worms_info.get("genus"),
+                                               ipni_data.get("genus")),
             "taxonomicStatus":          _tax_status,
             "nomenclaturalCode":        _nom_code,
             "nomenclaturalStatus":      _nom_status,
             "namePublishedIn":          _first(gbif_info.get("publishedIn"),
-                                               powo_data.get("reference"),
+                                               ipni_data.get("reference"),
                                                worms_info.get("orig_ref")),
             "namePublishedInYear":      _pub_year,
             "parentNameUsage":          _first(gbif_info.get("parent"),
-                                               powo_data.get("parent")),
+                                               ipni_data.get("parent")),
             "acceptedNameUsage":        _accepted_usage,
             "scientificNameID":         _sci_name_id,
             "higherClassification":     gbif_info.get("hierarchy", "").replace(":", " | "),

@@ -1322,186 +1322,247 @@ def fetch_bacdive_profile(taxon_name: str) -> dict:
 
 
 # ============================================================
-# POWO — Plants of the World Online (Royal Botanic Gardens, Kew)
+# IPNI — International Plant Names Index (Royal Botanic Gardens, Kew)
 # ============================================================
+# Replaces POWO, whose API now sits behind a Cloudflare bot challenge that no
+# non-browser client can pass. IPNI is Kew's names index (POWO's own IDs are
+# IPNI LSIDs) and its API is open. It holds nomenclature only: name,
+# authorship, rank, family/genus, the protologue citation, basionym and
+# nomenclatural synonyms, and the names below a taxon. It has no accepted /
+# synonym status and no classification above family, so those still come from
+# GBIF / CoL.
 
-_POWO = "https://powo.science.kew.org/api/2"
+_IPNI = "https://www.ipni.org/api/1"
+_IPNI_PAGE_SIZE = 500
+_IPNI_MAX_PAGES = 100
+
+_IPNI_RANK = {
+    "fam.": "FAMILY", "subfam.": "SUBFAMILY", "trib.": "TRIBE",
+    "subtrib.": "SUBTRIBE", "gen.": "GENUS", "subgen.": "SUBGENUS",
+    "sect.": "SECTION", "subsect.": "SUBSECTION", "ser.": "SERIES",
+    "subser.": "SUBSERIES", "spec.": "SPECIES", "subsp.": "SUBSPECIES",
+    "var.": "VARIETY", "subvar.": "SUBVARIETY", "f.": "FORM",
+    "subf.": "SUBFORM",
+}
+
+# IPNI detail-record fields that name another name related to this one, with
+# the label shown in the Synonyms group. All are nomenclatural relations, not
+# taxonomic synonymy.
+_IPNI_RELATIONS = (
+    ("basionym",             "basionym"),
+    ("replacedSynonym",      "replaced synonym"),
+    ("nomenclaturalSynonym", "nomenclatural synonym"),
+)
 
 
-def _powo_get(path: str, params: dict = None):
+def _ipni_rank(rank: str) -> str:
+    """IPNI rank abbreviation → the upper-case rank word GBIF uses."""
+    r = (rank or "").strip()
+    return _IPNI_RANK.get(r.lower(), r.rstrip(".").upper())
+
+
+def _ipni_get(path: str, params: dict = None):
     try:
-        r = _get_with_retry(f"{_POWO}{path}", params=params,
-                            headers=_headers(), timeout=20)
+        r = _get_with_retry(f"{_IPNI}{path}", params=params,
+                            headers=_headers(), timeout=30)
         return r.json()
     except Exception as exc:
-        log.warning("[POWO] %s params=%s → %s", path, params, exc)
+        log.warning("[IPNI] %s params=%s → %s", path, params, _redact_query(exc))
         return None
 
 
-def fetch_powo(taxon_name: str, fields: set) -> dict:
-    """Return {dwc_term: value} from POWO / IPNI (vascular plants).
+def _ipni_pages(query: str, filt: str = None, max_pages: int = _IPNI_MAX_PAGES):
+    """Yield the (non-suppressed, named) hits of an IPNI search one page at a time."""
+    for page in range(1, max_pages + 1):
+        params = {"q": query, "perPage": _IPNI_PAGE_SIZE, "page": page}
+        if filt:
+            params["f"] = filt
+        data = _ipni_get("/search", params)
+        if not isinstance(data, dict):
+            return
+        results = data.get("results") or []
+        yield [r for r in results
+               if isinstance(r, dict) and r.get("name") and not r.get("suppressed")]
+        # IPNI refuses to page past its maxReturnedRecords (10,000) window.
+        if (not results or page >= (data.get("totalPages") or 0)
+                or page * _IPNI_PAGE_SIZE >= (data.get("maxReturnedRecords") or 10000)):
+            return
 
-    Pass 1: /taxon/search?q={name}&f=accepted_names → fqId (IPNI LSID).
-    Pass 2: /taxon/{fqId} → full record.
-    """
-    import urllib.parse
-    result: dict[str, str] = {}
 
-    data = _powo_get("/search", {"q": taxon_name, "f": "accepted_names"})
-    if not data or not data.get("results"):
-        data = _powo_get("/search", {"q": taxon_name})
-    if not data or not data.get("results"):
-        return {}
+def _ipni_search_all(query: str, filt: str = None) -> list:
+    out = []
+    for hits in _ipni_pages(query, filt):
+        out.extend(hits)
+    return out
 
-    name_lower = taxon_name.lower()
-    record = None
-    for r in data["results"]:
-        if not isinstance(r, dict):
-            continue
-        if (r.get("name") or "").lower() == name_lower:
-            record = r
+
+def _ipni_lookup(taxon_name: str) -> dict | None:
+    """The IPNI record for an exact name: search hit overlaid with the full
+    detail record (citation, basionym, parent, ...). None if not found."""
+    name = taxon_name.strip()
+    name_l = name.lower()
+    if not name_l:
+        return None
+    # An unfiltered search for a family or genus also matches every name filed
+    # under it (82,000+ hits for "Poaceae"), so narrow by the rank category
+    # the name's shape implies before falling back to one unfiltered page.
+    n_words = len(name.split())
+    if n_words == 1:
+        attempts = (("f_familial", 1), ("f_generic", 3), (None, 1))
+    elif n_words == 2:
+        attempts = (("f_specific", 3), (None, 1))
+    else:
+        attempts = (("f_infraspecific", 3), (None, 1))
+    hits = []
+    for filt, max_pages in attempts:
+        for page_hits in _ipni_pages(name, filt, max_pages):
+            hits = [r for r in page_hits if r["name"].lower() == name_l]
+            if hits:
+                break
+        if hits:
             break
-    if record is None:
-        record = data["results"][0] if isinstance(data["results"][0], dict) else None
-    if not record:
+    if not hits:
+        return None
+    # Prefer the primary copy of a name, then one that Kew's checklist covers.
+    hits.sort(key=lambda r: (r.get("topCopy") is False, not r.get("inPowo")))
+    rec = hits[0]
+    detail = _ipni_get(f"/n/{rec['id']}") if rec.get("id") else None
+    return {**rec, **detail} if isinstance(detail, dict) else rec
+
+
+def _ipni_lsid(rec: dict) -> str:
+    if rec.get("fqId"):
+        return str(rec["fqId"])
+    if rec.get("id"):
+        return f"urn:lsid:ipni.org:names:{rec['id']}"
+    return ""
+
+
+def _ipni_reference(rec: dict) -> str:
+    return re.sub(r"\s+", " ", rec.get("reference") or "").strip()
+
+
+def _ipni_citation(rec: dict) -> str:
+    """Protologue citation, e.g. 'Calyptochloa C.E.Hubb., Hooker's Icon. Pl.
+    33: t. 3210. 1933'. Empty when IPNI has no reference for the name."""
+    ref = _ipni_reference(rec)
+    if not ref:
+        return ""
+    head = f"{rec.get('name', '')} {(rec.get('authors') or '').strip()}".strip()
+    return f"{head}, {ref}"
+
+
+def _ipni_relations(rec: dict) -> list:
+    """Basionym / replaced / nomenclatural synonyms as Synonyms-group entries."""
+    out, seen = [], set()
+    for key, label in _IPNI_RELATIONS:
+        for e in (rec.get(key) or []):
+            if not isinstance(e, dict) or not e.get("name"):
+                continue
+            auth = (e.get("authors") or "").strip()
+            ident = (e["name"].lower(), auth.lower())
+            if ident in seen:
+                continue
+            seen.add(ident)
+            out.append({"name": e["name"], "authorship": auth,
+                        "rank": _ipni_rank(e.get("rank")), "status": label})
+    return out
+
+
+def _ipni_children(rec: dict) -> list:
+    """Every name IPNI lists directly below this one, all pages, no cap:
+    species of a genus, infraspecific names of a species, genera of a family."""
+    rank = (rec.get("rank") or "").lower()
+    name = rec["name"]
+    if rank == "gen.":
+        hits = _ipni_search_all(f"genus:{name}", "f_specific")
+        keep = lambda r: r["name"].startswith(name + " ")
+    elif rank == "spec.":
+        hits = _ipni_search_all(name, "f_infraspecific")
+        keep = lambda r: r["name"].startswith(name + " ")
+    elif rank == "fam.":
+        hits = _ipni_search_all(f"family:{name}", "f_generic")
+        keep = lambda r: ((r.get("rank") or "").lower() == "gen."
+                          and (r.get("family") or "").lower() == name.lower())
+    else:
+        return []
+    out, seen = [], set()
+    for r in hits:
+        if not keep(r) or r.get("topCopy") is False:
+            continue
+        auth = (r.get("authors") or "").strip()
+        ident = (r["name"].lower(), auth.lower())
+        if ident in seen:
+            continue
+        seen.add(ident)
+        out.append({"name": r["name"], "authorship": auth,
+                    "rank": _ipni_rank(r.get("rank"))})
+    return out
+
+
+def _ipni_parent(rec: dict) -> str:
+    for p in (rec.get("parent") or []):
+        if isinstance(p, dict) and p.get("name"):
+            return f"{p['name']} {(p.get('authors') or '').strip()}".strip()
+    if (rec.get("rank") or "").lower() == "gen.":
+        return rec.get("family") or ""
+    return ""
+
+
+def fetch_ipni(taxon_name: str, fields: set) -> dict:
+    """Return {dwc_term: value} from IPNI (plant names)."""
+    rec = _ipni_lookup(taxon_name)
+    if not rec:
         return {}
+    result: dict[str, str] = {}
+    lsid = _ipni_lsid(rec)
 
-    fq_id = record.get("fqId") or record.get("id")
+    _add(result, "scientificName",          rec.get("name"),                    fields)
+    _add(result, "scientificNameAuthorship", rec.get("authors"),                fields)
+    _add(result, "taxonRank",               _ipni_rank(rec.get("rank")).lower(), fields)
+    _add(result, "family",                  rec.get("family"),                  fields)
+    _add(result, "genus",                   rec.get("genus"),                   fields)
+    _add(result, "namePublishedIn",         _ipni_reference(rec),               fields)
+    _add(result, "namePublishedInYear",     rec.get("publicationYear"),         fields)
+    _add(result, "taxonID",                 lsid,                               fields)
+    _add(result, "scientificNameID",        lsid,                               fields)
+    _add(result, "nomenclaturalCode",       "ICN",                              fields)
 
-    # Pass 2: full record by IPNI LSID / fqId
-    if fq_id:
-        encoded = urllib.parse.quote(str(fq_id), safe="")
-        full = _powo_get(f"/taxon/{encoded}")
-        if isinstance(full, dict) and full:
-            record = full
-            fq_id = record.get("fqId") or fq_id
-
-    # Normalise LSID
-    lsid = fq_id
-    if lsid and not str(lsid).startswith("urn:lsid:"):
-        lsid = f"urn:lsid:ipni.org:names:{lsid}"
-
-    _add(result, "scientificName",          record.get("name"),        fields)
-    _add(result, "scientificNameAuthorship",
-         record.get("authors") or record.get("author"),                 fields)
-    _add(result, "taxonRank",               record.get("rank"),        fields)
-    _add(result, "taxonomicStatus",
-         record.get("taxonomicStatus") or
-         ("accepted" if record.get("accepted") else None),              fields)
-    _add(result, "nomenclaturalStatus",     record.get("nomenclaturalStatus"), fields)
-    _add(result, "kingdom",                 record.get("kingdom"),     fields)
-    _add(result, "phylum",                  record.get("phylum"),      fields)
-    # POWO returns "clazz" to avoid Python reserved word
-    _add(result, "class",
-         record.get("clazz") or record.get("class"),                    fields)
-    _add(result, "order",                   record.get("order"),       fields)
-    _add(result, "family",                  record.get("family"),      fields)
-    _add(result, "genus",                   record.get("genus"),       fields)
-    _add(result, "namePublishedIn",         record.get("namePublishedIn"), fields)
-    _add(result, "namePublishedInYear",
-         str(record.get("namePublishedInYear") or ""),                  fields)
-    _add(result, "taxonID",         lsid, fields)
-    _add(result, "scientificNameID", lsid, fields)
-    _add(result, "nomenclaturalCode", "ICN", fields)
-
-    # acceptedNameUsage from homotypic synonym chain if present
-    basionym = record.get("basionymOf")
-    if isinstance(basionym, dict):
+    basionym = next((e for e in _ipni_relations(rec) if e["status"] == "basionym"), None)
+    if basionym:
         _add(result, "originalNameUsage",
-             (basionym.get("name") or "") + " " +
-             (basionym.get("authors") or ""),
-             fields)
-
+             f"{basionym['name']} {basionym['authorship']}".strip(), fields)
     return result
 
 
-def fetch_powo_profile(taxon_name: str) -> dict:
-    """Return structured POWO/IPNI profile dict for _info_worker display.
+def fetch_ipni_profile(taxon_name: str) -> dict:
+    """Return structured IPNI profile dict for _info_worker display.
 
-    Keys: status, ipni_lsid, reference, namePublishedInYear, taxonRemarks,
-          authorship, rank, parent, synonyms (list), children (list)
+    Keys: ipni_lsid, wfo_id, authorship, rank, family, genus, parent,
+          reference, citation, namePublishedInYear, year, bhl_url,
+          taxonRemarks, synonyms (list), children (list)
     """
-    import urllib.parse
-
-    data = _powo_get("/search", {"q": taxon_name, "f": "accepted_names"})
-    if not data or not data.get("results"):
-        data = _powo_get("/search", {"q": taxon_name})
-    if not data or not data.get("results"):
+    rec = _ipni_lookup(taxon_name)
+    if not rec:
         return {}
-
-    name_lower = taxon_name.lower()
-    record = None
-    for r in data["results"]:
-        if not isinstance(r, dict):
-            continue
-        if (r.get("name") or "").lower() == name_lower:
-            record = r
-            break
-    if record is None and data["results"]:
-        record = data["results"][0] if isinstance(data["results"][0], dict) else None
-    if not record:
-        return {}
-
-    fq_id = record.get("fqId") or record.get("id")
-
-    if fq_id:
-        encoded = urllib.parse.quote(str(fq_id), safe="")
-        full = _powo_get(f"/taxon/{encoded}")
-        if isinstance(full, dict) and full:
-            record = full
-            fq_id = record.get("fqId") or fq_id
-
-    ipni_lsid = fq_id
-    if ipni_lsid and not str(ipni_lsid).startswith("urn:lsid:"):
-        ipni_lsid = f"urn:lsid:ipni.org:names:{ipni_lsid}"
-
-    # Immediate parent from classification chain (last element = closest ancestor)
-    parent = ""
-    for entry in reversed(record.get("classification") or []):
-        if not isinstance(entry, dict):
-            continue
-        p_name = entry.get("name", "")
-        p_auth = entry.get("author", "")
-        parent = f"{p_name} {p_auth}".strip() if p_auth else p_name
-        break
-
-    synonyms = []
-    for s in (record.get("synonyms") or []):
-        if not isinstance(s, dict):
-            continue
-        s_name = s.get("name", "")
-        s_auth = s.get("author", "")
-        if s_name:
-            synonyms.append({
-                "name":      f"{s_name} {s_auth}".strip() if s_auth else s_name,
-                "authorship": s_auth,
-                "rank":      s.get("rank", ""),
-                "status":    s.get("taxonomicStatus", "synonym"),
-            })
-
-    children = []
-    for c in (record.get("childNameUsages") or []):
-        if not isinstance(c, dict):
-            continue
-        c_name = c.get("name", "")
-        if c_name:
-            children.append({
-                "name":      c_name,
-                "authorship": c.get("author", ""),
-                "rank":      c.get("rank", ""),
-            })
-
+    year = rec.get("publicationYear")
+    linked = rec.get("linkedPublication") if isinstance(rec.get("linkedPublication"), dict) else {}
     return {
-        "status":             record.get("taxonomicStatus") or ("accepted" if record.get("accepted") else ""),
-        "ipni_lsid":          ipni_lsid or "",
-        "reference":          record.get("reference") or record.get("bibliographicCitation") or "",
-        "namePublishedInYear": str(record.get("namePublishedInYear") or ""),
-        "taxonRemarks":       record.get("taxonRemarks") or "",
-        "authorship":         record.get("authors") or record.get("author") or "",
-        "rank":               record.get("rank") or "",
-        "parent":             parent,
-        "synonyms":           synonyms,
-        "children":           children,
+        "ipni_lsid":           _ipni_lsid(rec),
+        "wfo_id":              rec.get("wfoId") or "",
+        "authorship":          (rec.get("authors") or "").strip(),
+        "rank":                _ipni_rank(rec.get("rank")),
+        "family":              rec.get("family") or "",
+        "genus":               rec.get("genus") or "",
+        "parent":              _ipni_parent(rec),
+        "reference":           _ipni_reference(rec),
+        "citation":            _ipni_citation(rec),
+        "namePublishedInYear": str(year) if year else "",
+        "year":                int(year) if isinstance(year, int) else None,
+        "bhl_url":             rec.get("bhlLink") or linked.get("bhlPageLink") or "",
+        "taxonRemarks":        (rec.get("originalRemarks") or "").strip(),
+        "synonyms":            _ipni_relations(rec),
+        "children":            _ipni_children(rec),
     }
 
 
@@ -1509,7 +1570,7 @@ def fetch_powo_profile(taxon_name: str) -> dict:
 # PROVIDER REGISTRY
 # ============================================================
 
-PROVIDERS: list[str] = ["GBIF", "CoL", "ITIS", "WoRMS", "WSC", "BacDive", "POWO"]
+PROVIDERS: list[str] = ["GBIF", "CoL", "ITIS", "WoRMS", "WSC", "BacDive", "IPNI"]
 
 FETCH_FN: dict[str, callable] = {
     "GBIF":  fetch_gbif,
@@ -1518,7 +1579,7 @@ FETCH_FN: dict[str, callable] = {
     "WoRMS": fetch_worms,
     "WSC":     fetch_wsc,
     "BacDive": fetch_bacdive,
-    "POWO":    fetch_powo,
+    "IPNI":    fetch_ipni,
 }
 
 # Providers that require an API key: maps provider name → settings key name.
@@ -1538,7 +1599,7 @@ ADAPTER_META: dict[str, dict] = {
     "ZooBank": {"pass2_id_type": "zoobank_lsid"},
     "WSC":     {"pass2_id_type": "wsc_taxon_id"},
     "BacDive": {"pass2_id_type": "bacdive_id"},
-    "POWO":    {"pass2_id_type": "ipni_lsid"},
+    "IPNI":    {"pass2_id_type": "ipni_lsid"},
 }
 
 
