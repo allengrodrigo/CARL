@@ -368,7 +368,7 @@ TABS = {
             "scoring, in binary or multi-arm form.",
     "Multi-Access Key": "Build an interactive polyclave — add character-state criteria in any "
                         "order and see which taxa remain compatible.",
-    "Chat": "Ask Carl questions about your data and the nomenclatural codes.",
+    "Chat": "Ask Carl general taxonomy questions, or retrieve articles from the nomenclatural codes (with or without a language model).",
     "Run Plugin": "Configure and run an external command-line program from a plugin descriptor.",
     "Generate Descriptor": "Create or edit a plugin descriptor and preview its JSON.",
     "LM Settings": "Configure language-model providers, API keys, generation and verification "

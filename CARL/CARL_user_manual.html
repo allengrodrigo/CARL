@@ -90,6 +90,8 @@ kbd { background:#eee; border:1px solid #bbb; border-radius:3px;
 <a href="#keys-tab">Keys tab</a>
 <a href="#mak-tab">Multi-Access Key tab</a>
 <a href="#special-states" style="padding-left:20px; font-size:0.83em;">↳ Special states</a>
+<div class="sec-head">Chatbot panel</div>
+<a href="#chatbot-no-model">Using the chatbot without a language model</a>
 <div class="sec-head">Settings panel</div>
 <a href="#lm-settings-tab">LM Settings tab</a>
 <a href="#databases-tab">Databases tab</a>
@@ -163,6 +165,9 @@ requires no language model:</p>
   <li><strong>Generate identification keys</strong> — dichotomous keys (binary or multi-arm, using IG — Information Gain (Shannon) — or DG — Diversity Gain (Simpson's Index) — scoring) for any selection of taxa or groups, plus a <strong>Multi-Access Key</strong> (polyclave) for interactive elimination-based identification in any character order</li>
   <li><strong>Retrieve external records</strong> — fetch Darwin Core data from GBIF, Catalogue of Life,
       ZooBank, and ITIS; review, resolve, and export</li>
+  <li><strong>Look up the Codes of Nomenclature</strong> — retrieve the articles of the ICZN, ICN,
+      ICNP and ICVCN that best match a question, without a language model (see
+      <a href="#chatbot-no-model">Using the Chatbot without a Language Model</a>)</li>
 </ul>
 <p><strong>Part B</strong> covers the additional functionality that language models provide:</p>
 <ul>
@@ -200,7 +205,7 @@ button is highlighted; click any button to switch panels. CARL launches maximise
   <tr><td><strong>Multi-Access Key</strong></td>
       <td>Build an interactive polyclave — add character-state criteria in any order and see which taxa remain compatible.</td></tr>
   <tr><td><strong>Chat</strong></td>
-      <td>Ask Carl questions about your data and the nomenclatural codes.</td></tr>
+      <td>Ask Carl general taxonomy questions, or retrieve articles from the nomenclatural codes (with or without a language model).</td></tr>
   <tr><td><strong>Run Plugin</strong></td>
       <td>Configure and run an external command-line program from a plugin descriptor.</td></tr>
   <tr><td><strong>Generate Descriptor</strong></td>
@@ -1596,6 +1601,39 @@ Use Copy to paste results into a manuscript; use Save to archive individual anal
 </div>
 
 
+<!-- ===== CHATBOT WITHOUT A MODEL ===== -->
+<h2 id="chatbot-no-model">Using the Chatbot without a Language Model</h2>
+
+<div class="card">
+<h3>Retrieving articles from the Codes (RAR)</h3>
+<p>Most of the Chatbot needs a language model and is described in Part B
+(<a href="#chatbot">Carl the Chatbot</a>). Retrieval from the nomenclatural codes does not. When you choose a
+code and no chat model is set, Carl still retrieves the articles that best match your question
+and lists them. This is <em>Retrieval Augmented Response</em> (RAR). It runs on your own
+computer, with no API key and no language model, so it is available even when AI is not.</p>
+<ol>
+  <li>Leave the chat model empty (or <strong>None</strong>) in
+      <strong>Settings → LM Settings → CARL (Chatbot) → Model</strong>.</li>
+  <li>Choose a code in the <strong>Code</strong> dropdown of the chat toolbar.</li>
+  <li>Type your question and press <strong>Send</strong>.</li>
+</ol>
+<p>Carl replies with the headings of the retrieved articles, introduced by
+<em>Relevant articles in</em> and the name of the code. The list starts with the article that best
+matches your question, then follows references from one article to others, falling back to the
+next best match when no further references are found. If your question quotes an article number
+(for example <em>Article 23</em>), retrieval starts from that article. If a model is set as well,
+the same list appears first and the model's answer follows it.</p>
+<div class="warning"><strong>Treat the list as a first draft.</strong> RAR shows article headings
+only, not their text. It can miss relevant articles — for example, a reference to a sub-article
+such as <em>Art. 51.2</em> may not bring that article up — and it can include articles that are
+only loosely related. <strong>k</strong> counts retrieved chunks, and a long article can supply
+several, so the list may name fewer than <strong>k</strong> different articles. Always confirm by
+reading the articles themselves in the Code.</div>
+<div class="note">If neither a model nor a code is selected, Carl asks you to choose one. The first
+retrieval in a session can take a little longer while the search index loads.</div>
+</div>
+
+
 <!-- ===== SETTINGS PANEL ===== -->
 
 <h2 id="lm-settings-tab">LM Settings Tab</h2>
@@ -2341,9 +2379,9 @@ multi-turn context entirely, making each query independent.</p>
 <h3>Controls</h3>
 <table>
   <tr><th>Control</th><th>Function</th></tr>
-  <tr><td><strong>RAG Code</strong> dropdown</td>
+  <tr><td><strong>Code</strong> dropdown</td>
       <td>Select a nomenclatural code to ground Carl's answers in official rules (see below).
-          Leave blank for general conversation.</td></tr>
+          Leave as <strong>None</strong> for general conversation.</td></tr>
   <tr><td><strong>k</strong> spinner (1–30, default 12)</td>
       <td>Number of article chunks retrieved from the selected code's index per query.
           Increase for broad or multi-part questions; decrease to reduce prompt size for
@@ -2369,7 +2407,7 @@ output from the Analyses panel or the Verification Model in Full mode.</p>
 <h3>Nomenclatural codes (RAG mode)</h3>
 <p>Carl can answer questions grounded in the text of the official nomenclatural codes by
 consulting a local index built from their text. Select a code from the
-<strong>RAG Code</strong> dropdown before sending your question:</p>
+<strong>Code</strong> dropdown before sending your question:</p>
 <ul>
   <li><strong>ICZN</strong> — International Code of Zoological Nomenclature</li>
   <li><strong>ICN</strong> — International Code of Nomenclature for algae, fungi, and plants</li>
@@ -2391,9 +2429,11 @@ conversation mode.</p>
   <li>"Does the ICZN require type specimens to be deposited in a recognised institution?"</li>
 </ul>
 </div>
-<div class="note">Only codes whose index files are present on disk appear in the RAG Code
+<div class="note">Only codes whose index files are present on disk appear in the Code
 dropdown. If a code you expect to see is missing, check that its FAISS index has been built
 and is located in the correct directory.</div>
+<div class="note">Retrieval from the Codes also works without a language model — see
+<a href="#chatbot-no-model">Using the Chatbot without a Language Model</a> in Part A.</div>
 </div>
 
 
