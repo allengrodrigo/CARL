@@ -1,0 +1,105 @@
+#NEXUS
+
+[Grass key-length study, replicate 7 of 10-taxon samples: the 10 genera used to build
+ the identification keys for this replicate (CARL IG/SI at repeat penalty 0 and 1; DELTA KEY at
+ REUSE=1). A subset of Grass_Genera_RealData.nex: all 50 characters are kept, and the CARL block
+ and character sets are unchanged apart from omitting the genera not in this sample.]
+
+[Real-data benchmark set: 50 genera x 50 binary characters, extracted from
+ Watson, L., Macfarlane, T.D., and Dallwitz, M.J. 1992 onwards. The grass
+ genera of the world (version 15 June 2025), a DELTA-format database.
+ Missing cells (source data has no coded value for that genus/character)
+ are coded '?' rather than forced to a value, since this is real rather
+ than synthetic data.]
+
+BEGIN DATA;
+DIMENSIONS NTAX=10 NCHAR=50;
+FORMAT DATATYPE=STANDARD MISSING=? GAP=-;
+CHARSTATELABELS
+	1 "Embryo" / 0 "large" 1 "small",
+	2 "Plants" / 0 "with hermaphrodite florets" 1 "without hermaphrodite florets",
+	3 "Spikelets" / 0 "with proximal incomplete florets" 1 "without proximal incomplete florets",
+	4 "Spikelet-bearing axes" / 0 "disarticulating" 1 "persistent",
+	5 "Spikelets" / 0 "morphologically conventional" 1 "unconventional",
+	6 "Leaf blades" / 0 "pseudopetiolate" 1 "not pseudopetiolate",
+	7 "Rachilla" / 0 "prolonged beyond the uppermost female-fertile floret" 1 "terminated by a female-fertile floret",
+	8 "Spikelets" / 0 "all partially embedded in the rachis" 1 "not all embedded",
+	9 "Leaves" / 0 "with auricular setae" 1 "without auricular setae",
+	10 "Inflorescence" / 0 "with axes ending in spikelets" 1 "axes not ending in spikelets",
+	11 "Spikelets" / 0 "consistently in long-and-short combinations" 1 "not in distinct long-and-short combinations",
+	12 "The spikelets" / 0 "of sexually distinct forms on the same plant" 1 "all alike in sexuality",
+	13 "Inflorescence" / 0 "spatheate" 1 "espatheate",
+	14 "Lodicules" / 0 "ciliate" 1 "glabrous",
+	15 "Inflorescence" / 0 "a complex of partial inflorescences and intervening foliar organs" 1 "not comprising partial inflorescences and foliar organs",
+	16 "Lodicules" / 0 "present" 1 "absent",
+	17 "Ovary" / 0 "apically glabrous" 1 "apically hairy",
+	18 "Mesophyll" / 0 "with fusoids" 1 "without fusoids",
+	19 "Mesophyll" / 0 "with arm cells" 1 "without arm cells",
+	20 "Midrib" / 0 "with colourless mesophyll adaxially" 1 "without colourless mesophyll adaxially",
+	21 "Spikelets" / 0 "with female-fertile florets only" 1 "with incomplete florets",
+	22 "Leaf blades" / 0 "setaceous" 1 "not setaceous",
+	23 "Microhairs" / 0 "present" 1 "absent",
+	24 "Leaf blades" / 0 "cross veined" 1 "without cross venation",
+	25 "Glumes" / 0 "shorter than the adjacent lemmas" 1 "long relative to the adjacent lemmas",
+	26 "Lower glume" / 0 "two-keeled" 1 "not two-keeled",
+	27 "Mesophyll" / 0 "traversed by columns of colourless mesophyll cells" 1 "not traversed by colourless columns",
+	28 "Lemmas" / 0 "carinate" 1 "non-carinate",
+	29 "Lemmas" / 0 "becoming indurated" 1 "not becoming indurated",
+	30 "Papillae" / 0 "present" 1 "absent",
+	31 "Glumes" / 0 "awned" 1 "awnless",
+	32 "Stomata" / 0 "common" 1 "absent or very rare",
+	33 "Spikelets" / 0 "secund" 1 "not secund",
+	34 "Glumes" / 0 "very dissimilar" 1 "similar",
+	35 "Sclerenchyma" / 0 "all associated with vascular bundles" 1 "not all bundle-associated",
+	36 "Fruit" / 0 "longitudinally grooved" 1 "not grooved",
+	37 "Combined sclerenchyma girders" / 0 "present" 1 "absent",
+	38 "Lemmas" / 0 "entire" 1 "incised",
+	39 "Leaf blades <whether broad or narrow >" / 0 "broad" 1 "narrow",
+	40 "Hairy callus" / 0 "present" 1 "absent",
+	41 "Lodicules" / 0 "fleshy" 1 "membranous",
+	42 "Mid-intercostal long-cells" / 0 "having markedly sinuous walls" 1 "having straight or only gently undulating walls",
+	43 "Hilum" / 0 "short" 1 "long-linear",
+	44 "Intercostal short-cells" / 0 "common" 1 "absent or very rare",
+	45 "Midrib" / 0 "conspicuous" 1 "not readily distinguishable",
+	46 "Styles" / 0 "fused" 1 "free to their bases",
+	47 "Leaves" / 0 "auriculate" 1 "non-auriculate",
+	48 "Bulliforms" / 0 "present in discrete, regular adaxial groups" 1 "not present in discrete, regular adaxial groups",
+	49 "Lemmas" / 0 "hairy" 1 "hairless",
+	50 "Glumes" / 0 "very unequal" 1 "more or less equal"
+;
+MATRIX
+Habrochloa	1 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 0 1 0 1 1 0 0 0 0 1 1 1 1 1 0 1
+Pheidochloa	1 0 1 1 0 1 1 1 1 0 1 1 1 1 1 0 0 1 1 0 0 0 0 1 1 1 1 1 1 1 1 0 1 1 0 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0
+Pogonochloa	0 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 1 1 1 0 1 1 1 0 1 1 1 0 0 0 1 0 1 0 0 1 0 0 0 0 0 1 1 1 0 0 1
+Scribneria	1 0 1 1 0 1 0 0 1 0 1 1 1 1 1 0 0 1 1 1 0 1 1 1 1 0 1 0 1 1 1 0 1 1 0 1 0 1 1 0 1 1 0 1 0 1 1 0 1 1
+Catabrosa	1 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 1 ? 1 1 1 0 1 1 1 1 0 1 0 1 1 0 1 1 0 1 1 1 1 0 0 0 1 1 1 1 0
+Desmostachya	0 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 0 1 1 0 1 0 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 0 0 0 0 0 ? 1 0 1 0
+Hypseochloa	1 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 1 0 1 1 1 1 ? 1 1 0 1 1 0 1 1 0 1 1 1 1 0 1 1 0 1 1 1 1 0 1 1
+Tsvelevia	1 0 1 1 0 1 0 1 1 0 1 1 1 1 1 0 0 1 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 1 0 0 1 ? 1 1 1 0 1 0 0 1 1 1 0 0
+Wangenheimia	1 0 1 1 0 1 0 1 1 ? 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 0 0 1 1 0 1 1 1 0 0 0 1 1 1 0 0 1
+Yakirra	0 0 0 1 0 1 1 1 1 0 1 1 1 1 1 0 0 1 1 1 1 1 0 1 1 1 1 1 0 1 1 0 1 ? 0 1 0 0 1 1 0 0 0 0 1 1 1 0 1 0
+;
+END;
+
+BEGIN SETS;
+  
+  CHARSET "Habit" = 2;
+  CHARSET "Leaves" = 6 9 18-20 22-24 27 30 32 35 37 39 42 44 45 47 48 ;
+  CHARSET "Inflorescence" = 3-5 7 8 10-16 21 25 26 28 29 31 33 34 38 40 41 49-50;
+  CHARSET "Reproductive features" = 1 17 36 43 46;
+END;
+
+BEGIN CARL;
+
+Habrochloa is genus [&D Habrochloa=Habrochloa:]
+Pheidochloa is genus [&D Pheidochloa=Pheidochloa:]
+Pogonochloa is genus [&D Pogonochloa=Pogonochloa:]
+Scribneria is genus [&D Scribneria=Scribneria:]
+Catabrosa is genus [&D Catabrosa=Catabrosa:]
+Desmostachya is genus [&D Desmostachya=Desmostachya:]
+Hypseochloa is genus [&D Hypseochloa=Hypseochloa:]
+Tsvelevia is genus [&D Tsvelevia=Tsvelevia:]
+Wangenheimia is genus [&D Wangenheimia=Wangenheimia:]
+Yakirra is genus [&D Yakirra=Yakirra:]
+
+END;
