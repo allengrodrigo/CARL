@@ -11,13 +11,24 @@ Public API:
   retrieve_chain()— greedy citation-chain retrieval (production algorithm)
 """
 
+import os
 import re
+import sys
 import json
 import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
 
 EMBED_MODEL = "all-MiniLM-L6-v2"
+
+
+def _data_path(filename: str) -> str:
+    """Absolute path to an index/chunks file that sits beside this module, so that
+    retrieval does not depend on the directory CARL was launched from."""
+    if os.path.isabs(filename):
+        return filename
+    base = sys._MEIPASS if getattr(sys, "frozen", False) else os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base, filename)
 
 # Article/rule number pattern: 23, 23.9, 11.3.2, 5a, F.1, H.3
 _ART_NUM_RE = re.compile(r"\b([FH]\.\d+|\d+[a-z]?(?:\.\d+[a-z]?){0,3})\b")
@@ -88,6 +99,7 @@ CODE_REGISTRY = {
 def load_index(index_file: str, chunks_file: str):
     """Load FAISS index, chunk list, and embedding model from disk.
     Returns (index, chunks, model)."""
+    index_file, chunks_file = _data_path(index_file), _data_path(chunks_file)
     print(f"Loading index: {index_file}")
     index = faiss.read_index(index_file)
     with open(chunks_file, "r", encoding="utf-8") as f:

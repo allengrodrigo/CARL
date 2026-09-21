@@ -1708,7 +1708,7 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
             "icnp":  "icnp_index.faiss",
             "icvcn": "icvcn_index.faiss",
         }
-        _available = [code for code, f in _RAG_INDEX_FILES.items() if os.path.exists(f)]
+        _available = [code for code, f in _RAG_INDEX_FILES.items() if os.path.exists(_bundle_path(f))]
         self.rag_code_var = tk.StringVar(value="None")
         self.rag_k_var    = tk.IntVar(value=12)
         if _available:
