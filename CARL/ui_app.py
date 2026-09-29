@@ -4721,12 +4721,12 @@ class TaxonGPT_UI(EditorMixin, NomenclatureMixin, InformationMixin):
                 mode   = self._keys_format_var.get()
                 try:
                     repeat_penalty = float(self._keys_penalty_var.get())
-                    if not (0.0 < repeat_penalty <= 1.0):
+                    if not (0.0 <= repeat_penalty <= 1.0):
                         raise ValueError
                 except ValueError:
                     messagebox.showerror(
                         "Invalid Repeat Penalty",
-                        "Repeat penalty must be a number between 0 (exclusive) and 1 (inclusive).")
+                        "Repeat penalty must be a number between 0 and 1 (inclusive).")
                     _re_enable_run()
                     return
 

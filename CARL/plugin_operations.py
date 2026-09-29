@@ -930,23 +930,27 @@ class PluginsPanel:
             from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
             from matplotlib.figure import Figure
             from Bio import Phylo
+            from phylogeny_tools import read_first_tree
         except ImportError as exc:
             ttk.Label(self._rp_res_render, text=f"Missing library: {exc}",
                       foreground="#c00").pack(expand=True)
             return
-        ext = os.path.splitext(path)[1].lower()
-        fmt = "nexus" if ext in (".nex", ".nexus") else "newick"
+        # Content-sniffed (NEXUS vs Newick) and multi-tree-safe (always the
+        # first tree) via the same shared helper phylogeny_viewer.py uses --
+        # this function used to have its own, separate, extension-guessing
+        # implementation that still broke on real PAUP* output (a real
+        # NEXUS file with a .tre extension guesses "newick" first, and even
+        # its own nexus-format fallback used the strict Phylo.read(), which
+        # still raised "multiple trees" on a real PAUP* CONTREE/SAVETREES
+        # file -- confirmed directly, this was the exact error reported).
         try:
-            tree = Phylo.read(path, fmt)
-        except Exception:
-            try:
-                tree = Phylo.read(path, "newick" if fmt == "nexus" else "nexus")
-            except Exception as exc:
-                ttk.Label(self._rp_res_render,
-                          text=f"Could not parse tree:\n{exc}",
-                          foreground="#c00", wraplength=240, justify="center"
-                          ).pack(expand=True)
-                return
+            tree = read_first_tree(path)
+        except Exception as exc:
+            ttk.Label(self._rp_res_render,
+                      text=f"Could not parse tree:\n{exc}",
+                      foreground="#c00", wraplength=240, justify="center"
+                      ).pack(expand=True)
+            return
         n_tips = tree.count_terminals()
         fig_h  = max(3.5, n_tips * 0.22)
         fig    = Figure(figsize=(7, fig_h), dpi=100, tight_layout=True)

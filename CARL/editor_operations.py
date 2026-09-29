@@ -301,9 +301,6 @@ class EditorMixin:
             new_name = name_var.get().strip()
             if new_name and new_name != char.get_display_name():
                 char.name = [new_name]
-                self.char_list.delete(char_idx)
-                self.char_list.insert(char_idx, char.get_display_name())
-                self.char_list.selection_set(char_idx)
             # Apply state label edits
             for sid, slabel in _state_items:
                 char.states[sid] = slabel
@@ -335,6 +332,19 @@ class EditorMixin:
         self._apply_char_name_edit(char_idx, new_name)
         # Refresh the editor right pane with updated name
         self._editor_select_taxon()
+
+    def _apply_char_name_edit(self, char_idx, new_name):
+        """Rename a character in place. Mirrors the name-change branch of
+        _show_char_definition_dialog's _ok(): only the character object is
+        mutated here -- callers are responsible for their own display
+        refresh and for the pending-changes indicator."""
+        new_name = new_name.strip()
+        char = self.dataset.characters[char_idx]
+        if not new_name or new_name == char.get_display_name():
+            return
+        char.name = [new_name]
+        self._char_edits_pending = True
+        self._editor_pending_label.config(text="Unsaved changes — use Nomenclature tab to save")
 
     def _editor_edit_coded_state(self, taxon, char_idx):
         """Open inline-edit for a coded state value (raw token, not the label text)."""
@@ -653,16 +663,22 @@ class EditorMixin:
                 if r.object_data_id == old_name:
                     r.object_data_id = new_name
 
-        self._char_edits_pending = True
-        self._editor_pending_label.config(text="Unsaved changes — use Nomenclature tab to save")
-
-        # Refresh the taxa list and reselect
+        # Refresh the taxa list and reselect. Deliberately NOT refreshing the
+        # Analyses tab or DataID Pool here: this is unsaved, in-memory-only
+        # state, and having every pane update in perfect sync would signal
+        # to the user that the change is already committed. They stay as
+        # they were until an explicit save + reload, matching the intent of
+        # the "Unsaved changes" notice below.
+        #
+        # NOTE: the pending-changes label is set AFTER these two calls, not
+        # before. _populate_editor_tab() unconditionally clears that label
+        # at its own start (it's meant to reset stale state when opening a
+        # different file) -- setting it beforehand meant it was wiped again
+        # in the same call chain before ever being seen. Confirmed directly
+        # by the user: the rename applied, but "Unsaved changes" never
+        # appeared.
         self._populate_editor_tab()
         self.navigate_to_editor(new_name)
 
-        # Refresh Analyses panel taxa list after rename
-        self._ana_taxa_list.delete(0, tk.END)
-        for t in self.dataset.taxa:
-            label = self._nom_dataid_to_label.get(t.name, t.name)
-            self.taxa_list.insert(tk.END, label)
-            self._ana_taxa_list.insert(tk.END, label)
+        self._char_edits_pending = True
+        self._editor_pending_label.config(text="Unsaved changes — use Nomenclature tab to save")

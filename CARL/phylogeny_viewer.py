@@ -20,7 +20,7 @@ from Bio import Phylo
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
-from phylogeny_tools import parse_node_support
+from phylogeny_tools import parse_node_support, read_first_tree
 from ui_helpers import add_tooltip
 
 
@@ -52,7 +52,7 @@ def _support_detail(clade) -> str:
 class PhylogenyViewer:
     def __init__(self, parent, tree_file: str):
         self.source = Path(tree_file).expanduser().resolve()
-        self.original_tree = Phylo.read(str(self.source), "newick")
+        self.original_tree = read_first_tree(self.source)
         self.original_tree.rooted = False
         self.window = tk.Toplevel(parent)
         self.window.title(f"Phylogeny Viewer - {self.source.name}")
