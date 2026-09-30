@@ -107,6 +107,12 @@ class PluginsPanel:
     # ── top-level UI ──────────────────────────────────────────────────────────
 
     def _build_ui(self):
+        # ttk::button under the 'clam' theme (forced app-wide) has no dynamic
+        # -foreground option -- unlike ttk::label, .config(foreground=...) on a
+        # ttk.Button raises TclError there. A named style is the portable way
+        # to flash a button's text color.
+        ttk.Style().configure("PluginApplied.TButton", foreground="green")
+
         nb = ttk.Notebook(self._parent)
         nb.pack(fill="both", expand=True)
         self._nb = nb
@@ -1390,9 +1396,9 @@ class PluginsPanel:
         self._gd_mark_dirty()
         self._gd_out_refresh_files_lb()
         self._gd_update_preview()
-        self._gd_out_fe_apply_btn.config(text="Applied ✓", foreground="green")
+        self._gd_out_fe_apply_btn.config(text="Applied ✓", style="PluginApplied.TButton")
         self._gd_out_file_editor.after(
-            2000, lambda: self._gd_out_fe_apply_btn.config(text="Apply", foreground=""))
+            2000, lambda: self._gd_out_fe_apply_btn.config(text="Apply", style="TButton"))
 
     def _gd_out_add_file(self):
         files = self._gd_descriptor.setdefault("output", {}).setdefault("files", [])
@@ -1605,9 +1611,9 @@ class PluginsPanel:
         self._gd_refresh_fields_list()
         self._gd_refresh_sections_list(redraw=False)
         self._gd_update_preview()
-        self._gd_fe_apply_btn.config(text="Applied ✓", foreground="green")
+        self._gd_fe_apply_btn.config(text="Applied ✓", style="PluginApplied.TButton")
         self._gd_field_editor_frame.after(
-            2000, lambda: self._gd_fe_apply_btn.config(text="Apply", foreground=""))
+            2000, lambda: self._gd_fe_apply_btn.config(text="Apply", style="TButton"))
 
     # ── section CRUD ──────────────────────────────────────────────────────────
 
